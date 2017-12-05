@@ -82,7 +82,7 @@ public class PromiseTest extends TestCase {
 		p.subscribe(callback);
 		p.resolve(1);
 		assertTrue(callback.isCalled());
-		assertTrue(p.get() == 1);
+		assertTrue(p.get() == new Integer(1));
 		try {
 			p.resolve(2);
 			Assert.fail();
@@ -96,8 +96,27 @@ public class PromiseTest extends TestCase {
 	/**
 	 * Test method for {@link bgu.spl.a2.Promise#subscribe(bgu.spl.a2.callback)}.
 	 */
+
 	public void testSubscribe() {
-		fail("Not yet implemented");
+		//test if while calling subscribe the promise is already resolved-
+		//the callback is called immediately
+		Promise<Integer> p1 = new Promise<>();
+		p1.resolve(1);
+		CallbackA callback1 = new CallbackA();
+		p1.subscribe(callback1);
+		assertTrue(callback1.isCalled());
+		assertEquals(callback1.getCalledCounter(), 1);
+		
+		Promise<Integer> p2 = new Promise<>();
+		CallbackA callback2 = new CallbackA();
+		CallbackA callback3 = new CallbackA();
+		p2.subscribe(callback2);
+		p2.subscribe(callback3);
+		p2.resolve(2);
+		assertTrue(callback2.isCalled());
+		assertEquals(callback2.getCalledCounter(), 1);
+		assertTrue(callback3.isCalled());
+		assertEquals(callback3.getCalledCounter(), 1);
 	}
 
 }
