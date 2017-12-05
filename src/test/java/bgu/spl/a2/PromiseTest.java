@@ -77,7 +77,20 @@ public class PromiseTest extends TestCase {
 	 * Test method for {@link bgu.spl.a2.Promise#resolve(java.lang.Object)}.
 	 */
 	public void testResolve() {
-		fail("Not yet implemented");
+		Promise<Integer> p = new Promise<>();
+		CallbackA callback = new CallbackA();
+		p.subscribe(callback);
+		p.resolve(1);
+		assertTrue(callback.isCalled());
+		assertTrue(p.get() == 1);
+		try {
+			p.resolve(2);
+			Assert.fail();
+		}
+		catch (IllegalStateException e) {
+			// expected exception
+		}
+		assertTrue(p.get() == 1);
 	}
 
 	/**
