@@ -38,12 +38,14 @@ public class PromiseTest extends TestCase {
 	 */
 	public void testGet() {
 		Promise<Integer> p = new Promise<>();
+		//test get throws an exception if it is not yet resolved
 		try{
 			p.get();
 			Assert.fail();
 		} catch(IllegalStateException exc){
 			// expected exception
 		}
+		//test get returns the correct value once it is resolved
 		try{
 			p.resolve(new Integer(1));
 		} catch(IllegalStateException resolveExc)
@@ -52,7 +54,7 @@ public class PromiseTest extends TestCase {
 		}
 		try{
 			assertTrue(p.get().intValue() == 1);
-		}catch(IllegalStateException getExc){
+		}catch(IllegalStateException e){
 			Assert.fail();
 		}
 	}
@@ -61,7 +63,14 @@ public class PromiseTest extends TestCase {
 	 * Test method for {@link bgu.spl.a2.Promise#isResolved()}.
 	 */
 	public void testIsResolved() {
-		fail("Not yet implemented");
+		Promise<Integer> p = new Promise<>();
+		assertFalse(p.isResolved());
+		try {
+			p.resolve(1);
+		}catch (IllegalStateException e){
+			Assert.fail();
+		}
+		assertTrue(p.isResolved());
 	}
 
 	/**
