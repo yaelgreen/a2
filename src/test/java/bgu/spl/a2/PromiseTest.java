@@ -3,6 +3,7 @@
  */
 package bgu.spl.a2;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**
@@ -36,7 +37,24 @@ public class PromiseTest extends TestCase {
 	 * Test method for {@link bgu.spl.a2.Promise#get()}.
 	 */
 	public void testGet() {
-		fail("Not yet implemented");
+		Promise<Integer> p = new Promise<>();
+		try{
+			p.get();
+			Assert.fail();
+		} catch(IllegalStateException exc){
+			// expected exception
+		}
+		try{
+			p.resolve(new Integer(1));
+		} catch(IllegalStateException resolveExc)
+		{
+			Assert.fail();
+		}
+		try{
+			assertTrue(p.get().intValue() == 1);
+		}catch(IllegalStateException getExc){
+			Assert.fail();
+		}
 	}
 
 	/**
