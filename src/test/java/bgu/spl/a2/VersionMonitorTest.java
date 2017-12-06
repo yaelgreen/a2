@@ -77,7 +77,7 @@ public class VersionMonitorTest extends TestCase {
 			e.printStackTrace();
 		}
         //test the overall version
-		assertTrue(version.getVersion() == 151+firstVersion);
+		assertTrue(version.getVersion() >= 151+firstVersion);
 	}
 
 	/**
@@ -86,9 +86,20 @@ public class VersionMonitorTest extends TestCase {
 	public void testAwait() {
 		VersionMonitor version = new VersionMonitor();
 		int firstVersion = version.getVersion();
-		try {
-			version.await(firstVersion+2);
-			//firstVersion -> what should Not happened
+		Thread t1 = new Thread(() -> {
+        	for(int i = 0; i < 50; i++){
+        		try {
+					version.await(firstVersion+2);
+					//wait for it
+					if(firstVersion+2 >= version.getVersion())
+						Assert.fail("continued before the version updated");						
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+        	}   		
+        });
+		Thread t2 = new Thread(() -> {
+    		//firstVersion -> what should Not happened
 			version.inc();
 			//firstVersion + 1 -> what should Not happened
 			version.inc();
@@ -96,10 +107,15 @@ public class VersionMonitorTest extends TestCase {
 			version.inc();
 			//firstVersion + 3 -> what should happened in await function
 			version.inc();
-			//firstVersion + 4 -> what should Not happened
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			//firstVersion + 4 -> what should Not happened        	
+        });
+		t1.start();
+		try {
+			t1.join();
+		}catch (InterruptedException e1) {
+			e1.printStackTrace();
 		}
+        t2.start();
 	}
 
 }
