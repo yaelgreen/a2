@@ -1,7 +1,6 @@
 package bgu.spl.a2;
 
-import org.junit.*;
-
+import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
