@@ -2,6 +2,8 @@ package bgu.spl.a2;
 
 import org.junit.*;
 
+import com.sun.xml.internal.ws.wsdl.writer.document.http.Operation;
+
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
@@ -38,31 +40,29 @@ public class VersionMonitorTest extends TestCase {
 		int firstVersion = version.getVersion();
 		version.inc();
 		int newVersion = version.getVersion();
-		assertTrue(newVersion > firstVersion);
+		assertTrue(newVersion == firstVersion + 1);
 		
         Thread t1 = new Thread(() -> {
         	for(int i = 0; i < 50; i++){
         		int beforeVersion = version.getVersion();
         		version.inc();
-        		assertTrue(version.getVersion() > beforeVersion);
-        	}
-        });
-
+        		assertTrue(version.getVersion() == 1 + beforeVersion);
+        	}        	
+		});
         Thread t2 = new Thread(() -> {
         	for(int i = 0; i < 50; i++){
         		int beforeVersion = version.getVersion();
         		version.inc();
-        		assertTrue(version.getVersion() > beforeVersion);
-        	}   		
-        });
-        
+        		assertTrue(version.getVersion() == 1 + beforeVersion);
+        	}        	
+		});        
         Thread t3 = new Thread(() -> {
         	for(int i = 0; i < 50; i++){
         		int beforeVersion = version.getVersion();
         		version.inc();
-        		assertTrue(version.getVersion() > beforeVersion);
-        	}	
-        });
+        		assertTrue(version.getVersion() == 1 + beforeVersion);
+        	}        	
+		});
 
         t1.start();
         t2.start();
@@ -77,7 +77,7 @@ public class VersionMonitorTest extends TestCase {
 			e.printStackTrace();
 		}
         //test the overall version
-		assertTrue(version.getVersion() >= 151+firstVersion);
+		assertTrue(version.getVersion() == 151 + firstVersion);
 	}
 
 	/**
@@ -87,35 +87,55 @@ public class VersionMonitorTest extends TestCase {
 		VersionMonitor version = new VersionMonitor();
 		int firstVersion = version.getVersion();
 		Thread t1 = new Thread(() -> {
-        	for(int i = 0; i < 50; i++){
-        		try {
-					version.await(firstVersion+2);
-					//wait for it
-					if(firstVersion+2 >= version.getVersion())
-						Assert.fail("continued before the version updated");						
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-        	}   		
-        });
-		Thread t2 = new Thread(() -> {
-    		//firstVersion -> what should Not happened
-			version.inc();
-			//firstVersion + 1 -> what should Not happened
-			version.inc();
-			//firstVersion + 2 -> what should Not happened
-			version.inc();
-			//firstVersion + 3 -> what should happened in await function
-			version.inc();
-			//firstVersion + 4 -> what should Not happened        	
+        	try {
+        		if(firstVersion != version.getVersion())
+					Assert.fail("changed the version during await function");	
+				version.await(firstVersion);		//waiting for the version to change
+				if(firstVersion+1 != version.getVersion())
+					Assert.fail("waited more then needed to call thread");
+				// keep the thread alive
+				int i = 1;
+				while(i > 0)
+					i = i + 1;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}        	   		
         });
 		t1.start();
+		Assert.assertFalse(t1.isAlive());//t1.getState();
+		version.inc();
+		Assert.assertTrue(t1.isAlive());
+		version.inc();
+		Assert.assertTrue(t1.isAlive());
+		// we end chaking t1
 		try {
-			t1.join();
-		}catch (InterruptedException e1) {
-			e1.printStackTrace();
+			t1.wait();
+		} catch (InterruptedException e2) {
+			e2.printStackTrace();
 		}
-        t2.start();
+		
+		//should get back immediately - because the versions are different
+		Thread t2 = new Thread(() -> {
+        	try {
+        		if(firstVersion+2 != version.getVersion())
+					Assert.fail("changed the version during await function");	
+				version.await(version.getVersion()+1);		//waiting for the version to change
+				if(firstVersion+2 != version.getVersion())
+					Assert.fail("waited more then needed to call thread");
+				// keep the thread alive
+				int i = 1;
+				while(i > 0)
+					i = i + 1;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}        	   		
+        });
+		t2.start();
+		Assert.assertTrue(t1.isAlive());//t2.getState();
+		version.inc();
+		Assert.assertTrue(t1.isAlive());
+		version.inc();
+		Assert.assertTrue(t1.isAlive());
 	}
 
 }
