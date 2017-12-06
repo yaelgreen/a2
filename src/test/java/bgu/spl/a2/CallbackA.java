@@ -1,6 +1,7 @@
 package bgu.spl.a2;
 
 public class CallbackA implements callback{
+	//stub class
 	
 	boolean isCalled = false;
 	int calledCounter = 0;

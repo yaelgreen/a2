@@ -3,7 +3,7 @@
  */
 package bgu.spl.a2;
 
-import junit.framework.Assert;
+import org.junit.*;
 import junit.framework.TestCase;
 
 /**
@@ -18,17 +18,11 @@ public class PromiseTest extends TestCase {
 	public PromiseTest(String name) {
 		super(name);
 	}
-
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
+	
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
-
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#tearDown()
-	 */
+	
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
@@ -37,25 +31,27 @@ public class PromiseTest extends TestCase {
 	 * Test method for {@link bgu.spl.a2.Promise#get()}.
 	 */
 	public void testGet() {
-		Promise<Integer> p = new Promise<>();
+		Promise<Integer> promise = new Promise<>();
 		//test get throws an exception if it is not yet resolved
 		try{
-			p.get();
-			Assert.fail();
-		} catch(IllegalStateException exc){
+			promise.get();
+			Assert.fail("can't use get on unresolved promise!");
+		} 
+		catch(IllegalStateException exc){
 			// expected exception
 		}
+		
 		//test get returns the correct value once it is resolved
 		try{
-			p.resolve(new Integer(1));
-		} catch(IllegalStateException resolveExc)
-		{
-			Assert.fail();
+			promise.resolve(new Integer(1));
+		} catch(IllegalStateException resolveExc){
+			Assert.fail("failed to resolve");
 		}
+		
 		try{
-			assertTrue(p.get().intValue() == 1);
+			assertTrue(promise.get().intValue() == 1);
 		}catch(IllegalStateException e){
-			Assert.fail();
+			Assert.fail("failed to resolve");
 		}
 	}
 
@@ -63,34 +59,33 @@ public class PromiseTest extends TestCase {
 	 * Test method for {@link bgu.spl.a2.Promise#isResolved()}.
 	 */
 	public void testIsResolved() {
-		Promise<Integer> p = new Promise<>();
-		assertFalse(p.isResolved());
+		Promise<Integer> promise = new Promise<>();
+		assertFalse(promise.isResolved());
 		try {
-			p.resolve(1);
+			promise.resolve(1);
 		}catch (IllegalStateException e){
-			Assert.fail();
+			Assert.fail("fail to resolve!");
 		}
-		assertTrue(p.isResolved());
+		assertTrue(promise.isResolved());
 	}
 
 	/**
 	 * Test method for {@link bgu.spl.a2.Promise#resolve(java.lang.Object)}.
 	 */
 	public void testResolve() {
-		Promise<Integer> p = new Promise<>();
+		Promise<Integer> promise = new Promise<>();
 		CallbackA callback = new CallbackA();
-		p.subscribe(callback);
-		p.resolve(1);
+		promise.subscribe(callback);
+		promise.resolve(1);
 		assertTrue(callback.isCalled());
-		assertTrue(p.get() == new Integer(1));
+		assertTrue(promise.get() == new Integer(1));
 		try {
-			p.resolve(2);
-			Assert.fail();
-		}
-		catch (IllegalStateException e) {
+			promise.resolve(2);
+			Assert.fail("can't resolve twice!");
+		}catch (IllegalStateException e) {
 			// expected exception
 		}
-		assertTrue(p.get() == 1);
+		assertTrue(promise.get() == 1);
 	}
 
 	/**
@@ -98,15 +93,15 @@ public class PromiseTest extends TestCase {
 	 */
 
 	public void testSubscribe() {
-		//test if while calling subscribe the promise is already resolved-
-		//the callback is called immediately
+		/*test if when calling subscribe and the promise is already resolved-
+			that the callback is called immediately*/
 		Promise<Integer> p1 = new Promise<>();
 		p1.resolve(1);
 		CallbackA callback1 = new CallbackA();
 		p1.subscribe(callback1);
 		assertTrue(callback1.isCalled());
 		assertEquals(callback1.getCalledCounter(), 1);
-		
+		//test if callback is used when promise is resolved
 		Promise<Integer> p2 = new Promise<>();
 		CallbackA callback2 = new CallbackA();
 		CallbackA callback3 = new CallbackA();

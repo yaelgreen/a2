@@ -1,5 +1,8 @@
 package bgu.spl.a2;
 
+import org.junit.*;
+
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 public class VersionMonitorTest extends TestCase {
@@ -16,6 +19,9 @@ public class VersionMonitorTest extends TestCase {
 		super.tearDown();
 	}
 
+	/**
+	 * Test method for {@link bgu.spl.a2.VersionMonitor#getVersion(java.lang.Object)}.
+	 */
 	public void testGetVersion() {
 		VersionMonitor version = new VersionMonitor();
 		int firstVersion = version.getVersion();
@@ -23,18 +29,77 @@ public class VersionMonitorTest extends TestCase {
 		assertEquals(firstVersion, secondtVersion);
 	}
 
+	/**
+	 * Test method for {@link bgu.spl.a2.VersionMonitor#inc(java.lang.Object)}.
+	 * tests if the version is protected from multiple increment requests
+	 */
 	public void testInc() {
 		VersionMonitor version = new VersionMonitor();
 		int firstVersion = version.getVersion();
 		version.inc();
 		int newVersion = version.getVersion();
 		assertTrue(newVersion > firstVersion);
+		
+        Thread t1 = new Thread(() -> {
+        	for(int i = 0; i < 50; i++){
+        		int beforeVersion = version.getVersion();
+        		version.inc();
+        		assertTrue(version.getVersion() > beforeVersion);
+        	}
+        });
+
+        Thread t2 = new Thread(() -> {
+        	for(int i = 0; i < 50; i++){
+        		int beforeVersion = version.getVersion();
+        		version.inc();
+        		assertTrue(version.getVersion() > beforeVersion);
+        	}   		
+        });
+        
+        Thread t3 = new Thread(() -> {
+        	for(int i = 0; i < 50; i++){
+        		int beforeVersion = version.getVersion();
+        		version.inc();
+        		assertTrue(version.getVersion() > beforeVersion);
+        	}	
+        });
+
+        t1.start();
+        t2.start();
+        t3.start();
+        
+        try {
+			t1.join();
+			t2.join();
+	        t3.join();
+		} catch (InterruptedException e) {
+			Assert.fail("should not happen here");
+			e.printStackTrace();
+		}
+        //test the overall version
+		assertTrue(version.getVersion() == 151+firstVersion);
 	}
 
+	/**
+	 * Test method for {@link bgu.spl.a2.VersionMonitor#await(java.lang.Object)}.
+	 */
 	public void testAwait() {
 		VersionMonitor version = new VersionMonitor();
 		int firstVersion = version.getVersion();
-		//TODO
+		try {
+			version.await(firstVersion+2);
+			//firstVersion -> what should Not happened
+			version.inc();
+			//firstVersion + 1 -> what should Not happened
+			version.inc();
+			//firstVersion + 2 -> what should Not happened
+			version.inc();
+			//firstVersion + 3 -> what should happened in await function
+			version.inc();
+			//firstVersion + 4 -> what should Not happened
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

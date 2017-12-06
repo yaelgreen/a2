@@ -2,7 +2,7 @@ package bgu.spl.a2;
 
 import java.util.concurrent.CountDownLatch;
 
-import junit.framework.Assert;
+//import org.junit.*;
 import junit.framework.TestCase;
 
 public class ActorThreadPoolTest extends TestCase {
@@ -38,13 +38,13 @@ public class ActorThreadPoolTest extends TestCase {
 			latch.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			Assert.fail();
+			assertFalse(true);
 		}
 		try {
 			actorThreadPool.shutdown();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			Assert.fail();
+			assertFalse(true);
 		}
 	}
 
