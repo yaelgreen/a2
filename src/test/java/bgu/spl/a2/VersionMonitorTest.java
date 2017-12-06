@@ -2,9 +2,6 @@ package bgu.spl.a2;
 
 import org.junit.*;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.http.Operation;
-
-import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 public class VersionMonitorTest extends TestCase {
