@@ -17,15 +17,24 @@ public class VersionMonitorTest extends TestCase {
 	}
 
 	public void testGetVersion() {
-		fail("Not yet implemented");
+		VersionMonitor version = new VersionMonitor();
+		int firstVersion = version.getVersion();
+		int secondtVersion = version.getVersion();
+		assertEquals(firstVersion, secondtVersion);
 	}
 
 	public void testInc() {
-		fail("Not yet implemented");
+		VersionMonitor version = new VersionMonitor();
+		int firstVersion = version.getVersion();
+		version.inc();
+		int newVersion = version.getVersion();
+		assertTrue(newVersion > firstVersion);
 	}
 
 	public void testAwait() {
-		fail("Not yet implemented");
+		VersionMonitor version = new VersionMonitor();
+		int firstVersion = version.getVersion();
+		//TODO
 	}
 
 }
