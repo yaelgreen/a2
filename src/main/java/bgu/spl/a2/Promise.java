@@ -1,5 +1,9 @@
 package bgu.spl.a2;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 /**
  * this class represents a deferred result i.e., an object that eventually will
  * be resolved to hold a result of some operation, the class allows for getting
@@ -16,6 +20,9 @@ package bgu.spl.a2;
  *            the result type, <boolean> resolved - initialized ;
  */
 public class Promise<T>{
+	
+	private T value = null;
+	private List<callback> callbacks = new ArrayList<callback>();
 
 	/**
 	 *
@@ -26,8 +33,10 @@ public class Promise<T>{
 	 *             not yet resolved
 	 */
 	public T get() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (this.value != null)
+			return this.value;
+		else
+			throw new IllegalStateException();		
 	}
 
 	/**
@@ -37,8 +46,10 @@ public class Promise<T>{
 	 *         before.
 	 */
 	public boolean isResolved() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (value != null)
+			return true;
+		else
+			return false;
 	}
 
 
@@ -56,10 +67,15 @@ public class Promise<T>{
 	 *            - the value to resolve this promise object with
 	 */
 	public void resolve(T value){
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (this.value != null)
+			throw new IllegalStateException();
+		while(this.callbacks.size() > 0) {
+			callback c = this.callbacks.remove(0);
+			c.call();
+		}
+		this.value = value;
 	}
-
+ 
 	/**
 	 * add a callback to be called when this object is resolved. If while
 	 * calling this method the object is already resolved - the callback should
@@ -74,7 +90,9 @@ public class Promise<T>{
 	 *            the callback to be called when the promise object is resolved
 	 */
 	public void subscribe(callback callback) {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if (this.isResolved())
+			callback.call();
+		else
+			callbacks.add(callback);
 	}
 }

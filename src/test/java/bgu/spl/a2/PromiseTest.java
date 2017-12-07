@@ -3,7 +3,7 @@
  */
 package bgu.spl.a2;
 
-import org.junit.*;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**
@@ -78,7 +78,7 @@ public class PromiseTest extends TestCase {
 		promise.subscribe(callback);
 		promise.resolve(1);
 		assertTrue(callback.isCalled());
-		assertTrue(promise.get() == new Integer(1));
+		assertTrue(promise.get() == 1);
 		try {
 			promise.resolve(2);
 			Assert.fail("can't resolve twice!");
