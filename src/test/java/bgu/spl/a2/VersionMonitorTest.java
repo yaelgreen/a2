@@ -1,5 +1,7 @@
 package bgu.spl.a2;
 
+import java.util.concurrent.TimeUnit;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -84,28 +86,18 @@ public class VersionMonitorTest extends TestCase {
 		int firstVersion = version.getVersion();
 		Thread t1 = new Thread(() -> {
         	try {
-        		if(firstVersion != version.getVersion())
-					Assert.fail("changed the version during await function");	
-				version.await(firstVersion);		//waiting for the version to change
-				if(firstVersion+1 != version.getVersion())
-					Assert.fail("waited more then needed to call thread");
-				// keep the thread alive
-				int i = 1;
-				while(i > 0)
-					i = i + 1;
+				version.await(firstVersion); //waiting for the version to change
+				assertTrue(firstVersion < version.getVersion());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}        	   		
         });
 		t1.start();
-		Assert.assertFalse(t1.isAlive());//t1.getState();
-		version.inc();
+		// t1 should be alive since it cannot finish running before the inc is called
 		Assert.assertTrue(t1.isAlive());
 		version.inc();
-		Assert.assertTrue(t1.isAlive());
-		// we end chaking t1
 		try {
-			t1.wait();
+			t1.join();
 		} catch (InterruptedException e2) {
 			e2.printStackTrace();
 		}
@@ -113,25 +105,14 @@ public class VersionMonitorTest extends TestCase {
 		//should get back immediately - because the versions are different
 		Thread t2 = new Thread(() -> {
         	try {
-        		if(firstVersion+2 != version.getVersion())
-					Assert.fail("changed the version during await function");	
 				version.await(version.getVersion()+1);		//waiting for the version to change
 				if(firstVersion+2 != version.getVersion())
 					Assert.fail("waited more then needed to call thread");
-				// keep the thread alive
-				int i = 1;
-				while(i > 0)
-					i = i + 1;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}        	   		
         });
 		t2.start();
-		Assert.assertTrue(t1.isAlive());//t2.getState();
-		version.inc();
-		Assert.assertTrue(t1.isAlive());
-		version.inc();
-		Assert.assertTrue(t1.isAlive());
 	}
 
 }
