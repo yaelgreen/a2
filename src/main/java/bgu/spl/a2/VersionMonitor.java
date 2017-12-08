@@ -18,16 +18,16 @@ package bgu.spl.a2;
  */
 public class VersionMonitor {
 	
-	private int version = 0;
+	private volatile int version = 0;
 	private Object syncObj = new Object();
 
     public int getVersion() {
         return this.version;
     }
 
-    public void inc() {
+    public synchronized void inc() {    	
+    	this.version++;
     	synchronized(this.syncObj) {
-    		this.version++;
     	    this.syncObj.notify();
     	}
     }
@@ -36,7 +36,7 @@ public class VersionMonitor {
     	if (version == this.version)
     		return;
     	synchronized(this.syncObj) {
-    		while(this.version < version) {
+    		while(this.version == version) {
     			this.syncObj.wait();
     	    }
     	}

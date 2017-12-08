@@ -1,8 +1,6 @@
 package bgu.spl.a2;
 
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 public class VersionMonitorTest extends TestCase {
@@ -39,28 +37,16 @@ public class VersionMonitorTest extends TestCase {
 		version.inc();
 		int newVersion = version.getVersion();
 		assertTrue(newVersion == firstVersion + 1);
-		
-        Thread t1 = new Thread(() -> {
-        	for(int i = 0; i < 50; i++){
-        		int beforeVersion = version.getVersion();
-        		version.inc();
-        		assertTrue(version.getVersion() == 1 + beforeVersion);
-        	}        	
-		});
-        Thread t2 = new Thread(() -> {
-        	for(int i = 0; i < 50; i++){
-        		int beforeVersion = version.getVersion();
-        		version.inc();
-        		assertTrue(version.getVersion() == 1 + beforeVersion);
-        	}        	
-		});        
-        Thread t3 = new Thread(() -> {
-        	for(int i = 0; i < 50; i++){
-        		int beforeVersion = version.getVersion();
-        		version.inc();
-        		assertTrue(version.getVersion() == 1 + beforeVersion);
-        	}        	
-		});
+		Runnable testIncRun = () -> {
+	       	for(int i = 0; i < 50; i++){
+	      		int beforeVersion = version.getVersion();
+	       		version.inc();
+	       		assertTrue(version.getVersion() >= 1 + beforeVersion);
+	       	}
+		};
+        Thread t1 = new Thread(testIncRun);
+        Thread t2 = new Thread(testIncRun);        
+        Thread t3 = new Thread(testIncRun);
 
         t1.start();
         t2.start();
@@ -87,7 +73,7 @@ public class VersionMonitorTest extends TestCase {
 		Thread t1 = new Thread(() -> {
         	try {
 				version.await(firstVersion); //waiting for the version to change
-				assertTrue(firstVersion < version.getVersion());
+				assertTrue(firstVersion != version.getVersion());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}        	   		
@@ -105,7 +91,7 @@ public class VersionMonitorTest extends TestCase {
 		//should get back immediately - because the versions are different
 		Thread t2 = new Thread(() -> {
         	try {
-				version.await(version.getVersion()+1);		//waiting for the version to change
+				version.await(version.getVersion()+1);
 				if(firstVersion+2 != version.getVersion())
 					Assert.fail("waited more then needed to call thread");
 			} catch (InterruptedException e) {

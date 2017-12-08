@@ -3,7 +3,7 @@
  */
 package bgu.spl.a2;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**
