@@ -92,7 +92,7 @@ public class VersionMonitorTest extends TestCase {
 		Thread t2 = new Thread(() -> {
         	try {
 				version.await(version.getVersion()+1);
-				if(firstVersion+2 != version.getVersion())
+				if(firstVersion+1 != version.getVersion())
 					Assert.fail("waited more then needed to call thread");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
