@@ -34,7 +34,7 @@ public abstract class Action<R> {
     * public/private/protected
     *
     */
-   /*package*/ final void handle() {
+   /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
    }
     
     
@@ -90,5 +90,21 @@ public abstract class Action<R> {
         //TODO: replace method body with real implementation
         throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
-
+	
+	/**
+	 * set action's name
+	 * @param actionName
+	 */
+	public void setActionName(String actionName){
+        //TODO: replace method body with real implementation
+        throw new UnsupportedOperationException("Not Implemented Yet.");
+	}
+	
+	/**
+	 * @return action's name
+	 */
+	public String getActionName(){
+        //TODO: replace method body with real implementation
+        throw new UnsupportedOperationException("Not Implemented Yet.");
+	}
 }
