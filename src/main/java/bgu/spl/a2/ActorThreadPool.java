@@ -1,6 +1,10 @@
 package bgu.spl.a2;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * represents an actor thread pool - to understand what this class does please
@@ -26,6 +30,8 @@ public class ActorThreadPool {
 	 *            the number of threads that should be started by this thread
 	 *            pool
 	 */
+	Map<String, PrivateState> privateStateMap = new HashMap<String, PrivateState>();
+	Map<String, Actor> actorsMap = new HashMap<String, Actor>();
 	public ActorThreadPool(int nthreads) {
 		// TODO: replace method body with real implementation
 		throw new UnsupportedOperationException("Not Implemented Yet.");
@@ -36,8 +42,7 @@ public class ActorThreadPool {
 	 * @return actors
 	 */
 	public Map<String, PrivateState> getActors(){
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		return privateStateMap;
 	}
 	
 	/**
@@ -46,8 +51,7 @@ public class ActorThreadPool {
 	 * @return actor's private state
 	 */
 	public PrivateState getPrivateState(String actorId){
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		return privateStateMap.get(actorId);
 	}
 
 	/**
@@ -62,8 +66,12 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		if(!privateStateMap.containsKey(actorId))
+		{
+			privateStateMap.put(actorId, actorState);
+			actorsMap.put(actorId, new Actor());
+		}
+		actorsMap.get(actorId).submit(action);
 	}
 
 	/**
@@ -88,5 +96,52 @@ public class ActorThreadPool {
 		// TODO: replace method body with real implementation
 		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
-
+	
+	class Actor {
+		private AtomicInteger occupied = new AtomicInteger(0);
+		private Queue<Action<?>> _ActorActions;
+		private Actor(){
+			_ActorActions = new LinkedList<Action<?>>(); 
+		}
+		
+		/**
+		 * in case two threads (or more) want to occupy the Actor, if he is'nt occupied yet,
+		 * we will use atomic integer to increment it during one clock so just one thread will occupy it
+		 * @return true if the thread occupy the
+		 */
+		public boolean tryToOccupy()
+		{
+			boolean output;
+			if(occupied.get()>0)
+				output = false;
+			else if(occupied.getAndIncrement() == 0)
+				output = true;
+			else
+				output = false;
+			return output;
+		}
+		
+		/**
+		 * release the actor by retrieving the value to 0.
+		 * will not influence on try to occupy because it be a matter just when we reach the first 'if', but there
+		 */
+		public void releaseActor()
+		{
+			occupied.set(0);
+		}
+		
+		public void submit(Action<?> newAction)
+		{
+			_ActorActions.add(newAction);
+		}
+		
+		/**
+		 * we assume the the first
+		 * @return the first action in the queue
+		 */
+		public Action<?> getTopAction()
+		{
+			return _ActorActions.peek();
+		}
+	}
 }

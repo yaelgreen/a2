@@ -18,25 +18,25 @@ package bgu.spl.a2;
  */
 public class VersionMonitor {
 	
-	private volatile int version = 0;
+	private volatile int _version = 0;
 	private Object syncObj = new Object();
 
     public int getVersion() {
-        return this.version;
+        return _version;
     }
 
     public synchronized void inc() {    	
-    	this.version++;
+    	_version++;
     	synchronized(this.syncObj) {
     	    this.syncObj.notify();
     	}
     }
 
     public void await(int version) throws InterruptedException {
-    	if (version == this.version)
+    	if (version == _version)
     		return;
     	synchronized(this.syncObj) {
-    		while(this.version == version) {
+    		while(_version == version) {
     			this.syncObj.wait();
     	    }
     	}

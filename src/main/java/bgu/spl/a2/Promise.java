@@ -2,7 +2,6 @@ package bgu.spl.a2;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * this class represents a deferred result i.e., an object that eventually will
@@ -21,7 +20,7 @@ import java.util.Iterator;
  */
 public class Promise<T>{
 	
-	private T value = null;
+	private T _value = null;
 	private List<callback> callbacks = new ArrayList<callback>();
 
 	/**
@@ -33,10 +32,9 @@ public class Promise<T>{
 	 *             not yet resolved
 	 */
 	public T get() {
-		if (this.value != null)
-			return this.value;
-		else
-			throw new IllegalStateException();		
+		if (_value != null)
+			return _value;
+		throw new IllegalStateException();		
 	}
 
 	/**
@@ -46,10 +44,9 @@ public class Promise<T>{
 	 *         before.
 	 */
 	public boolean isResolved() {
-		if (value != null)
+		if (_value != null)
 			return true;
-		else
-			return false;
+		return false;
 	}
 
 
@@ -67,13 +64,13 @@ public class Promise<T>{
 	 *            - the value to resolve this promise object with
 	 */
 	public void resolve(T value){
-		if (this.value != null)
+		if (_value != null)
 			throw new IllegalStateException();
 		while(this.callbacks.size() > 0) {
 			callback c = this.callbacks.remove(0);
 			c.call();
 		}
-		this.value = value;
+		_value = value;
 	}
  
 	/**
