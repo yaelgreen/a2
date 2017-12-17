@@ -4,9 +4,7 @@
  * and open the template in the editor.
  */
 package bgu.spl.a2.sim;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.util.HashMap;
 import bgu.spl.a2.ActorThreadPool;
 import bgu.spl.a2.PrivateState;
 
@@ -40,7 +38,7 @@ public class Simulator {
 	* shut down the simulation
 	* returns list of private states
 	*/
-	public static ConcurrentLinkedQueue<PrivateState> end(){
+	public static HashMap<String,PrivateState> end(){
 		//TODO: replace method body with real implementation
 		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
