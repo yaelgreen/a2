@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * methods
  */
 public class ActorThreadPool {
-
 	/**
 	 * creates a {@link ActorThreadPool} which has nthreads. Note, threads
 	 * should not get started until calling to the {@link #start()} method.
@@ -30,10 +29,14 @@ public class ActorThreadPool {
 	 *            the number of threads that should be started by this thread
 	 *            pool
 	 */
-	Map<String, PrivateState> privateStateMap = new HashMap<String, PrivateState>();
-	Map<String, Actor> actorsMap = new HashMap<String, Actor>();
+	//we dont need to sync on the hash maps because every actor got init just once during all the running 
+	private Map<String, PrivateState> _privateStateMap = new HashMap<String, PrivateState>();
+	private Map<String, Actor> _actorsMap = new HashMap<String, Actor>();
+	private Worker[] _myWorkers;
+	private Boolean _runPermission;
 	public ActorThreadPool(int nthreads) {
-		// TODO: replace method body with real implementation
+		_myWorkers = new Worker[nthreads];
+		
 		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
@@ -42,7 +45,7 @@ public class ActorThreadPool {
 	 * @return actors
 	 */
 	public Map<String, PrivateState> getActors(){
-		return privateStateMap;
+		return _privateStateMap;
 	}
 	
 	/**
@@ -51,7 +54,7 @@ public class ActorThreadPool {
 	 * @return actor's private state
 	 */
 	public PrivateState getPrivateState(String actorId){
-		return privateStateMap.get(actorId);
+		return _privateStateMap.get(actorId);
 	}
 
 	/**
@@ -66,12 +69,13 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		if(!privateStateMap.containsKey(actorId))
+		if(!_privateStateMap.containsKey(actorId))
 		{
-			privateStateMap.put(actorId, actorState);
-			actorsMap.put(actorId, new Actor());
+			_privateStateMap.put(actorId, actorState);
+			_actorsMap.put(actorId, new Actor(actorId));
 		}
-		actorsMap.get(actorId).submit(action);
+		_actorsMap.get(actorId).submit(action);
+		VersionMonitor.inc();
 	}
 
 	/**
@@ -85,25 +89,106 @@ public class ActorThreadPool {
 	 *             if the thread that shut down the threads is interrupted
 	 */
 	public void shutdown() throws InterruptedException {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		_runPermission = false;
+		for(Worker currWorker : _myWorkers)
+			currWorker.interrupt();
+		for(Worker currWorker : _myWorkers)
+			currWorker.join();
 	}
 
 	/**
 	 * start the threads belongs to this thread pool
 	 */
 	public void start() {
-		// TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		_runPermission = true;
+		for(Worker currWorker : _myWorkers)
+			currWorker.start();
 	}
 	
-	class Actor {
-		private AtomicInteger occupied = new AtomicInteger(0);
-		private Queue<Action<?>> _ActorActions;
-		private Actor(){
-			_ActorActions = new LinkedList<Action<?>>(); 
+	/**
+	 * Worker class
+	 * @author Roy
+	 *
+	 */
+	private class Worker extends Thread {
+
+		private VersionMonitor _verMonitor = new VersionMonitor(this);
+		private boolean rePass = false;
+		private ActorThreadPool mypool;
+		@Override
+		public void run() {
+//			boolean fullOccupiedActors;
+			while(_runPermission)
+			{
+//				fullOccupiedActors = true;
+				_verMonitor.await(_verMonitor.getVersion());
+				for(Actor actor : _actorsMap.values())
+				{
+					if(actor.tryToOccupy())
+					{
+						Action<?> toExecute = actor.getTopAction();
+//						if(toExecute != null)
+//							fullOccupiedActors = false;
+						while(toExecute != null & _runPermission)
+						{
+							toExecute = actor.getTopAction();
+							toExecute.handle(mypool, actor.getId(), mypool.getPrivateState(actor.getId()));//start();//handle(pool, actorId, actorState);//!!!!!!//PS add an record
+							VersionMonitor.inc();
+						}
+						
+						actor.releaseActor();						
+					}
+				}
+				
+				//should we use version monitor await here?				
+//				if(rePass)
+//				{
+//					fullOccupiedActors = false;
+//					rePass = false;
+//				}
+				
+				if(!rePass & _runPermission)//(!rePass & fullOccupiedActors) & _runPermission)
+				{
+					try
+					{
+						_verMonitor.await(_verMonitor.getVersion());
+						wait();						
+						rePass = false; // we dont have to repass just because we had been notified//more to do private state...
+						System.out.println("reachable code!");
+					}
+					catch(InterruptedException Ex){	System.out.println("notified!");	}//remove syso later if needed
+				}
+			}
 		}
 		
+//		/**
+//		 * Tell the thread to repass on the
+//		 */
+//		public void actorsChanged()
+//		{
+//			rePass = true;
+//		}
+	
+	}
+	
+	/**
+	 * Actor class
+	 * @author Roy
+	 *
+	 */
+	private class Actor {
+		private AtomicInteger occupied = new AtomicInteger(0);
+		private String _myId;
+		private Queue<Action<?>> _ActorActions;
+		private Actor(String id){
+			_ActorActions = new LinkedList<Action<?>>(); 
+			_myId = id;
+		}
+		
+		public String getId() {			
+			return _myId;
+		}
+
 		/**
 		 * in case two threads (or more) want to occupy the Actor, if he is'nt occupied yet,
 		 * we will use atomic integer to increment it during one clock so just one thread will occupy it

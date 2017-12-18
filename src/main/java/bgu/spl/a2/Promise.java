@@ -66,11 +66,10 @@ public class Promise<T>{
 	public void resolve(T value){
 		if (_value != null)
 			throw new IllegalStateException();
-		while(this.callbacks.size() > 0) {
-			callback c = this.callbacks.remove(0);
-			c.call();
-		}
 		_value = value;
+		for(callback c : callbacks)
+			c.call();
+		callbacks.clear();
 	}
  
 	/**
@@ -87,7 +86,7 @@ public class Promise<T>{
 	 *            the callback to be called when the promise object is resolved
 	 */
 	public void subscribe(callback callback) {
-		if (this.isResolved())
+		if (isResolved())
 			callback.call();
 		else
 			callbacks.add(callback);

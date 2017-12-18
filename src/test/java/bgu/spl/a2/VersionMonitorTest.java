@@ -9,10 +9,12 @@ public class VersionMonitorTest extends TestCase {
 		super(name);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
@@ -21,7 +23,7 @@ public class VersionMonitorTest extends TestCase {
 	 * Test method for {@link bgu.spl.a2.VersionMonitor#getVersion(java.lang.Object)}.
 	 */
 	public void testGetVersion() {
-		VersionMonitor version = new VersionMonitor();
+		VersionMonitor version = new VersionMonitor(new Thread());
 		int firstVersion = version.getVersion();
 		int secondtVersion = version.getVersion();
 		assertEquals(firstVersion, secondtVersion);
@@ -32,7 +34,7 @@ public class VersionMonitorTest extends TestCase {
 	 * tests if the version is protected from multiple increment requests
 	 */
 	public void testInc() {
-		VersionMonitor version = new VersionMonitor();
+		VersionMonitor version = new VersionMonitor(new Thread());
 		int firstVersion = version.getVersion();
 		version.inc();
 		int newVersion = version.getVersion();
@@ -68,37 +70,66 @@ public class VersionMonitorTest extends TestCase {
 	 * Test method for {@link bgu.spl.a2.VersionMonitor#await(java.lang.Object)}.
 	 */
 	public void testAwait() {
-		VersionMonitor version = new VersionMonitor();
-		int firstVersion = version.getVersion();
+		Thread awaitTester = new Thread((()->
+		{				
+				try {
+					synchronized (this) {
+						wait();
+		    		}					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}			
+		}));	
+		
+		VersionMonitor version = new VersionMonitor(awaitTester);		
+		awaitTester.start();
+		int firstVersion = version.getVersion();		
 		Thread t1 = new Thread(() -> {
-        	try {
-				version.await(firstVersion); //waiting for the version to change
-				assertTrue(firstVersion != version.getVersion());
+        	version.await(firstVersion); //waiting for the version to change
+			assertTrue(firstVersion == version.getVersion());
+			//System.out.println("WAITING\n"+awaitTester.getState() + "/>");
+			//System.out.println(!awaitTester.isAlive() + " " + awaitTester.getState().equals("WAITING"));
+			//System.out.println(awaitTester.getState());
+			//assertTrue(!awaitTester.isAlive() | awaitTester.getState().equals("WAITING"));
+			version.inc();
+			//System.out.println(awaitTester.getState());
+			try {
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}        	   		
+			}
+			assertTrue(!awaitTester.isAlive());// | awaitTester.getState().equals("TIMED_WAITING"));				        	   		
         });
 		t1.start();
-		// t1 should be alive since it cannot finish running before the inc is called
-		Assert.assertTrue(t1.isAlive());
-		version.inc();
 		try {
 			t1.join();
 		} catch (InterruptedException e2) {
 			e2.printStackTrace();
 		}
 		
-		//should get back immediately - because the versions are different
-		Thread t2 = new Thread(() -> {
-        	try {
-				version.await(version.getVersion()+1);
-				if(firstVersion+1 != version.getVersion())
-					Assert.fail("waited more then needed to call thread");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}        	   		
-        });
-		t2.start();
+		/*Test that call it for different version number*/
+		Thread awaitTester2 = new Thread((()->
+		{				
+				try {
+					synchronized (this) {
+						wait();
+		    		}					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}			
+		}));
+		
+		VersionMonitor version2 = new VersionMonitor(awaitTester2);
+		version2.await(version2.getVersion()+1);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertTrue(!awaitTester2.isAlive());
 	}
-
 }

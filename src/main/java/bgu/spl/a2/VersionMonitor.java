@@ -1,5 +1,8 @@
 package bgu.spl.a2;
 
+import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Describes a monitor that supports the concept of versioning - its idea is
  * simple, the monitor has a version number which you can receive via the method
@@ -18,27 +21,49 @@ package bgu.spl.a2;
  */
 public class VersionMonitor {
 	
-	private volatile int _version = 0;
-	private Object syncObj = new Object();
-
+	private static AtomicInteger _version = new AtomicInteger(0);
+	private static AtomicInteger _awaitVersion = new AtomicInteger(0);
+	private static LinkedList<Thread> _toNotifyList = new LinkedList<Thread>();
+	private Thread _toNotify;
+	VersionMonitor(Thread toNotify){
+		_toNotify = toNotify; 
+	}
+	
     public int getVersion() {
-        return _version;
+        return _version.get();
+    }
+    
+    /**
+     * we will synchronized the list because we dont want threads to change the list while we iterate on it
+     * anyway it will not be important for multiple inc because of the if
+     */
+    public static void inc() {    	    	
+    	if(_awaitVersion.get() == _version.getAndIncrement())
+	    	synchronized (_toNotifyList) {
+	    		for(Thread myThread : _toNotifyList)
+	    			myThread.interrupt();  
+	    		_toNotifyList.clear();
+			} 	
     }
 
-    public synchronized void inc() {    	
-    	_version++;
-    	synchronized(this.syncObj) {
-    	    this.syncObj.notify();
-    	}
-    }
-
-    public void await(int version) throws InterruptedException {
-    	if (version == _version)
-    		return;
-    	synchronized(this.syncObj) {
-    		while(_version == version) {
-    			this.syncObj.wait();
-    	    }
+    /**
+     * we will synchronized the list because we dont want threads to change the list while we adding to it
+     * In addition we want to avoid sync problem between inc to the value _awaitVersion that we setting
+     * for example when doing await and in the middle of it calling from another thread inc. it can make problem to the rule
+     * whenever objects is in the list _awaitVersion.get() == _version.getAndIncrement(), more over one can be stuck in it until the next inc
+     * @param version
+     */
+    public void await(int version) {
+    	synchronized (_toNotifyList) {
+	    	if (version != _version.get())
+	    		synchronized (_toNotify) {
+	            	_toNotify.interrupt();   
+	    		}
+	    	else
+	    	{
+	    		_awaitVersion.set(version);
+	    		_toNotifyList.add(_toNotify);	    		
+	    	}
     	}
     }
 }

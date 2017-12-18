@@ -1,6 +1,7 @@
 package bgu.spl.a2;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * an abstract class that represents an action that may be executed using the
@@ -15,6 +16,9 @@ import java.util.Collection;
  */
 public abstract class Action<R> {
 
+	private String _actionName;
+	private callback _myCall;
+	private Promise<R> _myPromise = new Promise<R>();
 	/**
      * start handling the action - note that this method is protected, a thread
      * cannot call it directly.
@@ -22,6 +26,8 @@ public abstract class Action<R> {
     protected abstract void start();
     
 
+    private ActorThreadPool _currpool;
+    private String _cuurActorId;
     /**
     *
     * start/continue handling the action
@@ -35,6 +41,15 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
+	   _currpool = pool;
+	   _cuurActorId = actorId;
+	   actorState.addRecord(_actionName);
+	   if(_myCall == null)
+		   start();
+	   else
+	   {
+		   _myCall.call();
+	   }
    }
     
     
@@ -48,10 +63,21 @@ public abstract class Action<R> {
      * @param actions
      * @param callback the callback to execute once all the results are resolved
      */
-    protected final void then(Collection<? extends Action<?>> actions, callback callback) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
-   
+    protected final void then(Collection<? extends Action<?>> actions, callback task) {
+       	boolean allResolved = true;
+       	AtomicInteger isReadyCount = new AtomicInteger();
+    	for(Action<?> action : actions)
+       		action.getResult().subscribe(()->
+       		{
+       			//should be atomic
+       			if(isReadyCount.incrementAndGet() == actions.size())
+       				_currpool.submit(this, getActionName(), _currpool.getPrivateState(_cuurActorId));
+       		});
+    	_myCall = task;
+    	if(allResolved)
+    		_currpool.submit(this, _cuurActorId, null);
+    	else
+    		System.err.println("call then when some actions are not resolved yet");
     }
 
     /**
@@ -61,17 +87,14 @@ public abstract class Action<R> {
      * @param result - the action calculated result
      */
     protected final void complete(R result) {
-       	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
-   
+    	_myPromise.resolve(result);   
     }
     
     /**
      * @return action's promise (result)
      */
     public final Promise<R> getResult() {
-    	//TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    	return _myPromise;
     }
     
     /**
@@ -87,8 +110,9 @@ public abstract class Action<R> {
      * @return promise that will hold the result of the sent action
      */
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+		actorState.addRecord("send action: " + action.getActionName() + ", to" + actorId);
+		_currpool.submit(action, actorId, actorState);
+		return action.getResult();
 	}
 	
 	/**
@@ -96,15 +120,13 @@ public abstract class Action<R> {
 	 * @param actionName
 	 */
 	public void setActionName(String actionName){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+		_actionName = actionName;
 	}
 	
 	/**
 	 * @return action's name
 	 */
 	public String getActionName(){
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return _actionName;
 	}
 }
