@@ -91,7 +91,9 @@ public class ActorThreadPool {
 	public void shutdown() throws InterruptedException {
 		_runPermission = false;
 		for(Worker currWorker : _myWorkers)
-			currWorker.interrupt();
+			synchronized (this) {
+				currWorker.interrupt();//we use sync because it is important that no one will interrupt this
+    		}
 		for(Worker currWorker : _myWorkers)
 			currWorker.join();
 	}
@@ -111,10 +113,14 @@ public class ActorThreadPool {
 	 *
 	 */
 	private class Worker extends Thread {
-
+		
+		//will interrupt for us
 		private VersionMonitor _verMonitor = new VersionMonitor(this);
-		//private boolean rePass = false;
-		private ActorThreadPool mypool;
+		private ActorThreadPool _mypool;
+		
+		/**
+		 * search for action to do on the actors and execute it
+		 */
 		@Override
 		public void run() {
 //			boolean fullOccupiedActors;
@@ -127,12 +133,11 @@ public class ActorThreadPool {
 					if(actor.tryToOccupy())
 					{
 						Action<?> toExecute = actor.getTopAction();
-//						if(toExecute != null)
-//							fullOccupiedActors = false;
+						//we should check if the worker can run this one?
 						while(toExecute != null & _runPermission)
 						{
 							toExecute = actor.getTopAction();
-							toExecute.handle(mypool, actor.getId(), mypool.getPrivateState(actor.getId()));//start();//handle(pool, actorId, actorState);//!!!!!!//PS add an record
+							toExecute.handle(_mypool, actor.getId(), _mypool.getPrivateState(actor.getId()));
 							VersionMonitor.inc();
 						}
 						
@@ -140,37 +145,19 @@ public class ActorThreadPool {
 					}
 				}
 				
-				//should we use version monitor await here?				
-//				if(rePass)
-//				{
-//					fullOccupiedActors = false;
-//					rePass = false;
-//				}
-				
 				//if version await didnt interrupt us we can wait
-				if(!Thread.interrupted() & _runPermission)//(!rePass & fullOccupiedActors) & _runPermission)
+				if(!Thread.interrupted() & _runPermission)
 				{
 					try
 					{
 						synchronized (this) {
-							wait();
-			    		}				
-						//rePass = false; // we dont have to repass just because we had been notified//more to do private state...
-						System.out.println("reachable code!");
+							wait();//anyway the wait will turn the interrupt flag off
+			    		}					
 					}
-					catch(InterruptedException Ex){	System.out.println("notified!");	}//remove syso later if needed
+					catch(InterruptedException Ex){	}//remove syso later if needed
 				}
 			}
-		}
-		
-//		/**
-//		 * Tell the thread to repass on the
-//		 */
-//		public void actorsChanged()
-//		{
-//			rePass = true;
-//		}
-	
+		}	
 	}
 	
 	/**
@@ -194,14 +181,14 @@ public class ActorThreadPool {
 		/**
 		 * in case two threads (or more) want to occupy the Actor, if he is'nt occupied yet,
 		 * we will use atomic integer to increment it during one clock so just one thread will occupy it
-		 * @return true if the thread occupy the
+		 * @return true if the thread occupy the Actor
 		 */
 		public boolean tryToOccupy()
 		{
 			boolean output;
 			if(occupied.get()>0)
 				output = false;
-			else if(occupied.getAndIncrement() == 0)
+			else if(occupied.getAndIncrement() == 0)//because of the atomicInteger method only one thread will get true in this line
 				output = true;
 			else
 				output = false;
@@ -217,13 +204,16 @@ public class ActorThreadPool {
 			occupied.set(0);
 		}
 		
+		/**
+		 * Add the newAction to the beginning of the queue
+		 * @param newAction - a new action to execute
+		 */
 		public void submit(Action<?> newAction)
 		{
 			_ActorActions.add(newAction);
 		}
 		
 		/**
-		 * we assume the the first
 		 * @return the first action in the queue
 		 */
 		public Action<?> getTopAction()

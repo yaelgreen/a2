@@ -132,53 +132,81 @@ public class VersionMonitorTest extends TestCase {
 	}
 	
 	//test to understand threads better
-//	public void testThreadablity() {
-//		Thread testThreadablity = new Thread((()->
-//		{	
-//			if(Thread.interrupted())
-//				System.out.println("yooo");
-//			try
-//			{
-//				synchronized (this) {
-//					wait();
-//	    		}
-//				System.out.println("unreachable code");			
-//			}
-//			catch(InterruptedException Ex){	System.out.println("notified!");	}//remove syso later if needed
-//						
-//			int x = 0;
-//			for(int i=0; i < 100000; i++)
-//				x++;
-//			if(Thread.interrupted())
-//				System.out.println("yooo2");
-//			if(Thread.interrupted())//turn off the flag
-//				System.out.println("yooo3");
-//			System.out.println("Passed out");
-//		}));
-//		testThreadablity.start();
-//		System.out.println("before sleep: " + testThreadablity.getState());
-//		try {
-//			Thread.sleep(100);
-//		} catch (InterruptedException e) {		}
-//		System.out.println("1before interrupt: " + testThreadablity.getState());
-//		System.out.println("1before interrupt: " + testThreadablity.isInterrupted());
-//		//true just if the thread wasn't sleep/waiting while called
-//		
-//		testThreadablity.interrupt();
-//		
-//		System.out.println("2after interrupt: " + testThreadablity.getState());
-//		System.out.println("2after interrupt: " + testThreadablity.isInterrupted());
-//		testThreadablity.interrupt();
-//		System.out.println("3after interrupt: " + testThreadablity.getState());
-//		System.out.println("3after interrupt: " + testThreadablity.isInterrupted());
-//		System.out.println("3.2after interrupt: " + testThreadablity.getState());
-//		System.out.println("3.2after interrupt: " + testThreadablity.isInterrupted());
-//		try {
-//			Thread.sleep(200);
-//		} catch (InterruptedException e) {		}
-//		System.out.println("4after sleep: " + testThreadablity.getState());
-//		System.out.println("4after sleep: " + testThreadablity.isInterrupted());
-//		System.out.println("5after sleep: " + testThreadablity.getState());
-//		System.out.println("5after sleep: " + testThreadablity.isInterrupted());
-//	}	
+	public void testThreadablity() {
+		Thread testThreadablity = new Thread((()->
+		{	
+			if(Thread.interrupted())
+				System.out.println("Thread: yooo");
+			try
+			{
+				synchronized (this) {
+					wait();
+	    		}
+				System.out.println("Thread: unreachable code");			
+			}
+			catch(InterruptedException Ex){	System.out.println("Thread: notified!");
+										// raise the interrupt. This is very important!
+										Thread.currentThread().interrupt();}//remove syso later if needed
+			
+			if(Thread.currentThread().isInterrupted())
+				System.out.println("Thread: yoooT");
+			
+			try {
+				System.out.println("Thread: sleep");
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {			
+				System.out.println("Thread: notified2 by pre interrupt!");			
+				Thread.currentThread().interrupt();
+			}
+			
+			if(Thread.currentThread().isInterrupted())
+				System.out.println("Thread: yoooT2");
+			
+			try
+			{
+				System.out.println("Thread: waits");			
+				synchronized (this) {
+					wait();
+	    		}
+				System.out.println("Thread: unreachable code2");			
+			}
+			catch(InterruptedException Ex)
+			{	System.out.println("Thread: notified3 by pre interrupt!");			
+				Thread.currentThread().interrupt();}
+
+			if(Thread.currentThread().isInterrupted())
+				System.out.println("Thread: yooo2");
+			if(Thread.interrupted())
+				System.out.println("Thread: yooo2.1");
+			if(Thread.interrupted())//turn off the flag
+				System.out.println("Thread: yooo3");
+			
+			System.out.println("Thread: Passed out");
+		}));
+		testThreadablity.start();
+		System.out.println("before sleep: " + testThreadablity.getState());
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {		}
+		System.out.println("1before interrupt: " + testThreadablity.getState());
+		System.out.println("1before interrupt: " + testThreadablity.isInterrupted());
+		//true just if the thread wasn't sleep/waiting while called, doesnt turn off the flag
+		
+		testThreadablity.interrupt();
+		
+		System.out.println("2after interrupt: " + testThreadablity.getState());
+		System.out.println("2after interrupt: " + testThreadablity.isInterrupted());
+		
+		//testThreadablity.interrupt();
+		
+		System.out.println("3after interrupt: " + testThreadablity.getState());
+		System.out.println("3after interrupt: " + testThreadablity.isInterrupted());
+		Thread.yield();
+		System.out.println("3.2after interrupt: " + testThreadablity.getState());
+		System.out.println("3.2after interrupt: " + testThreadablity.isInterrupted());
+		System.out.println("4after sleep: " + testThreadablity.getState());
+		System.out.println("4after sleep: " + testThreadablity.isInterrupted());
+		System.out.println("5after sleep: " + testThreadablity.getState());
+		System.out.println("5after sleep: " + testThreadablity.isInterrupted());
+	}	
 }
