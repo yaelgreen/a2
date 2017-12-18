@@ -113,7 +113,7 @@ public class ActorThreadPool {
 	private class Worker extends Thread {
 
 		private VersionMonitor _verMonitor = new VersionMonitor(this);
-		private boolean rePass = false;
+		//private boolean rePass = false;
 		private ActorThreadPool mypool;
 		@Override
 		public void run() {
@@ -147,13 +147,15 @@ public class ActorThreadPool {
 //					rePass = false;
 //				}
 				
-				if(!rePass & _runPermission)//(!rePass & fullOccupiedActors) & _runPermission)
+				//if version await didnt interrupt us we can wait
+				if(!Thread.interrupted() & _runPermission)//(!rePass & fullOccupiedActors) & _runPermission)
 				{
 					try
 					{
-						_verMonitor.await(_verMonitor.getVersion());
-						wait();						
-						rePass = false; // we dont have to repass just because we had been notified//more to do private state...
+						synchronized (this) {
+							wait();
+			    		}				
+						//rePass = false; // we dont have to repass just because we had been notified//more to do private state...
 						System.out.println("reachable code!");
 					}
 					catch(InterruptedException Ex){	System.out.println("notified!");	}//remove syso later if needed

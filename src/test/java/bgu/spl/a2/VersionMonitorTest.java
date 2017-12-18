@@ -36,13 +36,13 @@ public class VersionMonitorTest extends TestCase {
 	public void testInc() {
 		VersionMonitor version = new VersionMonitor(new Thread());
 		int firstVersion = version.getVersion();
-		version.inc();
+		VersionMonitor.inc();
 		int newVersion = version.getVersion();
 		assertTrue(newVersion == firstVersion + 1);
 		Runnable testIncRun = () -> {
 	       	for(int i = 0; i < 50; i++){
 	      		int beforeVersion = version.getVersion();
-	       		version.inc();
+	       		VersionMonitor.inc();
 	       		assertTrue(version.getVersion() >= 1 + beforeVersion);
 	       	}
 		};
@@ -92,7 +92,7 @@ public class VersionMonitorTest extends TestCase {
 			//System.out.println(!awaitTester.isAlive() + " " + awaitTester.getState().equals("WAITING"));
 			//System.out.println(awaitTester.getState());
 			//assertTrue(!awaitTester.isAlive() | awaitTester.getState().equals("WAITING"));
-			version.inc();
+			VersionMonitor.inc();
 			//System.out.println(awaitTester.getState());
 			try {
 				Thread.sleep(100);
@@ -116,13 +116,11 @@ public class VersionMonitorTest extends TestCase {
 					synchronized (this) {
 						wait();
 		    		}					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				}			
+				} catch (InterruptedException e) {				}			
 		}));
 		
 		VersionMonitor version2 = new VersionMonitor(awaitTester2);
+		awaitTester2.start();
 		version2.await(version2.getVersion()+1);
 		try {
 			Thread.sleep(100);
@@ -132,4 +130,55 @@ public class VersionMonitorTest extends TestCase {
 		}
 		assertTrue(!awaitTester2.isAlive());
 	}
+	
+	//test to understand threads better
+//	public void testThreadablity() {
+//		Thread testThreadablity = new Thread((()->
+//		{	
+//			if(Thread.interrupted())
+//				System.out.println("yooo");
+//			try
+//			{
+//				synchronized (this) {
+//					wait();
+//	    		}
+//				System.out.println("unreachable code");			
+//			}
+//			catch(InterruptedException Ex){	System.out.println("notified!");	}//remove syso later if needed
+//						
+//			int x = 0;
+//			for(int i=0; i < 100000; i++)
+//				x++;
+//			if(Thread.interrupted())
+//				System.out.println("yooo2");
+//			if(Thread.interrupted())//turn off the flag
+//				System.out.println("yooo3");
+//			System.out.println("Passed out");
+//		}));
+//		testThreadablity.start();
+//		System.out.println("before sleep: " + testThreadablity.getState());
+//		try {
+//			Thread.sleep(100);
+//		} catch (InterruptedException e) {		}
+//		System.out.println("1before interrupt: " + testThreadablity.getState());
+//		System.out.println("1before interrupt: " + testThreadablity.isInterrupted());
+//		//true just if the thread wasn't sleep/waiting while called
+//		
+//		testThreadablity.interrupt();
+//		
+//		System.out.println("2after interrupt: " + testThreadablity.getState());
+//		System.out.println("2after interrupt: " + testThreadablity.isInterrupted());
+//		testThreadablity.interrupt();
+//		System.out.println("3after interrupt: " + testThreadablity.getState());
+//		System.out.println("3after interrupt: " + testThreadablity.isInterrupted());
+//		System.out.println("3.2after interrupt: " + testThreadablity.getState());
+//		System.out.println("3.2after interrupt: " + testThreadablity.isInterrupted());
+//		try {
+//			Thread.sleep(200);
+//		} catch (InterruptedException e) {		}
+//		System.out.println("4after sleep: " + testThreadablity.getState());
+//		System.out.println("4after sleep: " + testThreadablity.isInterrupted());
+//		System.out.println("5after sleep: " + testThreadablity.getState());
+//		System.out.println("5after sleep: " + testThreadablity.isInterrupted());
+//	}	
 }
