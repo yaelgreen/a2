@@ -3,6 +3,8 @@ package bgu.spl.a2.sim;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Computer {
 	
 	//A computer has a method of checkAndSign. This method gets a list of the grades of the students and a list
@@ -10,9 +12,9 @@ public class Computer {
 	//Each computer has two different signatures. One signatures for sign that the student meets the requirement
 	//and the other to sign the he does not.
 
-	String computerType;
-	long failSig;
-	long successSig;
+	@SerializedName("Type") String computerType;
+	@SerializedName("Sig  Fail") long failSig;
+	@SerializedName("Sig Success") long successSig;
 	
 	public Computer(String computerType) {
 		this.computerType = computerType;

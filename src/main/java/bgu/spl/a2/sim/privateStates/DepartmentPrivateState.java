@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bgu.spl.a2.PrivateState;
-import bgu.spl.a2.university.Course;
-import bgu.spl.a2.university.Student;
 
 /**
  * this class describe department's private state

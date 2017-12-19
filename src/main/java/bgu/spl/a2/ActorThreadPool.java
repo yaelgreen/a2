@@ -36,8 +36,7 @@ public class ActorThreadPool {
 	private Boolean _runPermission;
 	public ActorThreadPool(int nthreads) {
 		_myWorkers = new Worker[nthreads];
-		
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		// TODO: any thing else need to be done here? the unimplemented error wasn't removed.. 
 	}
 
 	/**
