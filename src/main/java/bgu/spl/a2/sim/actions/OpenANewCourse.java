@@ -14,9 +14,9 @@ public class OpenANewCourse extends Action{
 	private int availableSpaces;
 	private List<String> prerequisites;
 	
-	public OpenANewCourse(int spaces, ArrayList<String> pre) {
+	public OpenANewCourse(int spaces, ArrayList<String> arrayList) {
 		this.availableSpaces = spaces;
-		this.prerequisites = pre;
+		this.prerequisites = arrayList;
 	}
 	
 	@Override

@@ -4,15 +4,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class InputDataPhaseObject {
 	
-	@SerializedName("Action") private String action;
-	@SerializedName("Department") private String department;
-	@SerializedName("Course") private String course;
-	@SerializedName("Student") private String student;
-	@SerializedName("Grade") private String[] grade;
-	@SerializedName("Space") private String space;
-	@SerializedName("Prerequisites") private String[] prerequisites;
-	@SerializedName("Conditions") private String[] conditions;
-	@SerializedName("Computer") private String computer;
-	@SerializedName("Students") private String[] students;
+	@SerializedName("Action") String action;
+	@SerializedName("Department") String department;
+	@SerializedName("Course") String course;
+	@SerializedName("Student") String student;
+	@SerializedName("Grade") String[] grade;
+	@SerializedName("Space") String space;
+	@SerializedName("Prerequisites") String[] prerequisites;
+	@SerializedName("Conditions") String[] conditions;
+	@SerializedName("Computer") String computer;
+	@SerializedName("Students") String[] students;
 
 }
