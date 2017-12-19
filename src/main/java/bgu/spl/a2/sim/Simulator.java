@@ -6,7 +6,10 @@
 package bgu.spl.a2.sim;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -84,7 +87,7 @@ public class Simulator {
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
 	        // TODO: the last three where not in the Json example
-	        // verify if there shuld be an option to call them from the Json file
+	        // verify if there should be an option to call them from the Json file
 	        // and if the answer is yes, verify the correct Names
 	         case "Close A Course":
 	        	 action = new CloseACourse(data.course);
@@ -107,8 +110,11 @@ public class Simulator {
 		// TODO: set thread number to thread pool
 		// TODO: assign computer to ware house
 		submitPhaseActions(input.phase1);
+		//TODO: make sure all action in previous stage are completed before continuing 
 		submitPhaseActions(input.phase2);
+		//TODO: make sure all action in previous stage are completed before continuing 
 		submitPhaseActions(input.phase3);
+		//TODO: make sure all action in previous stage are completed before continuing 
 		return true;
 	}
 	
@@ -139,9 +145,21 @@ public class Simulator {
 	*/
 	public static HashMap<String,PrivateState> end(){
 		//shut down the simulation.
-		//returns a HashMap containing all the private states of the actors as serialized object to the le "result.ser".
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		//returns a HashMap containing all the private states of the actors as serialized object 
+		//to the le "result.ser".
+		//TODO: Sould we close actor thraed pool here?
+		FileOutputStream fout;
+		HashMap<String,PrivateState> res = (HashMap<String, PrivateState>) actorThreadPool.getAllPrivateStates();
+		try {
+			fout = new FileOutputStream("result.ser");
+			ObjectOutputStream oos;
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(res);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 	
@@ -155,6 +173,7 @@ public class Simulator {
 			ActorThreadPool pool = new ActorThreadPool(3);
 			sim.attachActorThreadPool(pool);
 			sim.start();
+			sim.end();
 		}
 			
 	}

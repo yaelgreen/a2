@@ -56,6 +56,10 @@ public class ActorThreadPool {
 	public PrivateState getPrivateState(String actorId){
 		return _privateStateMap.get(actorId);
 	}
+	
+	public Map<String, PrivateState> getAllPrivateStates(){
+		return _privateStateMap;
+	}
 
 	/**
 	 * submits an action into an actor to be executed by a thread belongs to

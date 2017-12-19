@@ -1,5 +1,6 @@
 package bgu.spl.a2.sim.privateStates;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import bgu.spl.a2.PrivateState;
 /**
  * this class describe department's private state
  */
-public class DepartmentPrivateState extends PrivateState{
+public class DepartmentPrivateState extends PrivateState implements Serializable{
 	private List<String> courseList;
 	private List<String> studentList;
 	
