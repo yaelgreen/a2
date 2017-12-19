@@ -113,6 +113,7 @@ public abstract class Action<R> {
 		actorState.addRecord("send action: " + action.getActionName() + ", to" + actorId);
 		_currpool.submit(action, actorId, actorState);
 		return action.getResult();
+		
 	}
 	
 	/**
