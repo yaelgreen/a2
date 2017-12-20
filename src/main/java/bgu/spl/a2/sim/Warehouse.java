@@ -17,8 +17,8 @@ public class Warehouse {
 	
 	private List<Computer> computers;
 	
-	public Warehouse() {
-		computers = new ArrayList<Computer>();
+	public Warehouse(ArrayList<Computer> computers) {
+		this.computers = computers;
 	}
 	
 }

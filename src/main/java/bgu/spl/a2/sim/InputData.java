@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class InputData {
 	
-	private int threads;
-	private Computer[] Computers;
+	int threads;
+	ArrayList<Computer> Computers;
 	@SerializedName("Phase 1") ArrayList<InputDataPhaseObject> phase1;
 	@SerializedName("Phase 2") ArrayList<InputDataPhaseObject> phase2;
 	@SerializedName("Phase 3") ArrayList<InputDataPhaseObject> phase3;

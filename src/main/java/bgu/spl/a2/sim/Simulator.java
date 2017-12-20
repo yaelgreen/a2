@@ -38,9 +38,10 @@ public class Simulator {
 
 	
 	public static ActorThreadPool actorThreadPool;
-	public static String inputFilePath; 
+	public static InputData input; 
+	public static Warehouse warehouse;
 	
-	private static InputData ParseJson() {
+	private static InputData ParseJson(String inputFilePath) {
 		 BufferedReader bufferedReader;
 		 InputData json = null;
 		try {
@@ -104,8 +105,6 @@ public class Simulator {
 	}
 	
 	private static boolean SubmitActions(InputData input) {
-		// TODO: set thread number to thread pool
-		// TODO: assign computer to ware house
 		submitPhaseActions(input.phase1);
 		//TODO: make sure all action in previous stage are completed before continuing 
 		submitPhaseActions(input.phase2);
@@ -119,8 +118,7 @@ public class Simulator {
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
     public static void start(){
-		// Parse the Json Files.
-    	InputData input = ParseJson();
+    	warehouse = new Warehouse(input.Computers);
     	// Submit actions to the thread pool passed to the method attachActorThreadPool.
     	boolean res2 = SubmitActions(input);
     	//DO NOT create an ActorThreadPool in start. You need to attach the ActorThreadPool in the main
@@ -164,10 +162,9 @@ public class Simulator {
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {
-			inputFilePath = args[0];
-			// TODO: should we pass the path to simulator in it's constractor?
+			InputData input = ParseJson(args[0]); 
 			Simulator sim = new Simulator();
-			ActorThreadPool pool = new ActorThreadPool(3);
+			ActorThreadPool pool = new ActorThreadPool(input.threads);
 			sim.attachActorThreadPool(pool);
 			sim.start();
 			sim.end();

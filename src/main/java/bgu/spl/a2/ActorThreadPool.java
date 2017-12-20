@@ -1,5 +1,6 @@
 package bgu.spl.a2;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -30,7 +31,6 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	//we dont need to sync on the hash maps because every actor got init just once during all the running 
-	private Map<String, PrivateState> _privateStateMap = new ConcurrentHashMap<String, PrivateState>();
 	private Map<String, Actor> _actorsMap = new ConcurrentHashMap<String, Actor>();
 	private Worker[] _myWorkers;
 	private Boolean _runPermission;
@@ -44,7 +44,10 @@ public class ActorThreadPool {
 	 * @return actors
 	 */
 	public Map<String, PrivateState> getActors(){
-		return _privateStateMap;
+		Map<String, PrivateState> res = new HashMap<String, PrivateState>();
+		for (Map.Entry<String, Actor> pair : _actorsMap.entrySet()) 
+			res.put(pair.getKey(), pair.getValue().getPrivateState());
+		return res;
 	}
 	
 	/**
@@ -53,7 +56,11 @@ public class ActorThreadPool {
 	 * @return actor's private state
 	 */
 	public PrivateState getPrivateState(String actorId){
-		return _privateStateMap.get(actorId);
+		for (Map.Entry<String, Actor> pair : _actorsMap.entrySet()) {
+			if (pair.getKey().equals(actorId))
+				return pair.getValue().getPrivateState();
+		}
+		return null;
 	}
 
 	/**
@@ -68,11 +75,8 @@ public class ActorThreadPool {
 	 *            actor's private state (actor's information)
 	 */
 	public void submit(Action<?> action, String actorId, PrivateState actorState) {
-		if(!_privateStateMap.containsKey(actorId))
-		{
-			_privateStateMap.put(actorId, actorState);
-			_actorsMap.put(actorId, new Actor(actorId));
-		}
+		if(!_actorsMap.containsKey(actorId))
+			_actorsMap.put(actorId, new Actor(actorId, actorState));		
 		_actorsMap.get(actorId).submit(action);
 		VersionMonitor.inc();
 	}
@@ -188,15 +192,22 @@ public class ActorThreadPool {
 	 */
 	private class Actor {
 		private AtomicInteger occupied = new AtomicInteger(0);
-		private String _myId;
-		private Queue<Action<?>> _ActorActions;
-		private Actor(String id){
-			_ActorActions = new ConcurrentLinkedQueue<Action<?>>();
-			_myId = id;
+		private String myId;
+		private PrivateState state;
+		private Queue<Action<?>> actorActions;
+		
+		private Actor(String id, PrivateState s){
+			actorActions =new ConcurrentLinkedQueue<Action<?>>();
+			myId = id;
+			state = s;
 		}
 		
 		public String getId() {			
-			return _myId;
+			return myId;
+		}
+		
+		public PrivateState getPrivateState() {			
+			return state;
 		}
 
 		/**
@@ -231,7 +242,7 @@ public class ActorThreadPool {
 		 */
 		public void submit(Action<?> newAction)
 		{
-			_ActorActions.add(newAction);
+			actorActions.add(newAction);
 		}
 		
 		/**
@@ -239,7 +250,7 @@ public class ActorThreadPool {
 		 */
 		public Action<?> getAction()
 		{
-			return _ActorActions.poll();
+			return actorActions.poll();
 		}
 		
 		/**
@@ -247,7 +258,7 @@ public class ActorThreadPool {
 		 */
 		public Action<?> getTopAction()
 		{
-			return _ActorActions.peek();
+			return actorActions.peek();
 		}
 	}
 }
