@@ -1,5 +1,7 @@
 package bgu.spl.a2.sim.privateStates;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import bgu.spl.a2.PrivateState;
@@ -7,10 +9,9 @@ import bgu.spl.a2.PrivateState;
 /**
  * this class describe course's private state
  */
-public class CoursePrivateState extends PrivateState{
-
-	private Integer availableSpots;
-	private Integer registered;
+public class CoursePrivateState extends PrivateState implements Serializable{
+	private int availableSpots;
+	private int registered;
 	private List<String> regStudents;
 	private List<String> prequisites;
 	
@@ -20,8 +21,10 @@ public class CoursePrivateState extends PrivateState{
 	 * this may cause automatic tests to fail..
 	 */
 	public CoursePrivateState() {
-		//TODO: replace method body with real implementation
-		throw new UnsupportedOperationException("Not Implemented Yet.");
+		this.availableSpots = 0;
+		this.registered = 0;
+		this.regStudents = new ArrayList<String>();
+		this.prequisites= new ArrayList<String>();
 	}
 
 	public Integer getAvailableSpots() {

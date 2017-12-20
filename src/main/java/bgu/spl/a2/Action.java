@@ -109,6 +109,7 @@ public abstract class Action<R> {
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
 		_currpool.submit(action, actorId, actorState);
 		return action.getResult();
+		
 	}
 	
 	/**

@@ -34,6 +34,7 @@ public class ActorThreadPool {
 	private Map<String, Actor> _actorsMap = new HashMap<String, Actor>();
 	private Worker[] _myWorkers;
 	private Boolean _runPermission;
+	
 	public ActorThreadPool(int nthreads) {
 		_myWorkers = new Worker[nthreads];
 	}
