@@ -12,7 +12,6 @@ public class CheckAdministrativeObligations extends Action{
 	@Override
 	protected void start() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

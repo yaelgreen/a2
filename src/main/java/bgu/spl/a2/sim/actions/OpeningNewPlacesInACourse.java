@@ -1,6 +1,7 @@
 package bgu.spl.a2.sim.actions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 public class OpeningNewPlacesInACourse extends Action{
 	
@@ -17,8 +18,8 @@ public class OpeningNewPlacesInACourse extends Action{
 
 	@Override
 	protected void start() {
-		// TODO Auto-generated method stub
-		
+		CoursePrivateState courseState = (CoursePrivateState) this.state;
+		courseState.setAvailableSpots(courseState.getAvailableSpots()+increase);
 	}
 
 }

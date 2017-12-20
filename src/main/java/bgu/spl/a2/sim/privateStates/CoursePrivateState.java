@@ -2,6 +2,7 @@ package bgu.spl.a2.sim.privateStates;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import bgu.spl.a2.PrivateState;
@@ -27,6 +28,22 @@ public class CoursePrivateState extends PrivateState implements Serializable{
 		this.prequisites= new ArrayList<String>();
 	}
 
+	public void setAvailableSpots(int availableSpots) {
+		this.availableSpots = availableSpots;
+	}
+
+	public void setRegistered(int registered) {
+		this.registered = registered;
+	}
+
+	public void setRegStudents(List<String> regStudents) {
+		this.regStudents = regStudents;
+	}
+
+	public void setPrequisites(List<String> prequisites) {
+		this.prequisites = prequisites;
+	}
+
 	public Integer getAvailableSpots() {
 		return availableSpots;
 	}
@@ -42,4 +59,5 @@ public class CoursePrivateState extends PrivateState implements Serializable{
 	public List<String> getPrequisites() {
 		return prequisites;
 	}
+
 }

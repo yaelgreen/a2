@@ -1,6 +1,10 @@
 package bgu.spl.a2.sim.actions;
 
+import java.util.Arrays;
+
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.privateStates.CoursePrivateState;
+import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class Unregister extends Action{
 	
@@ -19,8 +23,13 @@ public class Unregister extends Action{
 
 	@Override
 	protected void start() {
-		// TODO Auto-generated method stub
-		
+		CoursePrivateState courseState = (CoursePrivateState) this.state;
+		if(!Arrays.asList(courseState.getRegStudents()).contains(student))
+			return;
+		courseState.getRegStudents().remove(student);
+		courseState.setAvailableSpots(courseState.getAvailableSpots()+1);
+		courseState.setRegistered(courseState.getRegistered()-1);
+		sendMessage(new RemoveCourse(course), student, null);
 	}
 
 }

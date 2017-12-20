@@ -26,8 +26,9 @@ public abstract class Action<R> {
     protected abstract void start();
     
 
-    private ActorThreadPool _currpool;
+    protected ActorThreadPool _currpool;
     protected String _cuurActorId;
+    protected PrivateState state;
     /**
     *
     * start/continue handling the action
@@ -43,6 +44,7 @@ public abstract class Action<R> {
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {	   
 	   _currpool = pool;
 	   _cuurActorId = actorId;
+	   state = actorState;
 	   if(_myCall == null)
 	   {
 		   actorState.addRecord(_actionName);//add to record every action that executed
@@ -53,6 +55,10 @@ public abstract class Action<R> {
 		   _myCall.call();
 	   }
    }
+   
+//   protected ActorThreadPool getActorThreadPool() {
+//	   return _currpool;
+//   }
     
     
     /**
