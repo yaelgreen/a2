@@ -1,9 +1,9 @@
 package bgu.spl.a2;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,8 +30,8 @@ public class ActorThreadPool {
 	 *            pool
 	 */
 	//we dont need to sync on the hash maps because every actor got init just once during all the running 
-	private Map<String, PrivateState> _privateStateMap = new HashMap<String, PrivateState>();
-	private Map<String, Actor> _actorsMap = new HashMap<String, Actor>();
+	private Map<String, PrivateState> _privateStateMap = new ConcurrentHashMap<String, PrivateState>();
+	private Map<String, Actor> _actorsMap = new ConcurrentHashMap<String, Actor>();
 	private Worker[] _myWorkers;
 	private Boolean _runPermission;
 	
@@ -191,7 +191,7 @@ public class ActorThreadPool {
 		private String _myId;
 		private Queue<Action<?>> _ActorActions;
 		private Actor(String id){
-			_ActorActions = new LinkedList<Action<?>>(); 
+			_ActorActions = new ConcurrentLinkedQueue<Action<?>>();
 			_myId = id;
 		}
 		

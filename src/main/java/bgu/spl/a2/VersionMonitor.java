@@ -1,6 +1,7 @@
 package bgu.spl.a2;
 
-import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -23,7 +24,8 @@ public class VersionMonitor {
 	
 	private static AtomicInteger _version = new AtomicInteger(0);
 	private static AtomicInteger _awaitVersion = new AtomicInteger(0);
-	private static LinkedList<Thread> _toNotifyList = new LinkedList<Thread>();
+	//thread safe queue
+	private static Queue<Thread> _toNotifyList = new ConcurrentLinkedQueue<Thread>();
 	private Thread _toNotify;
 	VersionMonitor(Thread toNotify){
 		_toNotify = toNotify; 
@@ -39,11 +41,15 @@ public class VersionMonitor {
      */
     public static void inc() {    	    	
     	if(_awaitVersion.get() == _version.getAndIncrement())
-	    	synchronized (_toNotifyList) {//mandatory in interrupt func
-	    		for(Thread myThread : _toNotifyList)
-	    			myThread.interrupt();  
-	    		_toNotifyList.clear();
-			} 	
+    	{
+    		Thread myThread = _toNotifyList.poll();
+	    	while(myThread != null)
+	    	{
+	    		myThread.interrupt();
+	    		myThread = _toNotifyList.poll();	    		
+	    	}
+	    	_toNotifyList.clear();
+    	}
     }
 
     /**
@@ -54,14 +60,13 @@ public class VersionMonitor {
      * @param version
      */
     public void await(int version) {
-    	synchronized (_toNotifyList) {
-	    	if (version != _version.get())
-	            	_toNotify.interrupt(); 	    		
-	    	else
-	    	{
-	    		_awaitVersion.set(version);
-	    		_toNotifyList.add(_toNotify);	    		
-	    	}
+    	if (version != _version.get())
+            	_toNotify.interrupt(); 	    		
+    	else
+    	{
+    		_awaitVersion.set(version);
+    		_toNotifyList.add(_toNotify);	    		
     	}
+    	
     }
 }
