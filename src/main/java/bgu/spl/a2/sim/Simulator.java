@@ -39,7 +39,6 @@ public class Simulator {
 	
 	public static ActorThreadPool actorThreadPool;
 	public static InputData input; 
-	public static Warehouse warehouse;
 	
 	private static InputData ParseJson(String inputFilePath) {
 		 BufferedReader bufferedReader;
@@ -119,7 +118,7 @@ public class Simulator {
 	* Begin the simulation Should not be called before attachActorThreadPool()
 	*/
     public static void start(){
-    	warehouse = new Warehouse(input.Computers);
+    	actorThreadPool.setWarehouse(new Warehouse(input.Computers));
     	// Submit actions to the thread pool passed to the method attachActorThreadPool.
     	boolean res2 = SubmitActions(input);
     	//DO NOT create an ActorThreadPool in start. You need to attach the ActorThreadPool in the main

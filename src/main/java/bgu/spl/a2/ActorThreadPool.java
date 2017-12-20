@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import bgu.spl.a2.sim.Warehouse;
+
 /**
  * represents an actor thread pool - to understand what this class does please
  * refer to your assignment.
@@ -32,11 +34,12 @@ public class ActorThreadPool {
 	 */
 	//we dont need to sync on the hash maps because every actor got init just once during all the running 
 	private Map<String, Actor> _actorsMap = new ConcurrentHashMap<String, Actor>();
-	private Worker[] _myWorkers;
-	private Boolean _runPermission;
+	private Worker[] workers;
+	private Boolean runPermission;
+	private Warehouse warehouse;
 	
 	public ActorThreadPool(int nthreads) {
-		_myWorkers = new Worker[nthreads];
+		workers = new Worker[nthreads];
 	}
 
 	/**
@@ -48,6 +51,14 @@ public class ActorThreadPool {
 		for (Map.Entry<String, Actor> pair : _actorsMap.entrySet()) 
 			res.put(pair.getKey(), pair.getValue().getPrivateState());
 		return res;
+	}
+	
+	public void setWarehouse(Warehouse w) {
+		this.warehouse = w;
+	}
+	
+	public Warehouse getWarehouse() {
+		return this.warehouse;
 	}
 	
 	/**
@@ -92,12 +103,12 @@ public class ActorThreadPool {
 	 *             if the thread that shut down the threads is interrupted
 	 */
 	public void shutdown() {
-		_runPermission = false;
-		for(Worker currWorker : _myWorkers)
+		runPermission = false;
+		for(Worker currWorker : workers)
 			currWorker.interrupt();//we use sync because it is important that no one will interrupt this
 		
 		boolean joined;
-		for(Worker currWorker : _myWorkers)
+		for(Worker currWorker : workers)
 		{
 			joined = false;
 			while(!joined)
@@ -114,11 +125,11 @@ public class ActorThreadPool {
 	 * start the threads belongs to this thread pool
 	 */
 	public void start() {
-		_runPermission = true;
-		for(int i = 0; i < _myWorkers.length; i++)
+		runPermission = true;
+		for(int i = 0; i < workers.length; i++)
 		{
-			_myWorkers[i] = new Worker(this);
-			_myWorkers[i].start();
+			workers[i] = new Worker(this);
+			workers[i].start();
 		}
 	}
 	
@@ -144,7 +155,7 @@ public class ActorThreadPool {
 		public void run() {
 			System.out.println(this + " has been born");
 //			boolean fullOccupiedActors;
-			while(_runPermission)
+			while(runPermission)
 			{
 //				fullOccupiedActors = true;
 				_verMonitor.await(_verMonitor.getVersion());
@@ -155,7 +166,7 @@ public class ActorThreadPool {
 						System.out.println(Thread.currentThread() + ", occupy actor " + actor.getId());
 						Action<?> toExecute = actor.getAction();
 						//we should check if the worker can run this one?
-						while(toExecute != null & _runPermission)
+						while(toExecute != null & runPermission)
 						{							
 							toExecute.handle(_mypool, actor.getId(), _mypool.getPrivateState(actor.getId()));
 							VersionMonitor.inc();
@@ -168,7 +179,7 @@ public class ActorThreadPool {
 				}
 				
 				//if version await didnt interrupt us we can wait
-				if(!Thread.interrupted() & _runPermission)
+				if(!Thread.interrupted() & runPermission)
 				{
 					try
 					{
