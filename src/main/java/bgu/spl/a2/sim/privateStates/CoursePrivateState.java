@@ -21,10 +21,10 @@ public class CoursePrivateState extends PrivateState implements Serializable{
 	 * this may cause automatic tests to fail..
 	 */
 	public CoursePrivateState() {
-		this.availableSpots = 0;
-		this.registered = 0;
-		this.regStudents = new ArrayList<String>();
-		this.prequisites= new ArrayList<String>();
+		availableSpots = 0;
+		registered = 0;
+		regStudents = new ArrayList<String>();
+		prequisites= new ArrayList<String>();
 	}
 
 	public Integer getAvailableSpots() {

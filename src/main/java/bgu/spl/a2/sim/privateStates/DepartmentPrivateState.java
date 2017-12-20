@@ -19,8 +19,8 @@ public class DepartmentPrivateState extends PrivateState implements Serializable
 	 * this may cause automatic tests to fail..
 	 */
 	public DepartmentPrivateState() {
-		this.courseList = new ArrayList<String>();
-		this.studentList = new ArrayList<String>();
+		courseList = new ArrayList<String>();
+		studentList = new ArrayList<String>();
 	}
 
 	public List<String> getCourseList() {

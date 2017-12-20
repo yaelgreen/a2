@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gson.annotations.SerializedName;
 
-public class InputData {
-	
+public class InputData {	
 	int threads;
 	ArrayList<Computer> Computers;
 	@SerializedName("Phase 1") ArrayList<InputDataPhaseObject> phase1;

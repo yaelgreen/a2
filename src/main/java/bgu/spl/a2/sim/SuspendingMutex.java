@@ -2,7 +2,6 @@ package bgu.spl.a2.sim;
 import java.util.concurrent.Semaphore;
 
 import bgu.spl.a2.Promise;
-import bgu.spl.a2.callback;
 
 /**
  * 
@@ -41,9 +40,9 @@ public class SuspendingMutex {
 	 * @return a promise for the requested computer
 	 */
 	public Promise<Computer> down(){
-		Promise p = new Promise<Computer>();
-		boolean equired = semaphore.tryAcquire();
-		if (!equired) {
+		Promise<Computer> computerPromise = new Promise<Computer>();
+		boolean aquired = semaphore.tryAcquire();
+		if (!aquired) {
 			// TODO: add callback to promise
 			Thread waitForSemaphore = new Thread((()->
 			{				
@@ -52,10 +51,10 @@ public class SuspendingMutex {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}		
-			}));	
-			return p;
+			}));	//leagality?
+			return computerPromise;
 		}
-		return p;
+		return computerPromise;
 	}
 	/**
 	 * Computer return procedure

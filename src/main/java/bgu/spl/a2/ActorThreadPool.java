@@ -143,10 +143,8 @@ public class ActorThreadPool {
 		@Override
 		public void run() {
 			System.out.println(this + " has been born");
-//			boolean fullOccupiedActors;
 			while(_runPermission)
 			{
-//				fullOccupiedActors = true;
 				_verMonitor.await(_verMonitor.getVersion());
 				for(Actor actor : _actorsMap.values())
 				{

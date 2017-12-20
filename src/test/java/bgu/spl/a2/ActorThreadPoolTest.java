@@ -111,7 +111,7 @@ public class ActorThreadPoolTest extends TestCase {
 	}
 	
 	/**
-	 * Test big then expression that call actionA 24 time and return the sum of the results
+	 * Test big then expression that uses send messages and call actionA 24 time and return the sum of the results
 	 */
 	private void testComplexThenExp(int threads){
 		System.out.println("testComplexThenExp " + threads);

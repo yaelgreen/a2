@@ -2,7 +2,7 @@ package bgu.spl.a2.sim;
 
 import com.google.gson.annotations.SerializedName;
 
-public class InputDataPhaseObject {
+public class InputDataPhaseObject {	
 	
 	@SerializedName("Action") String action;
 	@SerializedName("Department") String department;
@@ -14,5 +14,4 @@ public class InputDataPhaseObject {
 	@SerializedName("Conditions") String[] conditions;
 	@SerializedName("Computer") String computer;
 	@SerializedName("Students") String[] students;
-
 }
