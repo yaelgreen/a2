@@ -36,8 +36,6 @@ public class ActorThreadPool {
 	private Boolean _runPermission;
 	public ActorThreadPool(int nthreads) {
 		_myWorkers = new Worker[nthreads];
-		
-		throw new UnsupportedOperationException("Not Implemented Yet.");
 	}
 
 	/**
@@ -88,14 +86,23 @@ public class ActorThreadPool {
 	 * @throws InterruptedException
 	 *             if the thread that shut down the threads is interrupted
 	 */
-	public void shutdown() throws InterruptedException {
+	public void shutdown() {
 		_runPermission = false;
 		for(Worker currWorker : _myWorkers)
-			synchronized (this) {
-				currWorker.interrupt();//we use sync because it is important that no one will interrupt this
-    		}
+			currWorker.interrupt();//we use sync because it is important that no one will interrupt this
+		
+		boolean joined;
 		for(Worker currWorker : _myWorkers)
-			currWorker.join();
+		{
+			joined = false;
+			while(!joined)
+			{
+				try {
+					currWorker.join();
+					joined = true;
+				} catch (InterruptedException e) {				}
+			}
+		}
 	}
 
 	/**
@@ -103,8 +110,11 @@ public class ActorThreadPool {
 	 */
 	public void start() {
 		_runPermission = true;
-		for(Worker currWorker : _myWorkers)
-			currWorker.start();
+		for(int i = 0; i < _myWorkers.length; i++)
+		{
+			_myWorkers[i] = new Worker(this);
+			_myWorkers[i].start();
+		}
 	}
 	
 	/**
@@ -114,15 +124,20 @@ public class ActorThreadPool {
 	 */
 	private class Worker extends Thread {
 		
-		//will interrupt for us
+		//VersionMonitor will interrupt for us
 		private VersionMonitor _verMonitor = new VersionMonitor(this);
 		private ActorThreadPool _mypool;
+		
+		private Worker(ActorThreadPool mypool){
+			_mypool = mypool;
+		}
 		
 		/**
 		 * search for action to do on the actors and execute it
 		 */
 		@Override
 		public void run() {
+			System.out.println(this + " has been born");
 //			boolean fullOccupiedActors;
 			while(_runPermission)
 			{
@@ -132,16 +147,18 @@ public class ActorThreadPool {
 				{
 					if(actor.tryToOccupy())
 					{
-						Action<?> toExecute = actor.getTopAction();
+						System.out.println(Thread.currentThread() + ", occupy actor " + actor.getId());
+						Action<?> toExecute = actor.getAction();
 						//we should check if the worker can run this one?
 						while(toExecute != null & _runPermission)
-						{
-							toExecute = actor.getTopAction();
+						{							
 							toExecute.handle(_mypool, actor.getId(), _mypool.getPrivateState(actor.getId()));
 							VersionMonitor.inc();
+							toExecute = actor.getAction();
 						}
 						
-						actor.releaseActor();						
+						actor.releaseActor();
+						System.out.println(Thread.currentThread() + ", released actor " + actor.getId());
 					}
 				}
 				
@@ -150,13 +167,16 @@ public class ActorThreadPool {
 				{
 					try
 					{
+						System.out.println(this + " is wating");
 						synchronized (this) {
 							wait();//anyway the wait will turn the interrupt flag off
-			    		}					
+			    		}						
 					}
 					catch(InterruptedException Ex){	}//remove syso later if needed
+					//System.out.println(this + " is awake");
 				}
 			}
+			System.out.println(this + " passed out");
 		}	
 	}
 	
@@ -214,7 +234,15 @@ public class ActorThreadPool {
 		}
 		
 		/**
-		 * @return the first action in the queue
+		 * @return return the first action in the queue, and deleting it from the queue
+		 */
+		public Action<?> getAction()
+		{
+			return _ActorActions.poll();
+		}
+		
+		/**
+		 * @return the first action in the queue without polling (for cheking)
 		 */
 		public Action<?> getTopAction()
 		{

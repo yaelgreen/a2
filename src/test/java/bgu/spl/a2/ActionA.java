@@ -1,14 +1,14 @@
 package bgu.spl.a2;
 
-public class ActionA<R> extends Action<R> {
-	
-	public ActionA(String ActorName, String ActionName) {
-		//TODO
+public class ActionA extends Action<Integer> {
+	public ActionA()
+	{
+		setActionName("ActionA");
 	}
-
+	
 	@Override
 	protected void start() {
-		// TODO Auto-generated method stub
+		Integer myInt = new Integer(506949*3569);
+		complete(myInt);	
 	}
-
 }

@@ -27,7 +27,7 @@ public abstract class Action<R> {
     
 
     private ActorThreadPool _currpool;
-    private String _cuurActorId;
+    protected String _cuurActorId;
     /**
     *
     * start/continue handling the action
@@ -40,12 +40,14 @@ public abstract class Action<R> {
     * public/private/protected
     *
     */
-   /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {
+   /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {	   
 	   _currpool = pool;
 	   _cuurActorId = actorId;
-	   actorState.addRecord(_actionName);
 	   if(_myCall == null)
+	   {
+		   actorState.addRecord(_actionName);//add to record every action that executed
 		   start();
+	   }
 	   else
 	   {
 		   _myCall.call();
@@ -64,20 +66,15 @@ public abstract class Action<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback task) {
-       	boolean allResolved = true;
-       	AtomicInteger isReadyCount = new AtomicInteger();
+       	AtomicInteger remainedActionCounter = new AtomicInteger(actions.size());
     	for(Action<?> action : actions)
        		action.getResult().subscribe(()->
        		{
-       			//should be atomic
-       			if(isReadyCount.incrementAndGet() == actions.size())
-       				_currpool.submit(this, getActionName(), _currpool.getPrivateState(_cuurActorId));
+       			//count down latch, an atomic counter that will count every action that been completed
+       			if(remainedActionCounter.decrementAndGet() == 0)
+       				_currpool.submit(this, _cuurActorId, null);//he should have a private state
        		});
     	_myCall = task;
-    	if(allResolved)
-    		_currpool.submit(this, _cuurActorId, null);
-    	else
-    		System.err.println("call then when some actions are not resolved yet");
     }
 
     /**
@@ -110,7 +107,6 @@ public abstract class Action<R> {
      * @return promise that will hold the result of the sent action
      */
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
-		actorState.addRecord("send action: " + action.getActionName() + ", to" + actorId);
 		_currpool.submit(action, actorId, actorState);
 		return action.getResult();
 	}

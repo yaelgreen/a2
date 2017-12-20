@@ -39,7 +39,7 @@ public class VersionMonitor {
      */
     public static void inc() {    	    	
     	if(_awaitVersion.get() == _version.getAndIncrement())
-	    	synchronized (_toNotifyList) {
+	    	synchronized (_toNotifyList) {//mandatory in interrupt func
 	    		for(Thread myThread : _toNotifyList)
 	    			myThread.interrupt();  
 	    		_toNotifyList.clear();
@@ -56,9 +56,7 @@ public class VersionMonitor {
     public void await(int version) {
     	synchronized (_toNotifyList) {
 	    	if (version != _version.get())
-	    		synchronized (_toNotify) {
-	            	_toNotify.interrupt();   
-	    		}
+	            	_toNotify.interrupt(); 	    		
 	    	else
 	    	{
 	    		_awaitVersion.set(version);
