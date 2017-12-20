@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.privateStates.CoursePrivateState;
+import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class OpenANewCourse extends Action{
 
@@ -13,16 +15,19 @@ public class OpenANewCourse extends Action{
 	
 	private int availableSpaces;
 	private List<String> prerequisites;
+	private String courseName;
 	
-	public OpenANewCourse(int spaces, ArrayList<String> arrayList) {
+	public OpenANewCourse(int spaces, ArrayList<String> arrayList, String courseName) {
 		this.availableSpaces = spaces;
 		this.prerequisites = arrayList;
+		this.courseName = courseName;
 	}
 	
 	@Override
 	protected void start() {
-		// TODO Auto-generated method stub
-		
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
+		myState.getCourseList().add(courseName);
+		sendMessage(new CreateNewCourse(availableSpaces, prerequisites), courseName, new CoursePrivateState());
 	}
 
 }

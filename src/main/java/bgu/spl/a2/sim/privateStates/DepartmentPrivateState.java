@@ -10,6 +10,7 @@ import bgu.spl.a2.PrivateState;
  * this class describe department's private state
  */
 public class DepartmentPrivateState extends PrivateState implements Serializable{
+	
 	private List<String> courseList;
 	private List<String> studentList;
 	

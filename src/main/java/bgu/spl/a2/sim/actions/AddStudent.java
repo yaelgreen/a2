@@ -1,6 +1,8 @@
 package bgu.spl.a2.sim.actions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.PrivateState;
+import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class AddStudent extends Action{
 	
@@ -16,9 +18,9 @@ public class AddStudent extends Action{
 	}
 
 	@Override
-	protected void start() {
-		// TODO Auto-generated method stub
+	protected void start() {	
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
+		myState.getStudentList().add(student);
 	}
 	
-
 }

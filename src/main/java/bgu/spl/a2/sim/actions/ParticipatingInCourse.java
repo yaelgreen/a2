@@ -1,6 +1,7 @@
 package bgu.spl.a2.sim.actions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 public class ParticipatingInCourse extends Action {
 	
@@ -10,15 +11,20 @@ public class ParticipatingInCourse extends Action {
 	
 	private String course;
 	private String student;
+	private String[] grades;
 
-	public ParticipatingInCourse(String student, String course) {
+	public ParticipatingInCourse(String student, String course, String[] grade) {
 		this.course = course;
 		this.student = student;
+		this.grades = grade;
 	}
 
 	@Override
 	protected void start() {
-		// TODO Auto-generated method stub
+		CoursePrivateState courseState = (CoursePrivateState) this.state;
+		if (courseState.getAvailableSpots() != 0) {
+			sendMessage(new Register(course, grades),  student, null);
+		}
 		
 	}
 
