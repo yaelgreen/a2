@@ -13,9 +13,12 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.gson.Gson;
+import com.sun.istack.internal.Pool;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.ActorThreadPool;
@@ -40,6 +43,11 @@ public class Simulator {
 	public static ActorThreadPool actorThreadPool;
 	public static InputData input; 
 	
+	/**
+	 * 
+	 * @param inputFilePath - a string
+	 * @return InputData to parsed with Gson
+	 */
 	private static InputData ParseJson(String inputFilePath) {
 		 BufferedReader bufferedReader;
 		 InputData json = null;
@@ -53,34 +61,42 @@ public class Simulator {
 		return json;
 	}
 	
-	private static void submitPhaseActions(ArrayList<InputDataPhaseObject> phase) {
+	/**
+	 * @param phase - parse the actions and 
+	 */
+	private void submitPhaseActions(ArrayList<InputDataPhaseObject> phase) {
+		List<Action<?>> phaseList = new ArrayList<Action<?>>();
 		for (InputDataPhaseObject data : phase) {
 			if (data.action.isEmpty())
 				break;
-			Action action = null;
-			String actorId = UUID.randomUUID().toString();
+			Action<?> action = null;
+			String actorId = null;
 			PrivateState actorState = null;
 			switch (data.action) {
 	         case "Open Course":
 	        	 int space = Integer.parseInt(data.space);
 	        	 ArrayList<String> pre = new ArrayList<String>(Arrays.asList(data.prerequisites));
-	        	 String courseName = data.course;
-	        	 action = new OpenANewCourse(space, pre, courseName);
+	        	 actorId = data.course;
+	        	 action = new OpenANewCourse(space, pre, actorId);
 	        	 actorState = new DepartmentPrivateState(); 
 	             break;
 	         case "Add Student":
-	        	 action = new AddStudent(data.student, data.department);
+	        	 actorId = data.student;
+	        	 action = new AddStudent(actorId, data.department);
 	        	 actorState = new DepartmentPrivateState(); 
 	             break;  
 	         case "Participate In Course":
-	        	 action = new ParticipatingInCourse(data.student, data.course, data.grade);
+	        	 actorId = data.course;
+	        	 action = new ParticipatingInCourse(data.student, actorId, data.grade);
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "Unregister":
-	        	 action = new Unregister(data.student, data.course);
+	        	 actorId = data.course;
+	        	 action = new Unregister(data.student, actorId);
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "Administrative Check":
+	        	 actorId = data.department;
 	        	 action = new CheckAdministrativeObligations();
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
@@ -88,29 +104,56 @@ public class Simulator {
 	        // verify if there should be an option to call them from the Json file
 	        // and if the answer is yes, verify the correct Names
 	         case "Close A Course":
-	        	 action = new CloseACourse(data.course);
+	        	 actorId = data.course;
+	        	 action = new CloseACourse(actorId);
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
 	         case "Opening New places In a Course":
-	        	 action = new OpeningNewPlacesInACourse(data.course, Integer.parseInt(data.space));
+	        	 actorId = data.course;
+	        	 action = new OpeningNewPlacesInACourse(actorId, Integer.parseInt(data.space));
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "Announce about the end of registration period":
+	        	 actorId = data.department;
 	        	 action = new AnnounceEndOfRegistration();
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
 			}
+			phaseList.add(action);
 			actorThreadPool.submit(action, actorId, actorState);
 		}
+		AtomicInteger remainedActionCounter = new AtomicInteger(phaseList.size());
+    	for(Action<?> action : phaseList)
+       		action.getResult().subscribe(()->
+       		{
+       			//count down latch, an atomic counter that will count every action that been completed
+       			if(remainedActionCounter.decrementAndGet() == 0)
+       				this.notifyAll();//should notify main (and all threads)
+       		});
 	}
 	
-	private static boolean SubmitActions(InputData input) {
+	private boolean SubmitActions(InputData input) {
 		submitPhaseActions(input.phase1);
-		//TODO: make sure all action in previous stage are completed before continuing 
+		try {
+			synchronized (this) {
+				wait();
+			}
+		} catch (InterruptedException e) {			}
+		
 		submitPhaseActions(input.phase2);
-		//TODO: make sure all action in previous stage are completed before continuing 
-		submitPhaseActions(input.phase3);
-		//TODO: make sure all action in previous stage are completed before continuing 
+		try {
+			synchronized (this) {
+				wait();
+			}
+		} catch (InterruptedException e) {			}
+		
+		submitPhaseActions(input.phase3);		
+		try {
+			synchronized (this) {
+				wait();
+			}
+		} catch (InterruptedException e) {			}
+		
 		return true;
 	}
 	
@@ -119,8 +162,9 @@ public class Simulator {
 	*/
     public static void start(){
     	actorThreadPool.setWarehouse(new Warehouse(input.Computers));
+    	actorThreadPool.start();
     	// Submit actions to the thread pool passed to the method attachActorThreadPool.
-    	boolean res2 = SubmitActions(input);
+    	boolean res2 = new Simulator().SubmitActions(input);
     	//DO NOT create an ActorThreadPool in start. You need to attach the ActorThreadPool in the main
     	//method, and then call start.
     }
@@ -142,14 +186,15 @@ public class Simulator {
 		//shut down the simulation.
 		//returns a HashMap containing all the private states of the actors as serialized object 
 		//to the le "result.ser".
-		//TODO: Sould we close actor thraed pool here?
+		//TODO: Should we close actor thread pool here?
+		actorThreadPool.shutdown();
 		FileOutputStream fout;
 		HashMap<String,PrivateState> res = (HashMap<String, PrivateState>) actorThreadPool.getActors();
 		try {
 			fout = new FileOutputStream("result.ser");
-			ObjectOutputStream oos;
-			oos = new ObjectOutputStream(fout);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeObject(res);
+			oos.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,15 +204,14 @@ public class Simulator {
 	
 	
 	public static void main(String[] args) {
-		if (args.length == 0 || args[0].isEmpty())
+		if (false)//args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {
-			InputData input = ParseJson(args[0]); 
-			Simulator sim = new Simulator();
+			input = ParseJson("G:/Workspace/SPL/a2/Input.txt"); //args[0]
 			ActorThreadPool pool = new ActorThreadPool(input.threads);
-			sim.attachActorThreadPool(pool);
-			sim.start();
-			sim.end();
+			Simulator.attachActorThreadPool(pool);
+			Simulator.start();
+			Simulator.end();
 		}
 			
 	}

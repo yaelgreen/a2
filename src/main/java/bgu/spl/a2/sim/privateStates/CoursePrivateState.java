@@ -2,7 +2,6 @@ package bgu.spl.a2.sim.privateStates;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import bgu.spl.a2.PrivateState;
@@ -24,6 +23,8 @@ public class CoursePrivateState extends PrivateState implements Serializable{
 	public CoursePrivateState() {
 		availableSpots = 0;
 		registered = 0;
+		//are not thread safe DataStructures - MAYBE THIS?->
+		//import java.util.concurrent.CopyOnWriteArrayList;
 		regStudents = new ArrayList<String>();
 		prequisites= new ArrayList<String>();
 	}

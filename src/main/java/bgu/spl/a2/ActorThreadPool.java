@@ -167,7 +167,6 @@ public class ActorThreadPool {
 						while(toExecute != null & runPermission)
 						{							
 							toExecute.handle(_mypool, actor.getId(), _mypool.getPrivateState(actor.getId()));
-							VersionMonitor.inc();
 							toExecute = actor.getAction();
 						}
 						

@@ -12,7 +12,7 @@ public class CheckAdministrativeObligations extends Action{
 
 	@Override
 	protected void start() {
-		Warehouse w = this._currpool.getWarehouse();
+		Warehouse w = this.currpool.getWarehouse();
 		
 	}
 

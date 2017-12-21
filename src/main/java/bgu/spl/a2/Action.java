@@ -16,19 +16,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class Action<R> {
 
-	private String _actionName;
-	private callback _myCall;
-	private Promise<R> _myPromise = new Promise<R>();
+	private String actionName;
+	private callback myCall;
+	private Promise<R> myPromise = new Promise<R>();
+    protected ActorThreadPool currpool;
+    protected String cuurActorId;
+    protected PrivateState state;
+    
 	/**
      * start handling the action - note that this method is protected, a thread
      * cannot call it directly.
      */
     protected abstract void start();
     
-
-    protected ActorThreadPool _currpool;
-    protected String _cuurActorId;
-    protected PrivateState state;
     /**
     *
     * start/continue handling the action
@@ -42,17 +42,17 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {	   
-	   _currpool = pool;
-	   _cuurActorId = actorId;
+	   currpool = pool;
+	   cuurActorId = actorId;
 	   state = actorState;
-	   if(_myCall == null)
+	   if(myCall == null)
 	   {
-		   actorState.addRecord(_actionName);//add to record every action that executed
+		   actorState.addRecord(actionName);//add to record every action that executed
 		   start();
 	   }
 	   else
 	   {
-		   _myCall.call();
+		   myCall.call();
 	   }
    }
    
@@ -78,9 +78,9 @@ public abstract class Action<R> {
        		{
        			//count down latch, an atomic counter that will count every action that been completed
        			if(remainedActionCounter.decrementAndGet() == 0)
-       				_currpool.submit(this, _cuurActorId, null);//he should have a private state
+       				currpool.submit(this, cuurActorId, null);//he should have a private state
        		});
-    	_myCall = task;
+    	myCall = task;
     }
 
     /**
@@ -90,14 +90,14 @@ public abstract class Action<R> {
      * @param result - the action calculated result
      */
     protected final void complete(R result) {
-    	_myPromise.resolve(result);   
+    	myPromise.resolve(result);   
     }
     
     /**
      * @return action's promise (result)
      */
     public final Promise<R> getResult() {
-    	return _myPromise;
+    	return myPromise;
     }
     
     /**
@@ -113,7 +113,7 @@ public abstract class Action<R> {
      * @return promise that will hold the result of the sent action
      */
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
-		_currpool.submit(action, actorId, actorState);
+		currpool.submit(action, actorId, actorState);
 		return action.getResult();
 		
 	}
@@ -123,13 +123,13 @@ public abstract class Action<R> {
 	 * @param actionName
 	 */
 	public void setActionName(String actionName){
-		_actionName = actionName;
+		this.actionName = actionName;
 	}
 	
 	/**
 	 * @return action's name
 	 */
 	public String getActionName(){
-        return _actionName;
+        return actionName;
 	}
 }

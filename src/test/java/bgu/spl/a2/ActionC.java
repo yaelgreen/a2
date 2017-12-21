@@ -16,7 +16,7 @@ public class ActionC extends Action<String>{
 		Collection<Action<?>> actionCollection =  new LinkedList<>();
 		actionCollection.add(a);
 		actionCollection.add(b);
-		sendMessage(a, _cuurActorId, new ActorState());
+		sendMessage(a, cuurActorId, new ActorState());
 		sendMessage(b, "Actor2", new ActorState());
 		then(actionCollection, ()->complete("finished"));
 	}
