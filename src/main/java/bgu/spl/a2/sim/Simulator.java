@@ -14,11 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.gson.Gson;
-import com.sun.istack.internal.Pool;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.ActorThreadPool;
@@ -76,8 +73,8 @@ public class Simulator {
 	         case "Open Course":
 	        	 int space = Integer.parseInt(data.space);
 	        	 ArrayList<String> pre = new ArrayList<String>(Arrays.asList(data.prerequisites));
-	        	 actorId = data.course;
-	        	 action = new OpenANewCourse(space, pre, actorId);
+	        	 actorId = data.department;
+	        	 action = new OpenANewCourse(space, pre, data.course);
 	        	 actorState = new DepartmentPrivateState(); 
 	             break;
 	         case "Add Student":
@@ -204,10 +201,10 @@ public class Simulator {
 	
 	
 	public static void main(String[] args) {
-		if (false)//args.length == 0 || args[0].isEmpty())
+		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {
-			input = ParseJson("G:/Workspace/SPL/a2/Input.txt"); //args[0]
+			input = ParseJson(args[0]);
 			ActorThreadPool pool = new ActorThreadPool(input.threads);
 			Simulator.attachActorThreadPool(pool);
 			Simulator.start();
