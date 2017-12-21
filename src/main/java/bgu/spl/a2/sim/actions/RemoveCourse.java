@@ -15,6 +15,7 @@ public class RemoveCourse extends Action{
 	protected void start() {
 		StudentPrivateState myState = (StudentPrivateState) state;
 		myState.getGrades().remove(course);
+		complete(course);
 	}
 
 }

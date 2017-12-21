@@ -61,7 +61,7 @@ public class Simulator {
 	/**
 	 * @param phase - parse the actions and 
 	 */
-	private void submitPhaseActions(ArrayList<InputDataPhaseObject> phase) {
+	private AtomicInteger submitPhaseActions(ArrayList<InputDataPhaseObject> phase) {
 		List<Action<?>> phaseList = new ArrayList<Action<?>>();
 		for (InputDataPhaseObject data : phase) {
 			if (data.action.isEmpty())
@@ -78,8 +78,8 @@ public class Simulator {
 	        	 actorState = new DepartmentPrivateState(); 
 	             break;
 	         case "Add Student":
-	        	 actorId = data.student;
-	        	 action = new AddStudent(actorId, data.department);
+	        	 actorId = data.department;
+	        	 action = new AddStudent(data.student, data.department);
 	        	 actorState = new DepartmentPrivateState(); 
 	             break;  
 	         case "Participate In Course":
@@ -125,32 +125,47 @@ public class Simulator {
        		{
        			//count down latch, an atomic counter that will count every action that been completed
        			if(remainedActionCounter.decrementAndGet() == 0)
-       				this.notifyAll();//should notify main (and all threads)
+       				synchronized(this) {
+       					this.notifyAll();//should notify main (and all threads)
+       				}
        		});
+    	return remainedActionCounter;
 	}
 	
 	private boolean SubmitActions(InputData input) {
-		submitPhaseActions(input.phase1);
+		AtomicInteger remainedActionCounter = submitPhaseActions(input.phase1);
 		try {
-			synchronized (this) {
-				wait();
-			}
-		} catch (InterruptedException e) {			}
-		
-		submitPhaseActions(input.phase2);
+			 while (remainedActionCounter.get() != 0){
+				 synchronized (this) {
+					 this.wait();
+				}
+				 }
+		} catch (InterruptedException e) {		
+			System.out.println("Error thrown");
+		}
+		System.out.println("Finish first phase");
+		remainedActionCounter = submitPhaseActions(input.phase2);
 		try {
-			synchronized (this) {
-				wait();
-			}
-		} catch (InterruptedException e) {			}
-		
-		submitPhaseActions(input.phase3);		
+			 while (remainedActionCounter.get() != 0){
+				 synchronized (this) {
+					 this.wait();
+				}
+			    }
+		} catch (InterruptedException e) {		
+			System.out.println("Error thrown");
+		}
+		System.out.println("Finish seconde phase");
+		remainedActionCounter = submitPhaseActions(input.phase3);		
 		try {
-			synchronized (this) {
-				wait();
-			}
-		} catch (InterruptedException e) {			}
-		
+			 while (remainedActionCounter.get() != 0){
+				 synchronized (this) {
+					 this.wait();
+				}
+			    }
+		} catch (InterruptedException e) {		
+			System.out.println("Error thrown");
+		}
+		System.out.println("Finish third phase");
 		return true;
 	}
 	

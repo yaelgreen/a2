@@ -175,7 +175,7 @@ public class ActorThreadPool {
 					}
 				}
 				
-				//if version await didnt interrupt us we can wait
+				//if version await didn't interrupt us we can wait
 				if(!Thread.interrupted() & runPermission)
 				{
 					try

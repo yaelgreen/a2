@@ -18,6 +18,7 @@ public class OpenANewCourse extends Action{
 	private String courseName;
 	
 	public OpenANewCourse(int spaces, List<String> arrayList, String courseName) {
+		System.out.println(this + "init open a new course "+courseName);
 		this.availableSpaces = spaces;
 		this.prerequisites = arrayList;
 		this.courseName = courseName;
@@ -25,9 +26,12 @@ public class OpenANewCourse extends Action{
 	
 	@Override
 	protected void start() {
+		System.out.println(this + "Begin open a new course "+courseName);
 		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
 		myState.getCourseList().add(courseName);
-		sendMessage(new CreateNewCourse(availableSpaces, prerequisites), courseName, new CoursePrivateState());
+		sendMessage(new CreateNewCourse(availableSpaces, prerequisites, courseName), courseName, new CoursePrivateState());
+		complete(courseName);
+		System.out.println(this + "Opened a new course "+courseName);
 	}
 
 }

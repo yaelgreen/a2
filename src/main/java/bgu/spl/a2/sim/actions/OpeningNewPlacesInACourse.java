@@ -20,6 +20,7 @@ public class OpeningNewPlacesInACourse extends Action{
 	protected void start() {
 		CoursePrivateState courseState = (CoursePrivateState) this.state;
 		courseState.setAvailableSpots(courseState.getAvailableSpots()+increase);
+		complete(course);
 	}
 
 }

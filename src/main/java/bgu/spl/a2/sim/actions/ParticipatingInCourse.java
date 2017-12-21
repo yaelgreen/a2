@@ -2,6 +2,7 @@ package bgu.spl.a2.sim.actions;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
+import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class ParticipatingInCourse extends Action {
 	
@@ -23,9 +24,9 @@ public class ParticipatingInCourse extends Action {
 	protected void start() {
 		CoursePrivateState courseState = (CoursePrivateState) this.state;
 		if (courseState.getAvailableSpots() != 0) {
-			sendMessage(new Register(course, grades),  student, null);
+			sendMessage(new Register(course, grades),  student, new StudentPrivateState());
 		}
-		
+		complete(student);
 	}
 
 }

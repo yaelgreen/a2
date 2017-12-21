@@ -13,14 +13,18 @@ public class AddStudent extends Action{
 	private String student;
 	
 	public AddStudent(String student, String department) {
+		System.out.println(this + "Int add a student "+student+" to department "+department);
 		this.student = student;
 		this.department = department;
 	}
 
 	@Override
 	protected void start() {	
+		System.out.println(this + "begin add a student "+student+" to department "+department);
 		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
 		myState.getStudentList().add(student);
+		complete(student);
+		System.out.println(this + "Added a student "+student+" to department "+department);
 	}
 	
 }

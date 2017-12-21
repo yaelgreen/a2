@@ -1,6 +1,7 @@
 package bgu.spl.a2.sim.actions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class CloseACourse extends Action{
@@ -22,7 +23,8 @@ public class CloseACourse extends Action{
 		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
 		myState.getCourseList().remove(course);
 		//call unregister for all students in course
-		sendMessage(new UnregisterAll(course), course, null);
+		sendMessage(new UnregisterAll(course), course, new CoursePrivateState());
+		complete(course);
 	}
 
 }

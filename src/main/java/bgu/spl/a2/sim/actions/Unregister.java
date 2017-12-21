@@ -5,6 +5,7 @@ import java.util.Arrays;
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
+import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class Unregister extends Action{
 	
@@ -24,12 +25,15 @@ public class Unregister extends Action{
 	@Override
 	protected void start() {
 		CoursePrivateState courseState = (CoursePrivateState) this.state;
-		if(!Arrays.asList(courseState.getRegStudents()).contains(student))
+		if(!Arrays.asList(courseState.getRegStudents()).contains(student)) {
+			complete(course);
 			return;
+		}
 		courseState.getRegStudents().remove(student);
 		courseState.setAvailableSpots(courseState.getAvailableSpots()+1);
 		courseState.setRegistered(courseState.getRegistered()-1);
-		sendMessage(new RemoveCourse(course), student, null);
+		sendMessage(new RemoveCourse(course), student, new StudentPrivateState());
+		complete(course);
 	}
 
 }

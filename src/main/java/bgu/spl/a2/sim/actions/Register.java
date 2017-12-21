@@ -18,6 +18,7 @@ public class Register extends Action {
 	protected void start() {
 		StudentPrivateState myState = (StudentPrivateState) this.state;
 		myState.getGrades().put(course, grade);
+		complete(course);
 	}
 
 }
