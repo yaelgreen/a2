@@ -30,7 +30,12 @@ public class Computer {
 	 */
 	public long checkAndSign(List<String> courses, Map<String, Integer> coursesGrades){
 		for (String course : courses) {
-			if (coursesGrades.get(course) <= 56)
+			if(coursesGrades.containsKey(course))
+			{
+				if (coursesGrades.get(course) < 56)//didn't pass the course. 			
+					return failSig;
+			}
+			else // the student didn't learn the course
 				return failSig;
 		}
 		return successSig;

@@ -4,7 +4,7 @@ import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
-public class CloseACourse extends Action{
+public class CloseACourse extends Action<Boolean>{
 	
 	//Behavior: This action should close a course. Should unregister all the registered students in the
 	//course and remove the course from the department courses' list and from the grade sheets of the
@@ -21,10 +21,16 @@ public class CloseACourse extends Action{
 	@Override
 	protected void start() {
 		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
+		if(!myState.getCourseList().contains(course))
+		{
+			complete(true);
+			return;
+		}
 		myState.getCourseList().remove(course);
 		//call unregister for all students in course
+		Action<Boolean> unReg = new UnregisterAll(course);
 		sendMessage(new UnregisterAll(course), course, new CoursePrivateState());
-		complete(course);
+		unReg.getResult().subscribe(() -> complete(unReg.getResult().get()));		
 	}
 
 }

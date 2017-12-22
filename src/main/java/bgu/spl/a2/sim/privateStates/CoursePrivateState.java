@@ -10,7 +10,8 @@ import bgu.spl.a2.PrivateState;
  * this class describe course's private state
  */
 public class CoursePrivateState extends PrivateState implements Serializable{
-	private int availableSpots;
+	
+	private int availableSpots = -1;
 	private int registered;
 	private List<String> regStudents;
 	private List<String> prequisites;
@@ -23,8 +24,6 @@ public class CoursePrivateState extends PrivateState implements Serializable{
 	public CoursePrivateState() {
 		availableSpots = 0;
 		registered = 0;
-		//are not thread safe DataStructures - MAYBE THIS?->
-		//import java.util.concurrent.CopyOnWriteArrayList;
 		regStudents = new ArrayList<String>();
 		prequisites= new ArrayList<String>();
 	}
@@ -60,5 +59,4 @@ public class CoursePrivateState extends PrivateState implements Serializable{
 	public List<String> getPrequisites() {
 		return prequisites;
 	}
-
 }

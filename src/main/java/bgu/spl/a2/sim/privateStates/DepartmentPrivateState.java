@@ -20,8 +20,6 @@ public class DepartmentPrivateState extends PrivateState implements Serializable
 	 * this may cause automatic tests to fail..
 	 */
 	public DepartmentPrivateState() {
-		//are not thread safe DataStructures - MAYBE THIS?->
-		//import java.util.concurrent.CopyOnWriteArrayList;
 		courseList = new ArrayList<String>();
 		studentList = new ArrayList<String>();
 	}

@@ -4,10 +4,9 @@ import java.util.Arrays;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
-import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
-public class Unregister extends Action{
+public class Unregister extends Action<Boolean>{
 	
 	//Behavior: If the student is enrolled in the course, this action should unregister him (update the
 	//list of students of course, remove the course from the grades sheet of the student and increases the
@@ -24,16 +23,16 @@ public class Unregister extends Action{
 
 	@Override
 	protected void start() {
-		CoursePrivateState courseState = (CoursePrivateState) this.state;
-		if(!Arrays.asList(courseState.getRegStudents()).contains(student)) {
-			complete(course);
+		CoursePrivateState courseState = (CoursePrivateState) state;
+		if(!courseState.getRegStudents().contains(student)) {
+			complete(true);
 			return;
 		}
 		courseState.getRegStudents().remove(student);
 		courseState.setAvailableSpots(courseState.getAvailableSpots()+1);
 		courseState.setRegistered(courseState.getRegistered()-1);
-		sendMessage(new RemoveCourse(course), student, new StudentPrivateState());
-		complete(course);
+		Action<Boolean> rm = new RemoveCourse(course);
+		sendMessage(rm, student, new StudentPrivateState());
+		rm.getResult().subscribe(()->complete(rm.getResult().get()));
 	}
-
 }

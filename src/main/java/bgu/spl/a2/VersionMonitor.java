@@ -1,7 +1,5 @@
 package bgu.spl.a2;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -23,50 +21,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class VersionMonitor {
 	
 	private static AtomicInteger _version = new AtomicInteger(0);
-	private static AtomicInteger _awaitVersion = new AtomicInteger(0);
-	//thread safe queue
-	private static Queue<Thread> _toNotifyList = new ConcurrentLinkedQueue<Thread>();
-	private Thread _toNotify;
-	VersionMonitor(Thread toNotify){
-		_toNotify = toNotify; 
-	}
-	
     public int getVersion() {
         return _version.get();
     }
     
     /**
-     * we will synchronized the list because we dont want threads to change the list while we iterate on it
-     * anyway it will not be important for multiple inc because of the if
+     * we need to sync on object in order to use notify all
      */
-    public static void inc() {    	    	
-    	if(_awaitVersion.get() == _version.getAndIncrement())
-    	{
-    		Thread myThread = _toNotifyList.poll();
-	    	while(myThread != null)
-	    	{
-	    		myThread.interrupt();
-	    		myThread = _toNotifyList.poll();	    		
-	    	}
-	    	_toNotifyList.clear();
+    public void inc() {    	    	
+    	_version.getAndIncrement();
+    	synchronized (this) {
+	    	this.notifyAll();
     	}
     }
 
-    /**
-     * we will synchronized the list because we dont want threads to change the list while we adding to it
-     * In addition we want to avoid sync problem between inc to the value _awaitVersion that we setting
-     * for example when doing await and in the middle of it calling from another thread inc. it can make problem to the rule
-     * whenever objects is in the list _awaitVersion.get() == _version.getAndIncrement(), more over one can be stuck in it until the next inc
-     * @param version
+    /**     
+     * This action will make the thread wait until
+     * @param version - the version we wait for to changed
      */
     public void await(int version) {
-    	if (version != _version.get())
-            	_toNotify.interrupt(); 	    		
-    	else
-    	{
-    		_awaitVersion.set(version);
-    		_toNotifyList.add(_toNotify);	    		
+    	if (version == _version.get()){
+    		synchronized (this) {
+				try {
+					this.wait();
+				} catch (InterruptedException e) {		}
+			} 
     	}
-    	
     }
 }

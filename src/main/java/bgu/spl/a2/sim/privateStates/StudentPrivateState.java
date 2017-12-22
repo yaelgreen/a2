@@ -19,7 +19,6 @@ public class StudentPrivateState extends PrivateState implements Serializable{
 	 * this may cause automatic tests to fail..
 	 */
 	public StudentPrivateState() {
-		//IS not thread safe DataStructure
 		grades = new HashMap<String, Integer>();
 	}
 
@@ -29,5 +28,9 @@ public class StudentPrivateState extends PrivateState implements Serializable{
 
 	public long getSignature() {
 		return signature;
+	}
+	
+	public void setSignature(long computerSign) {
+		signature = computerSign;
 	}
 }

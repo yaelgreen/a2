@@ -79,7 +79,7 @@ public class Simulator {
 	             break;
 	         case "Add Student":
 	        	 actorId = data.department;
-	        	 action = new AddStudent(data.student, data.department);
+	        	 action = new AddStudent(data.student);
 	        	 actorState = new DepartmentPrivateState(); 
 	             break;  
 	         case "Participate In Course":
@@ -94,7 +94,7 @@ public class Simulator {
 	        	 break;
 	         case "Administrative Check":
 	        	 actorId = data.department;
-	        	 action = new CheckAdministrativeObligations();
+	        	 action = new CheckAdministrativeObligations(data.computer, data.students, data.conditions);
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
 	        // TODO: the last three where not in the Json example
@@ -132,41 +132,36 @@ public class Simulator {
     	return remainedActionCounter;
 	}
 	
-	private boolean SubmitActions(InputData input) {
+	private void SubmitActions(InputData input) {
 		AtomicInteger remainedActionCounter = submitPhaseActions(input.phase1);
 		try {
 			 while (remainedActionCounter.get() != 0){
 				 synchronized (this) {
 					 this.wait();
 				}
-				 }
-		} catch (InterruptedException e) {		
-			System.out.println("Error thrown");
-		}
+			 }
+		} catch (InterruptedException e) {	}
 		System.out.println("Finish first phase");
+		
 		remainedActionCounter = submitPhaseActions(input.phase2);
 		try {
 			 while (remainedActionCounter.get() != 0){
 				 synchronized (this) {
 					 this.wait();
-				}
-			    }
-		} catch (InterruptedException e) {		
-			System.out.println("Error thrown");
-		}
-		System.out.println("Finish seconde phase");
+				 }
+			 }
+		} catch (InterruptedException e) {		}
+		System.out.println("Finish second phase");
+		
 		remainedActionCounter = submitPhaseActions(input.phase3);		
 		try {
 			 while (remainedActionCounter.get() != 0){
 				 synchronized (this) {
 					 this.wait();
 				}
-			    }
-		} catch (InterruptedException e) {		
-			System.out.println("Error thrown");
-		}
+			 }
+		} catch (InterruptedException e) {		}
 		System.out.println("Finish third phase");
-		return true;
 	}
 	
 	/**
@@ -175,10 +170,7 @@ public class Simulator {
     public static void start(){
     	actorThreadPool.setWarehouse(new Warehouse(input.Computers));
     	actorThreadPool.start();
-    	// Submit actions to the thread pool passed to the method attachActorThreadPool.
-    	boolean res2 = new Simulator().SubmitActions(input);
-    	//DO NOT create an ActorThreadPool in start. You need to attach the ActorThreadPool in the main
-    	//method, and then call start.
+    	new Simulator().SubmitActions(input);
     }
 	
 	/**
@@ -192,13 +184,10 @@ public class Simulator {
 	
 	/**
 	* shut down the simulation
-	* returns list of private states
+	* returns a HashMap containing all the private states of the actors -
+	* as serialized object to the "result.ser".
 	*/
-	public static HashMap<String,PrivateState> end(){
-		//shut down the simulation.
-		//returns a HashMap containing all the private states of the actors as serialized object 
-		//to the le "result.ser".
-		//TODO: Should we close actor thread pool here?
+	public static HashMap<String,PrivateState> end(){		
 		actorThreadPool.shutdown();
 		FileOutputStream fout;
 		HashMap<String,PrivateState> res = (HashMap<String, PrivateState>) actorThreadPool.getActors();
@@ -208,7 +197,6 @@ public class Simulator {
 			oos.writeObject(res);
 			oos.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res;
@@ -216,6 +204,7 @@ public class Simulator {
 	
 	
 	public static void main(String[] args) {
+		args = new String[]{"G:/Workspace/SPL/a2/Input.txt"};
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {

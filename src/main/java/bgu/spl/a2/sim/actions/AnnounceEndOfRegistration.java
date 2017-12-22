@@ -1,8 +1,13 @@
 package bgu.spl.a2.sim.actions;
 
-import bgu.spl.a2.Action;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AnnounceEndOfRegistration extends Action{
+import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.privateStates.CoursePrivateState;
+import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
+
+public class AnnounceEndOfRegistration extends Action<Boolean>{
 	
 	//Behavior: From this moment, reject any further changes in registration. And, close courses with
 	//number of students less than 5.
@@ -10,7 +15,16 @@ public class AnnounceEndOfRegistration extends Action{
 
 	@Override
 	protected void start() {
-		// Canceled	
+		// Canceled
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
+		List<Action<Boolean>> actions = new ArrayList<>();
+		for(String course : myState.getCourseList())
+		{
+			Action<Boolean> end = new EndOfRegistration(cuurActorId);//department's name
+			sendMessage(end, course, new CoursePrivateState());
+			actions.add(end);
+		}
+		
+		then(actions, () -> complete(true));	
 	}
-
 }

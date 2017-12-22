@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import bgu.spl.a2.Promise;
+
 /**
  * represents a warehouse that holds a finite amount of computers
  * and their suspended mutexes.
@@ -16,11 +18,18 @@ public class Warehouse {
 	//release it once it finished the work with the computer. If the computer is not free, the department should not
 	//be blocked. It should get a promise which will be resolved later when the computer becomes available.
 	
-	private Map<Computer, SuspendingMutex> computerAcuire = new ConcurrentHashMap<Computer, SuspendingMutex>();
+	private Map<String, SuspendingMutex> computerAcquire = new ConcurrentHashMap<String, SuspendingMutex>();
 	
 	public Warehouse(List<Computer> computers) {
 		for(Computer computer : computers)
-			computerAcuire.put(computer, new SuspendingMutex(computer));
+			computerAcquire.put(computer.computerType, new SuspendingMutex(computer));
 	}
 	
+	// returns a promiseThe department's secretary have to allocate one of the computers
+	public Promise<Computer> tryAllocate(String departmentComputer){
+		Promise<Computer> computerPromise = null;
+		if(computerAcquire.containsKey(departmentComputer))
+			computerPromise = computerAcquire.get(departmentComputer).down();
+		return computerPromise;
+	}
 }

@@ -37,6 +37,7 @@ public class ActorThreadPool {
 	private Worker[] workers;
 	private Boolean runPermission;
 	private Warehouse warehouse;
+	private VersionMonitor verMonitor = new VersionMonitor();
 	
 	public ActorThreadPool(int nthreads) {
 		workers = new Worker[nthreads];
@@ -89,7 +90,7 @@ public class ActorThreadPool {
 		if(!_actorsMap.containsKey(actorId))
 			_actorsMap.put(actorId, new Actor(actorId, actorState));		
 		_actorsMap.get(actorId).submit(action);
-		VersionMonitor.inc();
+		verMonitor.inc();
 	}
 
 	/**
@@ -105,7 +106,9 @@ public class ActorThreadPool {
 	public void shutdown() {
 		runPermission = false;
 		for(Worker currWorker : workers)
-			currWorker.interrupt();//we use sync because it is important that no one will interrupt this
+			currWorker.interrupt();
+		//we use interrupt to prevent threads from being stuck somehow in wait after the boolean change (runPermission)
+		//thing that notify can do only when the thread is waiting 
 		
 		boolean joined;
 		for(Worker currWorker : workers)
@@ -140,8 +143,6 @@ public class ActorThreadPool {
 	 */
 	private class Worker extends Thread {
 		
-		//VersionMonitor will interrupt for us
-		private VersionMonitor _verMonitor = new VersionMonitor(this);
 		private ActorThreadPool _mypool;
 		
 		private Worker(ActorThreadPool mypool){
@@ -153,15 +154,16 @@ public class ActorThreadPool {
 		 */
 		@Override
 		public void run() {
-			System.out.println(this + " has been born");
+			int lastVersion;
 			while(runPermission)
 			{
-				_verMonitor.await(_verMonitor.getVersion());
+				lastVersion = verMonitor.getVersion();
 				for(Actor actor : _actorsMap.values())
 				{
+					if(!runPermission)
+						break;
 					if(actor.tryToOccupy())
 					{
-						System.out.println(Thread.currentThread() + ", occupy actor " + actor.getId());
 						Action<?> toExecute = actor.getAction();
 						//we should check if the worker can run this one?
 						while(toExecute != null & runPermission)
@@ -171,25 +173,13 @@ public class ActorThreadPool {
 						}
 						
 						actor.releaseActor();
-						System.out.println(Thread.currentThread() + ", released actor " + actor.getId());
 					}
 				}
 				
 				//if version await didn't interrupt us we can wait
-				if(!Thread.interrupted() & runPermission)
-				{
-					try
-					{
-						System.out.println(this + " is wating");
-						synchronized (this) {
-							wait();//anyway the wait will turn the interrupt flag off
-			    		}						
-					}
-					catch(InterruptedException Ex){	}//remove syso later if needed
-					//System.out.println(this + " is awake");
-				}
+				if(runPermission)
+					verMonitor.await(lastVersion);
 			}
-			System.out.println(this + " passed out");
 		}	
 	}
 	
@@ -262,7 +252,7 @@ public class ActorThreadPool {
 		}
 		
 		/**
-		 * @return the first action in the queue without polling (for cheking)
+		 * @return the first action in the queue without polling (for checking)
 		 */
 		public Action<?> getTopAction()
 		{
