@@ -1,7 +1,6 @@
 package bgu.spl.a2.sim.actions;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.Computer;

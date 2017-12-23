@@ -7,7 +7,6 @@ import bgu.spl.a2.Action;
 import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.Computer;
 import bgu.spl.a2.sim.Warehouse;
-import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class CheckAdministrativeObligations extends Action<Boolean>{

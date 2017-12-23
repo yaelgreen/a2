@@ -9,7 +9,7 @@ public class OpeningNewPlacesInACourse extends Action<Boolean>{
 	//Actor: Must be initially submitted to the course's actor.	
 	private int increase;
 	
-	public OpeningNewPlacesInACourse(String course, int inc) {
+	public OpeningNewPlacesInACourse(int inc) {
 		increase = inc;
 	}
 

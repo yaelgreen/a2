@@ -1,7 +1,5 @@
 package bgu.spl.a2.sim.actions;
 
-import java.util.Arrays;
-
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;

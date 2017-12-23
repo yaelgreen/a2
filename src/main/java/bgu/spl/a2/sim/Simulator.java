@@ -30,6 +30,7 @@ import bgu.spl.a2.sim.actions.ParticipatingInCourse;
 import bgu.spl.a2.sim.actions.Unregister;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
+import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 /**
  * A class describing the simulator for part 2 of the assignment
@@ -107,7 +108,7 @@ public class Simulator {
 	        	 break;
 	         case "Opening New places In a Course":
 	        	 actorId = data.course;
-	        	 action = new OpeningNewPlacesInACourse(actorId, Integer.parseInt(data.space));
+	        	 action = new OpeningNewPlacesInACourse(Integer.parseInt(data.space));
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "Announce about the end of registration period":
@@ -190,21 +191,69 @@ public class Simulator {
 	public static HashMap<String,PrivateState> end(){		
 		actorThreadPool.shutdown();
 		FileOutputStream fout;
-		HashMap<String,PrivateState> res = (HashMap<String, PrivateState>) actorThreadPool.getActors();
+		HashMap<String,PrivateState> result = (HashMap<String, PrivateState>) actorThreadPool.getActors();
+		//to delete
+		for(String i : result.keySet())
+		{
+			PrivateState p = result.get(i);
+			//need actor name in every one
+			//empty action
+			//lekabetz by private state
+			if(p instanceof StudentPrivateState){				
+				System.out.println(((StudentPrivateState) p.getName()));
+				System.out.println(((StudentPrivateState) p).getGrades());
+				System.out.println(((StudentPrivateState) p).getSignature());
+			}
+			/*
+			 * "Student": "132424353",
+			  "actions" : [],
+			  "grades" : [],
+			  "signature": "0"
+			 */
+			
+			if(p instanceof CoursePrivateState){				
+				System.out.println(((CoursePrivateState) p.getName()));
+				System.out.println(((CoursePrivateState) p).getLogger());
+				System.out.println(((CoursePrivateState) p).getAvailableSpots());
+				System.out.println(((CoursePrivateState) p).getRegistered());
+				System.out.println(((CoursePrivateState) p).getRegStudents());
+				System.out.println(((CoursePrivateState) p).getPrequisites());
+			}
+			/*
+			 * "actions":["Participate In Course","Unregister"],
+				"availableSpots": "100",
+				"registered": "0",
+				"regStudents": [],
+				"prequisites" :["Intro To CS"]
+			 */
+			if(p instanceof DepartmentPrivateState){				
+				System.out.println(((DepartmentPrivateState) p.getName()));
+				System.out.println(((DepartmentPrivateState) p).getLogger());
+				System.out.println(((DepartmentPrivateState) p).getStudentList());
+				System.out.println(((DepartmentPrivateState) p).getCourseList());
+			}
+			/*
+			 * "Department" : "Math",
+				"actions":["Add Student"],
+				"courseList": [],
+				"studentList": ["132424353"]
+			 */		
+		}
+		//end to delete
 		try {
 			fout = new FileOutputStream("result.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(res);
+			oos.writeObject(result);
 			oos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return res;
+		return result;
 	}
 	
 	
 	public static void main(String[] args) {
-		args = new String[]{"G:/Workspace/SPL/a2/Input.txt"};
+		args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"};
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {
