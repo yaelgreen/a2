@@ -15,12 +15,18 @@ public class OpenANewCourse extends Action<Boolean>{
 	private final int availableSpaces;
 	private final List<String> prerequisites;
 	private final String courseName;
+	private String actionName = "Open Course";  
 	
 	public OpenANewCourse(int spaces, List<String> prerequisites, String courseName) {
 		this.availableSpaces = spaces;
 		this.prerequisites = prerequisites;
 		this.courseName = courseName;
 	}
+	
+	@Override
+    protected String getName(){
+        return actionName; 
+    }
 	
 	@Override
 	protected void start() {

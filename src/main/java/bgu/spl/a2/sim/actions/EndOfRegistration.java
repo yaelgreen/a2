@@ -6,6 +6,7 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 public class EndOfRegistration extends Action<Boolean> {
 
 	String departmentID;
+	
 	public EndOfRegistration(String departmentActorId) {
 		departmentID = departmentActorId;
 	}

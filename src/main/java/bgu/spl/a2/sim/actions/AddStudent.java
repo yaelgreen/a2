@@ -13,10 +13,16 @@ public class AddStudent extends Action<Boolean>{
 	//Actor: Must be initially submitted to the Department's actor.
 	
 	private String student;
+	private String actionName = "Add Student";	
 	
 	public AddStudent(String student) {
 		this.student = student;
 	}
+	
+	@Override
+    protected String getName(){
+        return actionName; 
+    }
 
 	@Override
 	protected void start() {

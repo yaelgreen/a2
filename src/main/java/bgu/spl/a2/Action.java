@@ -23,6 +23,10 @@ public abstract class Action<R> {
     protected String cuurActorId;
     protected PrivateState state;
     
+    protected String getName(){
+        return actionName; 
+    }    
+    
 	/**
      * start handling the action - note that this method is protected, a thread
      * cannot call it directly.
@@ -47,7 +51,7 @@ public abstract class Action<R> {
 	   state = actorState;
 	   if(myCall == null)
 	   {
-		   actorState.addRecord(actionName);//add to record every action that executed
+		   actorState.addRecord(this.getName());//add to record every action that executed
 		   start();
 	   }
 	   else

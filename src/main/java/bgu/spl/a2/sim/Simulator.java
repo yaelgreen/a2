@@ -142,7 +142,7 @@ public class Simulator {
 				}
 			 }
 		} catch (InterruptedException e) {	}
-		System.out.println("Finish first phase");
+		//System.out.println("Finish first phase");
 		
 		remainedActionCounter = submitPhaseActions(input.phase2);
 		try {
@@ -152,7 +152,7 @@ public class Simulator {
 				 }
 			 }
 		} catch (InterruptedException e) {		}
-		System.out.println("Finish second phase");
+		//System.out.println("Finish second phase");
 		
 		remainedActionCounter = submitPhaseActions(input.phase3);		
 		try {
@@ -162,7 +162,7 @@ public class Simulator {
 				}
 			 }
 		} catch (InterruptedException e) {		}
-		System.out.println("Finish third phase");
+		//System.out.println("Finish third phase");
 	}
 	
 	/**
@@ -193,53 +193,53 @@ public class Simulator {
 		FileOutputStream fout;
 		HashMap<String,PrivateState> result = (HashMap<String, PrivateState>) actorThreadPool.getActors();
 		//to delete
-		for(String i : result.keySet())
-		{
-			PrivateState p = result.get(i);
-			//need actor name in every (? super private state)
-			//empty action
-			//we need to group by by private state in the serialize file -
-			//maybe by having a static set which contain all of the departments?
-			if(p instanceof StudentPrivateState){				
-				//System.out.println(((StudentPrivateState) p.getName()));
-				System.out.println(((StudentPrivateState) p).getGrades());
-				System.out.println(((StudentPrivateState) p).getSignature());
-			}
-			/*
-			 * "Student": "132424353",
-			  "actions" : [],
-			  "grades" : [],
-			  "signature": "0"
-			 */
-			
-			if(p instanceof CoursePrivateState){				
-				//System.out.println(((CoursePrivateState) p.getName()));
-				System.out.println(((CoursePrivateState) p).getLogger());
-				System.out.println(((CoursePrivateState) p).getAvailableSpots());
-				System.out.println(((CoursePrivateState) p).getRegistered());
-				System.out.println(((CoursePrivateState) p).getRegStudents());
-				System.out.println(((CoursePrivateState) p).getPrequisites());
-			}
-			/*
-			 * "actions":["Participate In Course","Unregister"],
-				"availableSpots": "100",
-				"registered": "0",
-				"regStudents": [],
-				"prequisites" :["Intro To CS"]
-			 */
-			if(p instanceof DepartmentPrivateState){				
-				//System.out.println(((DepartmentPrivateState) p.getName()));
-				System.out.println(((DepartmentPrivateState) p).getLogger());
-				System.out.println(((DepartmentPrivateState) p).getStudentList());
-				System.out.println(((DepartmentPrivateState) p).getCourseList());
-			}
-			/*
-			 * "Department" : "Math",
-				"actions":["Add Student"],
-				"courseList": [],
-				"studentList": ["132424353"]
-			 */		
-		}
+//		for(String i : result.keySet())
+//		{
+//			PrivateState p = result.get(i);
+//			//need actor name in every (? super private state)
+//			//empty action
+//			//we need to group by by private state in the serialize file -
+//			//maybe by having a static set which contain all of the departments?
+//			if(p instanceof StudentPrivateState){				
+//				//System.out.println(((StudentPrivateState) p.getName()));
+//				//System.out.println(((StudentPrivateState) p).getGrades());
+//				//System.out.println(((StudentPrivateState) p).getSignature());
+//			}
+//			/*
+//			 * "Student": "132424353",
+//			  "actions" : [],
+//			  "grades" : [],
+//			  "signature": "0"
+//			 */
+//			
+//			if(p instanceof CoursePrivateState){				
+//				//System.out.println(((CoursePrivateState) p.getName()));
+//				//System.out.println(((CoursePrivateState) p).getLogger());
+//				//System.out.println(((CoursePrivateState) p).getAvailableSpots());
+//				//System.out.println(((CoursePrivateState) p).getRegistered());
+//				//System.out.println(((CoursePrivateState) p).getRegStudents());
+//				//System.out.println(((CoursePrivateState) p).getPrequisites());
+//			}
+//			/*
+//			 * "actions":["Participate In Course","Unregister"],
+//				"availableSpots": "100",
+//				"registered": "0",
+//				"regStudents": [],
+//				"prequisites" :["Intro To CS"]
+//			 */
+//			if(p instanceof DepartmentPrivateState){				
+//				//System.out.println(((DepartmentPrivateState) p.getName()));
+//				//System.out.println(((DepartmentPrivateState) p).getLogger());
+//				//System.out.println(((DepartmentPrivateState) p).getStudentList());
+//				//System.out.println(((DepartmentPrivateState) p).getCourseList());
+//			}
+//			/*
+//			 * "Department" : "Math",
+//				"actions":["Add Student"],
+//				"courseList": [],
+//				"studentList": ["132424353"]
+//			 */		
+//		}
 		//end to delete
 		try {
 			fout = new FileOutputStream("result.ser");

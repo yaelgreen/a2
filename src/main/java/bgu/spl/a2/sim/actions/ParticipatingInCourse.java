@@ -16,12 +16,18 @@ public class ParticipatingInCourse extends Action<Boolean> {
 	private String course;
 	private String student;
 	private String[] grades;
+	private String actionName = "Participate In Course";
 
 	public ParticipatingInCourse(String student, String course, String[] grades) {
 		this.course = course;
 		this.student = student;
 		this.grades = grades;
 	}
+	
+	@Override
+    protected String getName(){
+        return actionName; 
+    }
 
 	@Override
 	protected void start() {

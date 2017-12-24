@@ -13,10 +13,16 @@ public class CloseACourse extends Action<Boolean>{
 	//Actor: Must be initially submitted to the department's actor.
 	
 	private String course;
-	
+	private String actionName = "Close A Course";
+
 	public CloseACourse(String course) {
 		this.course = course;	
 	}
+	
+	@Override
+    protected String getName(){
+        return actionName; 
+    }
 
 	@Override
 	protected void start() {

@@ -13,11 +13,18 @@ public class Unregister extends Action<Boolean>{
 	
 	private String course;
 	private String student;
+	private String actionName = "Unregister";
+
 
 	public Unregister(String student, String course) {
 		this.course = course;
 		this.student = student;
 	}
+	
+	@Override
+    protected String getName(){
+        return actionName; 
+    }
 
 	@Override
 	protected void start() {

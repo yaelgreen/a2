@@ -33,4 +33,8 @@ public class StudentPrivateState extends PrivateState implements Serializable{
 	public void setSignature(long computerSign) {
 		signature = computerSign;
 	}
+
+	public String getGrade(String course) {
+		return Integer.toString(grades.get(course));
+	}
 }

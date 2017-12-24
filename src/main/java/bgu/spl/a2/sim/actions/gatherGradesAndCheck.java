@@ -7,6 +7,7 @@ import bgu.spl.a2.sim.Computer;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class gatherGradesAndCheck extends Action<Boolean> {
+	
 	Computer computer;
 	String[] coursesOfStudents;
 	public gatherGradesAndCheck(Computer computer, String[] conditionsOnStudents) {
