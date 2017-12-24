@@ -118,7 +118,7 @@ public class Simulator {
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "End Registeration":
-	        	 actorId = data.department;
+	        	 actorId = "";
 	        	 action = new AnnounceEndOfRegistration();
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
