@@ -19,19 +19,12 @@ public class checkPrequisites extends Action<Boolean> {
 		StudentPrivateState studentState = (StudentPrivateState) state;
 		HashMap<String, Integer> studentGrade = studentState.getGrades();
 		for (String course : prequisites) {
-			if (studentGrade.containsKey(course))
-			{
-				if(studentGrade.get(course) < 56)//hasn't passed the course
-				{
-					complete(false);
-					return;
-				}				
-			}
-			else//hasn't learnt the course
+			if (!studentGrade.containsKey(course))//hasn't learnt the course
 			{
 				complete(false);
 				return;
 			}
+			//said in the forum we should not check if the passed the prequisites
 		}
 		complete(true);
 	}

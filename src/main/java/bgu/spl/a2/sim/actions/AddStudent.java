@@ -1,7 +1,11 @@
 package bgu.spl.a2.sim.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
+import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class AddStudent extends Action<Boolean>{
 	
@@ -16,9 +20,19 @@ public class AddStudent extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
-		myState.getStudentList().add(student);
-		complete(true);
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;	
+		List<Action<Boolean>> anAction = new ArrayList<>();
+		Action<Boolean> createStudentActor = new EmptyAction();
+		
+		anAction.add(createStudentActor);
+		//we add the student to the department just after his actor been created, 
+		//we use then because we change the private-state DS and we want concurrency 
+		then(anAction, ()-> 
+		{
+			myState.getStudentList().add(student);
+			complete(true);});
+		
+		sendMessage(createStudentActor, student, new StudentPrivateState());
 	}
 	
 }

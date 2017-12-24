@@ -196,11 +196,12 @@ public class Simulator {
 		for(String i : result.keySet())
 		{
 			PrivateState p = result.get(i);
-			//need actor name in every one
+			//need actor name in every (? super private state)
 			//empty action
-			//lekabetz by private state
+			//we need to group by by private state in the serialize file -
+			//maybe by having a static set which contain all of the departments?
 			if(p instanceof StudentPrivateState){				
-				System.out.println(((StudentPrivateState) p.getName()));
+				//System.out.println(((StudentPrivateState) p.getName()));
 				System.out.println(((StudentPrivateState) p).getGrades());
 				System.out.println(((StudentPrivateState) p).getSignature());
 			}
@@ -212,7 +213,7 @@ public class Simulator {
 			 */
 			
 			if(p instanceof CoursePrivateState){				
-				System.out.println(((CoursePrivateState) p.getName()));
+				//System.out.println(((CoursePrivateState) p.getName()));
 				System.out.println(((CoursePrivateState) p).getLogger());
 				System.out.println(((CoursePrivateState) p).getAvailableSpots());
 				System.out.println(((CoursePrivateState) p).getRegistered());
@@ -227,7 +228,7 @@ public class Simulator {
 				"prequisites" :["Intro To CS"]
 			 */
 			if(p instanceof DepartmentPrivateState){				
-				System.out.println(((DepartmentPrivateState) p.getName()));
+				//System.out.println(((DepartmentPrivateState) p.getName()));
 				System.out.println(((DepartmentPrivateState) p).getLogger());
 				System.out.println(((DepartmentPrivateState) p).getStudentList());
 				System.out.println(((DepartmentPrivateState) p).getCourseList());
@@ -253,7 +254,7 @@ public class Simulator {
 	
 	
 	public static void main(String[] args) {
-		args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"};
+		// args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"}; //TODO delete it
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {
