@@ -50,6 +50,11 @@ public class ParticipatingInCourse extends Action<Boolean> {
 		List<Action<Boolean>> actionList = new ArrayList<Action<Boolean>>();
 		actionList.add(checkStudentPrequisites);
 		actionList.add(registerStudent);
+		courseState.setRegistered(courseState.getRegistered()+1);
+		courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
+		List<String> newRegisteredList = courseState.getRegStudents();
+		newRegisteredList.add(student);
+		courseState.setRegStudents(newRegisteredList);
 		then(actionList, () -> complete(registerStudent.getResult().get()));
 	}
 
