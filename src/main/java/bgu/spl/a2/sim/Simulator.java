@@ -27,6 +27,7 @@ import bgu.spl.a2.sim.actions.CloseACourse;
 import bgu.spl.a2.sim.actions.OpenANewCourse;
 import bgu.spl.a2.sim.actions.OpeningNewPlacesInACourse;
 import bgu.spl.a2.sim.actions.ParticipatingInCourse;
+import bgu.spl.a2.sim.actions.RegisterWithPreferences;
 import bgu.spl.a2.sim.actions.Unregister;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
@@ -83,6 +84,11 @@ public class Simulator {
 	        	 action = new AddStudent(data.student);
 	        	 actorState = new DepartmentPrivateState(); 
 	             break;  
+	         case "Register With Preferences":
+	        	 actorId = data.student;
+	        	 action = new RegisterWithPreferences(data.student, data.preferences, data.grade);
+	        	 actorState = new StudentPrivateState();
+	        	 break;
 	         case "Participate In Course":
 	        	 actorId = data.course;
 	        	 action = new ParticipatingInCourse(data.student, actorId, data.grade);

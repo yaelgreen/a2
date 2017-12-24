@@ -13,7 +13,7 @@ public class ParticipatingInCourse extends Action<Boolean> {
 	//course to the grades sheet of the student, and give him a grade if supplied. See the input example.
 	//Actor: Must be initially submitted to the course's actor.
 	
-	private String course; //TODO: need to change to String[] course
+	private String course; 
 	private String student;
 	private String[] grades;
 	private String actionName = "Participate In Course";
@@ -32,7 +32,6 @@ public class ParticipatingInCourse extends Action<Boolean> {
 	@Override
 	protected void start() {
 		CoursePrivateState courseState = (CoursePrivateState) state;
-		//TODO: need to add here a loop on course names. if first dosen't work go to next one. 
 		if(courseState.getAvailableSpots() <= 0)
 		{
 			complete(false);
