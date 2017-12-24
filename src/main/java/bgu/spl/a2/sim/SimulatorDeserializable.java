@@ -23,7 +23,7 @@ public class SimulatorDeserializable  {
     @Test
     public void main() {
         //todo change the name of the file in the next line for the name you have
-        Simulator.main(new String[]{"Input.txt"});
+        Simulator.main(new String[]{"Input2.txt"});
         try ( InputStream fin = new FileInputStream("result.ser");
               ObjectInputStream ois = new ObjectInputStream(fin)){
             HashMap data = (HashMap) ois.readObject();

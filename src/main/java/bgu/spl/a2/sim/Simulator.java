@@ -107,17 +107,17 @@ public class Simulator {
 	        // TODO: the last three where not in the Json example
 	        // verify if there should be an option to call them from the Json file
 	        // and if the answer is yes, verify the correct Names
-	         case "Close A Course":
+	         case "Close Course":
 	        	 actorId = data.course;
 	        	 action = new CloseACourse(actorId);
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
-	         case "Opening New places In a Course":
+	         case "Add Spaces":
 	        	 actorId = data.course;
-	        	 action = new OpeningNewPlacesInACourse(Integer.parseInt(data.space));
+	        	 action = new OpeningNewPlacesInACourse(Integer.parseInt(data.number));
 	        	 actorState = new CoursePrivateState();
 	        	 break;
-	         case "Announce about the end of registration period":
+	         case "End Registeration":
 	        	 actorId = data.department;
 	        	 action = new AnnounceEndOfRegistration();
 	        	 actorState = new DepartmentPrivateState(); 

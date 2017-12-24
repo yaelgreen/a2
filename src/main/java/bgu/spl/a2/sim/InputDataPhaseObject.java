@@ -14,5 +14,6 @@ public class InputDataPhaseObject {
 	@SerializedName("Conditions") String[] conditions;
 	@SerializedName("Computer") String computer;
 	@SerializedName("Students") String[] students;
-	@SerializedName("Preferences")String[] preferences;
+	@SerializedName("Preferences") String[] preferences;
+	@SerializedName("Number") String number;
 }
