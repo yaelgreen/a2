@@ -13,6 +13,7 @@ public class CreateNewCourse extends Action<Boolean> {
 	public CreateNewCourse(int availableSpaces, List<String> prerequisites) {
 		this.availableSpaces = availableSpaces;
 		this.prerequisites = prerequisites;
+		setActionName("Create New Course");
 	}
 
 	@Override

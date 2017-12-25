@@ -20,18 +20,13 @@ public class CheckAdministrativeObligations extends Action<Boolean>{
 	String[] studentsToSign;
 	String[] conditionsOnStudents;
 	Promise<Computer> myComputerPromise;
-	private String actionName = "Administrative Check";
 	
 	public CheckAdministrativeObligations(String computer, String[] students, String[] conditions) {
 		neededComputer = computer;
 		studentsToSign = students;
 		conditionsOnStudents = conditions;
+		setActionName("Administrative Check");
 	}
-	
-	@Override
-    protected String getName(){
-        return actionName; 
-    }
 
 	@Override
 	protected void start() {

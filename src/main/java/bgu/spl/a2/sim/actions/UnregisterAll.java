@@ -17,6 +17,7 @@ public class UnregisterAll extends Action<Boolean>{
 	 */
 	public UnregisterAll(String course) {
 		this.course = course;
+		setActionName("UnregisterAll");
 	}
 
 	@Override

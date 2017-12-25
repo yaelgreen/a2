@@ -4,9 +4,7 @@ import bgu.spl.a2.PrivateState;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.Timeout;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,19 +12,17 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
+//TODO DELETE
 /**
  * @author nadav.
  */
-public class SimulatorDeserializable  {
-    //@Rule
-    //public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
+public class SimulatorDeserializable  {    
     @Test
     public void main() {
-        //todo change the name of the file in the next line for the name you have
         Simulator.main(new String[]{"Input2.txt"});
         try ( InputStream fin = new FileInputStream("result.ser");
               ObjectInputStream ois = new ObjectInputStream(fin)){
-            HashMap data = (HashMap) ois.readObject();
+            HashMap<?, ?> data = (HashMap<?, ?>) ois.readObject();
             data.forEach((actor ,state)->{
                 System.out.println(actor+": ");
                 System.out.print("History: ");

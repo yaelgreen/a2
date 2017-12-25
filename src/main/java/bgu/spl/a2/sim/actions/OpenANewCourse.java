@@ -21,12 +21,8 @@ public class OpenANewCourse extends Action<Boolean>{
 		this.availableSpaces = spaces;
 		this.prerequisites = prerequisites;
 		this.courseName = courseName;
+		setActionName("Open Course");
 	}
-	
-	@Override
-    protected String getName(){
-        return actionName; 
-    }
 	
 	@Override
 	protected void start() {

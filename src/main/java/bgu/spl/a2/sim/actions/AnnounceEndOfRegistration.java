@@ -11,14 +11,11 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 	
 	//Behavior: From this moment, reject any further changes in registration. And, close courses with
 	//number of students less than 5.
-	//Actor: Must be initially submitted to the department's actor.
-	
-	private String actionName = "Announce about the end of registration period";
+	//Actor: Must be initially submitted to the department's actor.	
 
-	@Override
-    protected String getName(){
-        return actionName; 
-    }
+	public AnnounceEndOfRegistration(){
+		setActionName("AnnounceEndOfRegistration");
+	}
 
 	@Override
 	protected void start() {

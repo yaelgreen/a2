@@ -13,6 +13,7 @@ public class gatherGradesAndCheck extends Action<Boolean> {
 	public gatherGradesAndCheck(Computer computer, String[] conditionsOnStudents) {
 		this.computer = computer;
 		this.coursesOfStudents = conditionsOnStudents;
+		setActionName("gather grades and check");
 	}
 
 	/**

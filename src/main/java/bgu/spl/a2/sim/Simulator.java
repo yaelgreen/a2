@@ -67,7 +67,7 @@ public class Simulator {
 		List<Action<?>> phaseList = new ArrayList<Action<?>>();
 		for (InputDataPhaseObject data : phase) {
 			if (data.action.isEmpty())
-				break;
+				continue;
 			Action<?> action = null;
 			String actorId = null;
 			PrivateState actorState = null;
@@ -103,10 +103,7 @@ public class Simulator {
 	        	 actorId = data.department;
 	        	 action = new CheckAdministrativeObligations(data.computer, data.students, data.conditions);
 	        	 actorState = new DepartmentPrivateState(); 
-	        	 break;
-	        // TODO: the last three where not in the Json example
-	        // verify if there should be an option to call them from the Json file
-	        // and if the answer is yes, verify the correct Names
+	        	 break;	        
 	         case "Close Course":
 	        	 actorId = data.course;
 	        	 action = new CloseACourse(actorId);
@@ -118,7 +115,7 @@ public class Simulator {
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "End Registeration":
-	        	 actorId = "";
+	        	 actorId = "";//will not work without actor
 	        	 action = new AnnounceEndOfRegistration();
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
@@ -148,7 +145,6 @@ public class Simulator {
 				}
 			 }
 		} catch (InterruptedException e) {	}
-		//System.out.println("Finish first phase");
 		
 		remainedActionCounter = submitPhaseActions(input.phase2);
 		try {
@@ -158,7 +154,6 @@ public class Simulator {
 				 }
 			 }
 		} catch (InterruptedException e) {		}
-		//System.out.println("Finish second phase");
 		
 		remainedActionCounter = submitPhaseActions(input.phase3);		
 		try {
@@ -168,7 +163,6 @@ public class Simulator {
 				}
 			 }
 		} catch (InterruptedException e) {		}
-		//System.out.println("Finish third phase");
 	}
 	
 	/**
@@ -198,55 +192,6 @@ public class Simulator {
 		actorThreadPool.shutdown();
 		FileOutputStream fout;
 		HashMap<String,PrivateState> result = (HashMap<String, PrivateState>) actorThreadPool.getActors();
-		//to delete
-//		for(String i : result.keySet())
-//		{
-//			PrivateState p = result.get(i);
-//			//need actor name in every (? super private state)
-//			//empty action
-//			//we need to group by by private state in the serialize file -
-//			//maybe by having a static set which contain all of the departments?
-//			if(p instanceof StudentPrivateState){				
-//				//System.out.println(((StudentPrivateState) p.getName()));
-//				//System.out.println(((StudentPrivateState) p).getGrades());
-//				//System.out.println(((StudentPrivateState) p).getSignature());
-//			}
-//			/*
-//			 * "Student": "132424353",
-//			  "actions" : [],
-//			  "grades" : [],
-//			  "signature": "0"
-//			 */
-//			
-//			if(p instanceof CoursePrivateState){				
-//				//System.out.println(((CoursePrivateState) p.getName()));
-//				//System.out.println(((CoursePrivateState) p).getLogger());
-//				//System.out.println(((CoursePrivateState) p).getAvailableSpots());
-//				//System.out.println(((CoursePrivateState) p).getRegistered());
-//				//System.out.println(((CoursePrivateState) p).getRegStudents());
-//				//System.out.println(((CoursePrivateState) p).getPrequisites());
-//			}
-//			/*
-//			 * "actions":["Participate In Course","Unregister"],
-//				"availableSpots": "100",
-//				"registered": "0",
-//				"regStudents": [],
-//				"prequisites" :["Intro To CS"]
-//			 */
-//			if(p instanceof DepartmentPrivateState){				
-//				//System.out.println(((DepartmentPrivateState) p.getName()));
-//				//System.out.println(((DepartmentPrivateState) p).getLogger());
-//				//System.out.println(((DepartmentPrivateState) p).getStudentList());
-//				//System.out.println(((DepartmentPrivateState) p).getCourseList());
-//			}
-//			/*
-//			 * "Department" : "Math",
-//				"actions":["Add Student"],
-//				"courseList": [],
-//				"studentList": ["132424353"]
-//			 */		
-//		}
-		//end to delete
 		try {
 			fout = new FileOutputStream("result.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);

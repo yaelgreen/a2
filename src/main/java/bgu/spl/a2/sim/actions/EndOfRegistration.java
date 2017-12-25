@@ -9,6 +9,7 @@ public class EndOfRegistration extends Action<Boolean> {
 	
 	public EndOfRegistration(String departmentActorId) {
 		departmentID = departmentActorId;
+		setActionName("End Of Registration");
 	}
 
 	@Override

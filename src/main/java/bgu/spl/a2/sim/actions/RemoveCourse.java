@@ -14,6 +14,7 @@ public class RemoveCourse extends Action<Boolean>{
 	 */
 	public RemoveCourse(String course) {
 		this.course = course;
+		setActionName("Remove Course");
 	}
 
 	@Override

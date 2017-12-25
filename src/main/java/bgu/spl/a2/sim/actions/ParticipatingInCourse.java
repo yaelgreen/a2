@@ -16,18 +16,13 @@ public class ParticipatingInCourse extends Action<Boolean> {
 	private String course; 
 	private String student;
 	private String[] grades;
-	private String actionName = "Participate In Course";
 
 	public ParticipatingInCourse(String student, String course, String[] grades) {
 		this.course = course;
 		this.student = student;
 		this.grades = grades;
+		setActionName("Participate In Course");
 	}
-	
-	@Override
-    protected String getName(){
-        return actionName; 
-    }
 
 	@Override
 	protected void start() {
@@ -39,29 +34,27 @@ public class ParticipatingInCourse extends Action<Boolean> {
 		}
 		Action<Boolean> checkStudentPrequisites = new checkPrequisites(courseState.getPrequisites());
 		Action<Boolean> registerStudent = new Register(course, grades);
-		Action<Boolean> checkCourseHasRoom = new CheckCourseHasRoom(student);
-		checkStudentPrequisites.getResult().subscribe(()->
-		{
-			if(checkStudentPrequisites.getResult().get()) {
-				checkCourseHasRoom.getResult().subscribe(()->
-				{
-					if (checkCourseHasRoom.getResult().get()) {
-						sendMessage(checkCourseHasRoom, course, new CoursePrivateState());
-						sendMessage(registerStudent, student, new StudentPrivateState());
-					}
-					else
-						checkCourseHasRoom.getResult().resolve(false);
-				});
-			}
-			else//didn't have all the Prequisites
-				registerStudent.getResult().resolve(false);
-		});
+		
 		sendMessage(checkStudentPrequisites, student, new StudentPrivateState());
+		
 		List<Action<Boolean>> actionList = new ArrayList<Action<Boolean>>();
 		actionList.add(checkStudentPrequisites);
-		actionList.add(registerStudent);
-		actionList.add(checkCourseHasRoom);
-		then(actionList, () -> complete(registerStudent.getResult().get()));
+		
+		//if student have the prequisites we check if there is available seat for him,
+		//and if there is we will save a seat for him and ask him actor to register him
+		then(actionList, () -> {
+			if (!checkStudentPrequisites.getResult().get() | courseState.getAvailableSpots() <= 0 ) {
+				complete(false);
+				return;
+			}
+			courseState.setRegistered(courseState.getRegistered()+1);
+			courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
+			List<String> newRegisteredList = courseState.getRegStudents();
+			newRegisteredList.add(student);
+			courseState.setRegStudents(newRegisteredList);
+			sendMessage(registerStudent, student, new StudentPrivateState());
+			registerStudent.getResult().subscribe(()->complete(true));;
+		});
 	}
 
 }
