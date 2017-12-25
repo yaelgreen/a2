@@ -71,12 +71,12 @@ public class TestOpenNewPlacesInCourse {
 	}
 
 	private void submitAllStudents() {
-		testActorThreadPool.submit(new ParticipatingInCourse("111", "courseA", new String[]{"10"}), "courseA", null);
-		testActorThreadPool.submit(new ParticipatingInCourse("111", "courseB", new String[]{"20"}), "courseB", null);
-		testActorThreadPool.submit(new ParticipatingInCourse("222", "courseA", new String[]{"30"}), "courseA", null);
-		testActorThreadPool.submit(new ParticipatingInCourse("222", "courseB", new String[]{"40"}), "courseB", null);
-		testActorThreadPool.submit(new ParticipatingInCourse("333", "courseA", new String[]{"50"}), "courseA", null);
-		testActorThreadPool.submit(new ParticipatingInCourse("333", "courseB", new String[]{"60"}), "courseB", null);		
+		testActorThreadPool.submit(new ParticipatingInCourse("111", new String[]{"10"}), "courseA", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("111", new String[]{"20"}), "courseB", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"30"}), "courseA", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"40"}), "courseB", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"50"}), "courseA", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"60"}), "courseB", null);		
 	}
 
 	private void testCourse(String string, int expected, int expectedSpots) {

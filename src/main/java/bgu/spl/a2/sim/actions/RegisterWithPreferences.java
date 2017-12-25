@@ -3,14 +3,13 @@ package bgu.spl.a2.sim.actions;
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
+//start at student actor
 public class RegisterWithPreferences extends Action<Boolean> {
 	
-	private String student;
 	private String[] preferences;
 	private String[] grade;
 
-	public RegisterWithPreferences(String student, String[] preferences, String[] grade) {
-		this.student = student;
+	public RegisterWithPreferences(String[] preferences, String[] grade) {
 		this.preferences = preferences;
 		this.grade = grade;
 		setActionName("Register With Preferences");
@@ -19,15 +18,16 @@ public class RegisterWithPreferences extends Action<Boolean> {
 	//register a student to one from his preferred courses by with priority to the first courses
 	@Override
 	protected void start() {
-		Action<Boolean> first = new ParticipatingInCourse(student, preferences[0], new String[]{grade[0]});
+		Action<Boolean> first = new ParticipatingInCourse(cuurActorId, new String[]{grade[0]});
 		Action<Boolean> lastCourse = first;
 		//create a list of calls one by one
 		for (int i = 1 ; i < preferences.length - 1; i++) {
-			Action<Boolean> currCourse = new ParticipatingInCourse(student, preferences[i], new String[]{grade[i]});
+			Action<Boolean> currCourse = new ParticipatingInCourse(cuurActorId, new String[]{grade[i]});
 			String actorId = preferences[i];
+			Action<Boolean> copyLast = lastCourse;
 			lastCourse.getResult().subscribe(()->
 			{
-				if(getResult().get()) 
+				if(copyLast.getResult().get()) 
 					complete(true);				
 				else
 					sendMessage(currCourse, actorId, new CoursePrivateState());

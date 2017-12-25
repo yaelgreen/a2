@@ -11,12 +11,10 @@ public class Unregister extends Action<Boolean>{
 	//number of available spaces).
 	//Actor: Must be initially submitted to the course's actor.
 	
-	private String course;
 	private String student;
 
 
-	public Unregister(String student, String course) {
-		this.course = course;
+	public Unregister(String student) {
 		this.student = student;
 		setActionName("Unregister");
 	}
@@ -31,7 +29,7 @@ public class Unregister extends Action<Boolean>{
 		courseState.getRegStudents().remove(student);
 		courseState.setAvailableSpots(courseState.getAvailableSpots()+1);
 		courseState.setRegistered(courseState.getRegistered()-1);
-		Action<Boolean> rm = new RemoveCourse(course);
+		Action<Boolean> rm = new RemoveCourse(cuurActorId);
 		sendMessage(rm, student, new StudentPrivateState());
 		rm.getResult().subscribe(()->complete(rm.getResult().get()));
 	}

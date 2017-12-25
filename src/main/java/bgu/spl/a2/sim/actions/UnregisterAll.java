@@ -7,16 +7,13 @@ import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 public class UnregisterAll extends Action<Boolean>{
-	
-	private String course;
-	
+		
 	/**
 	 * Constructor
 	 * this action will unregister all the students from the course
 	 * @param course - the course to unregister students from
 	 */
-	public UnregisterAll(String course) {
-		this.course = course;
+	public UnregisterAll() {
 		setActionName("UnregisterAll");
 	}
 
@@ -25,8 +22,8 @@ public class UnregisterAll extends Action<Boolean>{
 		CoursePrivateState myState = (CoursePrivateState) this.state;
 		List<Action<Boolean>> actions = new ArrayList<>();
 		for (String student : myState.getRegStudents()) {
-			Action<Boolean> unregisterAction = new Unregister(student, course);
-			sendMessage(unregisterAction, course, new CoursePrivateState());
+			Action<Boolean> unregisterAction = new Unregister(student);
+			sendMessage(unregisterAction, cuurActorId, new CoursePrivateState());
 			actions.add(unregisterAction);
 		}		
 		then(actions, ()->{

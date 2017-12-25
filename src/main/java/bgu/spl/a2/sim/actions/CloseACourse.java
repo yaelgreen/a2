@@ -29,8 +29,8 @@ public class CloseACourse extends Action<Boolean>{
 		}
 		myState.getCourseList().remove(course);
 		//call unregister for all students in course
-		Action<Boolean> unReg = new UnregisterAll(course);
-		sendMessage(new UnregisterAll(course), course, new CoursePrivateState());
+		Action<Boolean> unReg = new UnregisterAll();
+		sendMessage(unReg, course, new CoursePrivateState());
 		unReg.getResult().subscribe(() -> complete(unReg.getResult().get()));		
 	}
 

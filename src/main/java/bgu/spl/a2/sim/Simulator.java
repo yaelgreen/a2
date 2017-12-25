@@ -86,17 +86,17 @@ public class Simulator {
 	             break;  
 	         case "Register With Preferences":
 	        	 actorId = data.student;
-	        	 action = new RegisterWithPreferences(data.student, data.preferences, data.grade);
+	        	 action = new RegisterWithPreferences(data.preferences, data.grade);
 	        	 actorState = new StudentPrivateState();
 	        	 break;
 	         case "Participate In Course":
 	        	 actorId = data.course;
-	        	 action = new ParticipatingInCourse(data.student, actorId, data.grade);
+	        	 action = new ParticipatingInCourse(data.student, data.grade);
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "Unregister":
 	        	 actorId = data.course;
-	        	 action = new Unregister(data.student, actorId);
+	        	 action = new Unregister(data.student);
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "Administrative Check":

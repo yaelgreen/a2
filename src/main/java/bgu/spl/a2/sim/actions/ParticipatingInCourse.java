@@ -13,12 +13,10 @@ public class ParticipatingInCourse extends Action<Boolean> {
 	//course to the grades sheet of the student, and give him a grade if supplied. See the input example.
 	//Actor: Must be initially submitted to the course's actor.
 	
-	private String course; 
 	private String student;
 	private String[] grades;
 
-	public ParticipatingInCourse(String student, String course, String[] grades) {
-		this.course = course;
+	public ParticipatingInCourse(String student, String[] grades) {
 		this.student = student;
 		this.grades = grades;
 		setActionName("Participate In Course");
@@ -37,14 +35,13 @@ public class ParticipatingInCourse extends Action<Boolean> {
 			complete(false);
 			return;
 		}
-		Action<Boolean> checkStudentPrequisites = new checkPrequisites(courseState.getPrequisites());
-		Action<Boolean> registerStudent = new Register(course, grades);
-		
+		Action<Boolean> checkStudentPrequisites = new checkPrequisites(courseState.getPrequisites());		
 		sendMessage(checkStudentPrequisites, student, new StudentPrivateState());
 		
 		List<Action<Boolean>> actionList = new ArrayList<Action<Boolean>>();
-		actionList.add(checkStudentPrequisites);
-		
+		actionList.add(checkStudentPrequisites);		
+
+		Action<Boolean> registerStudent = new Register(cuurActorId, grades);
 		//if student have the prequisites we check if there is available seat for him,
 		//and if there is we will save a seat for him and ask him actor to register him
 		then(actionList, () -> {
@@ -54,9 +51,7 @@ public class ParticipatingInCourse extends Action<Boolean> {
 			}
 			courseState.setRegistered(courseState.getRegistered()+1);
 			courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
-			List<String> newRegisteredList = courseState.getRegStudents();
-			newRegisteredList.add(student);
-			courseState.setRegStudents(newRegisteredList);
+			courseState.getRegStudents().add(student);
 			sendMessage(registerStudent, student, new StudentPrivateState());
 			registerStudent.getResult().subscribe(()->complete(true));;
 		});
