@@ -22,6 +22,10 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 		// Canceled
 		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;
 		List<Action<Boolean>> actions = new ArrayList<>();
+		if (myState.getCourseList().isEmpty()) {
+			complete(true);
+			return;
+		}
 		for(String course : myState.getCourseList())
 		{
 			Action<Boolean> end = new EndOfRegistration(currentActorId);//department's name
@@ -29,6 +33,6 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 			actions.add(end);
 		}
 		
-		then(actions, () -> complete(true));	
+		then(actions, () -> complete(true));
 	}
 }
