@@ -19,11 +19,11 @@ public class UnregisterAll extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		CoursePrivateState myState = (CoursePrivateState) this.state;
+		CoursePrivateState myState = (CoursePrivateState) this.currentState;
 		List<Action<Boolean>> actions = new ArrayList<>();
 		for (String student : myState.getRegStudents()) {
 			Action<Boolean> unregisterAction = new Unregister(student);
-			sendMessage(unregisterAction, cuurActorId, new CoursePrivateState());
+			sendMessage(unregisterAction, currentActorId, new CoursePrivateState());
 			actions.add(unregisterAction);
 		}		
 		then(actions, ()->{

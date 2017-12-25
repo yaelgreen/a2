@@ -30,7 +30,7 @@ public class CheckAdministrativeObligations extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		Warehouse myWarehouse = currpool.getWarehouse();		
+		Warehouse myWarehouse = currentpool.getWarehouse();	
 		List<Action<Boolean>> actions = new ArrayList<>();
 		myComputerPromise = myWarehouse.tryAllocate(neededComputer);
 		//when we get the computer each student will do as followed
@@ -42,8 +42,6 @@ public class CheckAdministrativeObligations extends Action<Boolean>{
 			}
 			then(actions, ()->complete(true));
 		});
-				
-		complete(true);
 	}
 
 }

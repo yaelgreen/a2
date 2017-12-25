@@ -13,7 +13,7 @@ public class Computer {
 	//and the other to sign the he does not.
 
 	@SerializedName("Type") String computerType;
-	@SerializedName("Sig  Fail") long failSig;
+	@SerializedName("Sig Fail") long failSig;
 	@SerializedName("Sig Success") long successSig;
 	
 	public Computer(String computerType) {

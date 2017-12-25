@@ -24,7 +24,7 @@ public class ParticipatingInCourse extends Action<Boolean> {
 
 	@Override
 	protected void start() {
-		CoursePrivateState courseState = (CoursePrivateState) state;
+		CoursePrivateState courseState = (CoursePrivateState) currentState;
 		if(courseState.getRegStudents().contains(student))
 		{
 			complete(true);
@@ -41,7 +41,7 @@ public class ParticipatingInCourse extends Action<Boolean> {
 		List<Action<Boolean>> actionList = new ArrayList<Action<Boolean>>();
 		actionList.add(checkStudentPrequisites);		
 
-		Action<Boolean> registerStudent = new Register(cuurActorId, grades);
+		Action<Boolean> registerStudent = new Register(currentActorId, grades);
 		//if student have the prequisites we check if there is available seat for him,
 		//and if there is we will save a seat for him and ask him actor to register him
 		then(actionList, () -> {

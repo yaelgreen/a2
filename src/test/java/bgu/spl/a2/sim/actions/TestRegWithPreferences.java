@@ -18,9 +18,11 @@ public class TestRegWithPreferences {
 		testActorThreadPool.start();
 		testActorThreadPool.submit(new AddStudent("111"), "bio", new DepartmentPrivateState());
 		testActorThreadPool.submit(new AddStudent("222"), "chem", new DepartmentPrivateState());
+		testActorThreadPool.submit(new AddStudent("333"), "chem", new DepartmentPrivateState());
 		testActorThreadPool.submit(new OpenANewCourse(1, new LinkedList<>(), "courseA"), "bio", new DepartmentPrivateState());
 		testActorThreadPool.submit(new OpenANewCourse(1, new LinkedList<>(), "courseB"), "chem", new DepartmentPrivateState());
 		LinkedList<String> preCourses = new LinkedList<>();
+		preCourses.add("courseB");
 		testActorThreadPool.submit(new OpenANewCourse(2, preCourses, "courseC"), "chem", new DepartmentPrivateState());		
 	}	
 	
@@ -44,7 +46,7 @@ public class TestRegWithPreferences {
 		//111 - > courseA
 		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "111", null);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 0, 1);
@@ -55,56 +57,57 @@ public class TestRegWithPreferences {
 		isLearning("222", "courseB", false);
 		isLearning("111", "courseC", false);
 		isLearning("222", "courseC", false);
-		//111 - > courseB
-		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "111", null);
+		//222 - > courseB
+		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "222", null);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 1, 0);
 		testCourse("courseC", 0, 2);
 		isLearning("111", "courseA", true);
 		isLearning("222", "courseA", false);
-		isLearning("111", "courseB", true);
-		isLearning("222", "courseB", false);
+		isLearning("111", "courseB", false);
+		isLearning("222", "courseB", true);
 		isLearning("111", "courseC", false);
 		isLearning("222", "courseC", false);
-		//111 - > courseC
+		//222 - > courseC
 		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "222", null);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 1, 0);
 		testCourse("courseC", 1, 1);
 		isLearning("111", "courseA", true);
 		isLearning("222", "courseA", false);
-		isLearning("111", "courseB", true);
-		isLearning("222", "courseB", false);
+		isLearning("111", "courseB", false);
+		isLearning("222", "courseB", true);
 		isLearning("111", "courseC", false);
 		isLearning("222", "courseC", true);
-		//111 - > courseC
-		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "111", null);
+		//333 - > nothing
+		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "333", null);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 1, 0);
-		testCourse("courseC", 2, 0);
+		testCourse("courseC", 1, 1);
 		isLearning("111", "courseA", true);
 		isLearning("222", "courseA", false);
-		isLearning("111", "courseB", true);
-		isLearning("222", "courseB", false);
-		isLearning("111", "courseC", true);
+		isLearning("333", "courseA", false);
+		isLearning("111", "courseB", false);
+		isLearning("222", "courseB", true);
+		isLearning("333", "courseB", false);
+		isLearning("111", "courseC", false);
 		isLearning("222", "courseC", true);
+		isLearning("333", "courseC", false);
 	}
 	
-	private void testCourse(String string, int expected, int expectedSpots) {
-		CoursePrivateState course = (CoursePrivateState) testActorThreadPool.getPrivateState(string);
-		//System.out.println(course.getRegistered() + " " + course.getAvailableSpots() + " " + course.getRegStudents());
-		//System.out.println(expected + " " + expectedSpots + "\n");
+	private void testCourse(String actorid, int expected, int expectedSpots) {
+		CoursePrivateState course = (CoursePrivateState) testActorThreadPool.getPrivateState(actorid);
+		System.out.println(actorid);
 		Assert.assertTrue(course.getAvailableSpots() == expectedSpots);
-		Assert.assertTrue(course.getPrequisites().isEmpty());
 		Assert.assertTrue(course.getRegistered() == expected);
 		Assert.assertTrue(course.getRegStudents().size() == expected);	
 	}

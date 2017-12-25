@@ -16,7 +16,7 @@ public class OpeningNewPlacesInACourse extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		CoursePrivateState courseState = (CoursePrivateState) state;
+		CoursePrivateState courseState = (CoursePrivateState) currentState;
 		courseState.setAvailableSpots(courseState.getAvailableSpots() + increase);
 		complete(true);
 	}

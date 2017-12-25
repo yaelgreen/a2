@@ -18,7 +18,7 @@ public class CreateNewCourse extends Action<Boolean> {
 
 	@Override
 	protected void start() {
-		CoursePrivateState myState = (CoursePrivateState) this.state;
+		CoursePrivateState myState = (CoursePrivateState) this.currentState;
 		myState.setAvailableSpots(availableSpaces);
 		myState.setPrequisites(prerequisites);
 		complete(true);

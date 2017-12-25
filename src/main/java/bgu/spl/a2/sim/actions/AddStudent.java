@@ -21,7 +21,7 @@ public class AddStudent extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;	
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;			
 		List<Action<Boolean>> anAction = new ArrayList<>();
 		Action<Boolean> createStudentActor = new EmptyAction();
 		
@@ -34,6 +34,5 @@ public class AddStudent extends Action<Boolean>{
 			complete(true);});
 		
 		sendMessage(createStudentActor, student, new StudentPrivateState());
-	}
-	
+	}	
 }

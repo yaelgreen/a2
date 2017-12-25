@@ -105,7 +105,7 @@ public class Simulator {
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;	        
 	         case "Close Course":
-	        	 actorId = data.course;
+	        	 actorId = data.department;
 	        	 action = new CloseACourse(actorId);
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
@@ -145,7 +145,6 @@ public class Simulator {
 				}
 			 }
 		} catch (InterruptedException e) {	}
-		
 		remainedActionCounter = submitPhaseActions(input.phase2);
 		try {
 			 while (remainedActionCounter.get() != 0){
@@ -154,7 +153,6 @@ public class Simulator {
 				 }
 			 }
 		} catch (InterruptedException e) {		}
-		
 		remainedActionCounter = submitPhaseActions(input.phase3);		
 		try {
 			 while (remainedActionCounter.get() != 0){
@@ -205,7 +203,8 @@ public class Simulator {
 	
 	
 	public static void main(String[] args) {
-		// args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"}; //TODO delete it
+		//args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"}; //TODO delete it
+		args = new String[]{"G:/Workspace/SPL/a2/input.txt"};		//INPUT2 WONT RUN :( the problem is undeclered private state
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {

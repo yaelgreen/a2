@@ -18,11 +18,11 @@ public class RegisterWithPreferences extends Action<Boolean> {
 	//register a student to one from his preferred courses by with priority to the first courses
 	@Override
 	protected void start() {
-		Action<Boolean> first = new ParticipatingInCourse(cuurActorId, new String[]{grade[0]});
+		Action<Boolean> first = new ParticipatingInCourse(currentActorId, new String[]{grade[0]});
 		Action<Boolean> lastCourse = first;
 		//create a list of calls one by one
-		for (int i = 1 ; i < preferences.length - 1; i++) {
-			Action<Boolean> currCourse = new ParticipatingInCourse(cuurActorId, new String[]{grade[i]});
+		for (int i = 1 ; i < preferences.length; i++) {
+			Action<Boolean> currCourse = new ParticipatingInCourse(currentActorId, new String[]{grade[i]});
 			String actorId = preferences[i];
 			Action<Boolean> copyLast = lastCourse;
 			lastCourse.getResult().subscribe(()->
@@ -35,9 +35,10 @@ public class RegisterWithPreferences extends Action<Boolean> {
 			lastCourse = currCourse;
 		}
 		//if no one succeeded complete(false)
+		Action<Boolean> copyLast = lastCourse;
 		lastCourse.getResult().subscribe(()->
 		{
-			if(getResult().get()) 
+			if(copyLast.getResult().get()) 
 				complete(true);				
 			else
 				complete(false);

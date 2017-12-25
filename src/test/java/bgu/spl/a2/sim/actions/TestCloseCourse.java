@@ -1,7 +1,6 @@
 package bgu.spl.a2.sim.actions;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;

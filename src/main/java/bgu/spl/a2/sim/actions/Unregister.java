@@ -21,7 +21,7 @@ public class Unregister extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		CoursePrivateState courseState = (CoursePrivateState) state;
+		CoursePrivateState courseState = (CoursePrivateState) currentState;		
 		if(!courseState.getRegStudents().contains(student)) {
 			complete(true);
 			return;
@@ -29,7 +29,7 @@ public class Unregister extends Action<Boolean>{
 		courseState.getRegStudents().remove(student);
 		courseState.setAvailableSpots(courseState.getAvailableSpots()+1);
 		courseState.setRegistered(courseState.getRegistered()-1);
-		Action<Boolean> rm = new RemoveCourse(cuurActorId);
+		Action<Boolean> rm = new RemoveCourse(currentActorId);
 		sendMessage(rm, student, new StudentPrivateState());
 		rm.getResult().subscribe(()->complete(rm.getResult().get()));
 	}

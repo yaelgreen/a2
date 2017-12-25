@@ -19,9 +19,9 @@ public abstract class Action<R> {
 	private String actionName;
 	private callback myCall;
 	private Promise<R> myPromise = new Promise<R>();
-    protected ActorThreadPool currpool;
-    protected String cuurActorId;
-    protected PrivateState state;
+    protected ActorThreadPool currentpool;
+    protected String currentActorId;
+    protected PrivateState currentState;
     
     protected String getName(){
         return actionName; 
@@ -46,9 +46,9 @@ public abstract class Action<R> {
     *
     */
    /*package*/ final void handle(ActorThreadPool pool, String actorId, PrivateState actorState) {	   
-	   currpool = pool;
-	   cuurActorId = actorId;
-	   state = actorState;
+	   currentpool = pool;
+	   currentActorId = actorId;
+	   currentState = actorState;
 	   if(myCall == null)
 	   {
 		   actorState.addRecord(this.getName());//add to record every action that executed
@@ -82,7 +82,7 @@ public abstract class Action<R> {
        		{
        			//count down latch, an atomic counter that will count every action that been completed
        			if(remainedActionCounter.decrementAndGet() == 0)
-       				currpool.submit(this, cuurActorId, null);//he should have a private state
+       				currentpool.submit(this, currentActorId, null);//he should have a private state
        		});
     	myCall = task;
     }
@@ -117,7 +117,7 @@ public abstract class Action<R> {
      * @return promise that will hold the result of the sent action
      */
 	public Promise<?> sendMessage(Action<?> action, String actorId, PrivateState actorState){
-		currpool.submit(action, actorId, actorState);
+		currentpool.submit(action, actorId, actorState);
 		return action.getResult();
 		
 	}

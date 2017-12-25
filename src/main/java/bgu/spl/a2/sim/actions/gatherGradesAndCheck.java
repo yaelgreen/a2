@@ -22,7 +22,8 @@ public class gatherGradesAndCheck extends Action<Boolean> {
 	 */
 	@Override
 	protected void start() {
-		StudentPrivateState myState = (StudentPrivateState) state;
+		StudentPrivateState myState = (StudentPrivateState) currentState;
 		myState.setSignature(computer.checkAndSign(Arrays.asList(coursesOfStudents), myState.getGrades()));
+		complete(true);
 	}
 }

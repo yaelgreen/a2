@@ -20,11 +20,11 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 	@Override
 	protected void start() {
 		// Canceled
-		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;
 		List<Action<Boolean>> actions = new ArrayList<>();
 		for(String course : myState.getCourseList())
 		{
-			Action<Boolean> end = new EndOfRegistration(cuurActorId);//department's name
+			Action<Boolean> end = new EndOfRegistration(currentActorId);//department's name
 			sendMessage(end, course, new CoursePrivateState());
 			actions.add(end);
 		}

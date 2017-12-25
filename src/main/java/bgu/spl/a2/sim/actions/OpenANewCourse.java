@@ -15,7 +15,6 @@ public class OpenANewCourse extends Action<Boolean>{
 	private final int availableSpaces;
 	private final List<String> prerequisites;
 	private final String courseName;
-	private String actionName = "Open Course";  
 	
 	public OpenANewCourse(int spaces, List<String> prerequisites, String courseName) {
 		this.availableSpaces = spaces;
@@ -26,7 +25,7 @@ public class OpenANewCourse extends Action<Boolean>{
 	
 	@Override
 	protected void start() {
-		DepartmentPrivateState myState = (DepartmentPrivateState) state;
+		DepartmentPrivateState myState = (DepartmentPrivateState) currentState;
 		myState.getCourseList().add(courseName);
 		Action<Boolean> newCourse = new CreateNewCourse(availableSpaces, prerequisites);
 		sendMessage(newCourse , courseName, new CoursePrivateState());

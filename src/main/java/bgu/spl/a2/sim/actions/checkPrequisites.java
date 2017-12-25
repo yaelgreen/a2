@@ -16,7 +16,7 @@ public class checkPrequisites extends Action<Boolean> {
 
 	@Override
 	protected void start() {
-		StudentPrivateState studentState = (StudentPrivateState) state;
+		StudentPrivateState studentState = (StudentPrivateState) currentState;
 		HashMap<String, Integer> studentGrade = studentState.getGrades();
 		for (String course : prequisites) {
 			if (!studentGrade.containsKey(course))//hasn't learnt the course

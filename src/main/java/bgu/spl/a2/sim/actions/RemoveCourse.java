@@ -19,7 +19,7 @@ public class RemoveCourse extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		StudentPrivateState myState = (StudentPrivateState) state;
+		StudentPrivateState myState = (StudentPrivateState) currentState;
 		myState.getGrades().remove(course);
 		complete(true);
 	}

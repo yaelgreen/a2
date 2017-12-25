@@ -21,7 +21,7 @@ public class CloseACourse extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		DepartmentPrivateState myState = (DepartmentPrivateState) this.state;
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;
 		if(!myState.getCourseList().contains(course))
 		{
 			complete(true);

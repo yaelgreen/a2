@@ -2,12 +2,9 @@ package bgu.spl.a2;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
-
-import com.google.gson.Gson;
 
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
@@ -17,7 +14,6 @@ public class checkResultSer {
 	public static void main(String[] args) throws IOException, ClassNotFoundException{
 		FileInputStream fr;
 		ObjectInputStream ois;
-		Gson gson = new Gson();
 		HashMap<String, PrivateState> res = new HashMap<>();
 		try {
 			fr = new FileInputStream("result.ser");
@@ -33,11 +29,11 @@ public class checkResultSer {
 		//printing departments
 		System.out.println("\"Departments\" : [");
 		for (String dep : res.keySet()){
-			String s = res.get(dep).getClass().getName();
+			//String s = res.get(dep).getClass().getName();
 			if (res.get(dep).getClass().getName() == "bgu.spl.a2.sim.privateStates.DepartmentPrivateState") {
 				System.out.println("{");
 				System.out.println(" \"Department\" : \"" + dep + "\",");
-				System.out.print("\"actions\":[");
+				System.out.print("\"actions\":[ ");
 				String logger = "";
 				for(String log : res.get(dep).getLogger())
 					logger += "\"" + log + "\", ";
@@ -45,7 +41,7 @@ public class checkResultSer {
 				logger += "],";
 				System.out.println(logger);
 				
-				System.out.print("\"courseList\": [");
+				System.out.print("\"courseList\": [ ");
 				String courseList = "";
 				for(String course : ((DepartmentPrivateState)res.get(dep)).getCourseList())
 					courseList += "\"" + course + "\",";
@@ -53,7 +49,7 @@ public class checkResultSer {
 				courseList += "],";
 				System.out.println(courseList);
 				
-				System.out.print("\"studentList\": [");
+				System.out.print("\"studentList\": [ ");
 				String studentList = "";
 				for(String student : ((DepartmentPrivateState)res.get(dep)).getStudentList())
 					studentList += "\"" + student + "\",";
@@ -71,7 +67,7 @@ public class checkResultSer {
 			if (res.get(course).getClass().getName() == "bgu.spl.a2.sim.privateStates.CoursePrivateState") {
 				System.out.println("{");
 				System.out.println(" \"Course\" : \"" + course + "\",");
-				String logger = "\"actions\":[";
+				String logger = "\"actions\":[ ";
 				for(String log : res.get(course).getLogger())
 					logger += "\"" + log + "\",";
 				logger = logger.substring(0, Math.max(0, logger.length() - 1));
@@ -81,7 +77,7 @@ public class checkResultSer {
 				System.out.println("\"availableSpots\": \"" + ((CoursePrivateState)res.get(course)).getAvailableSpots().toString() +"\",");
 				System.out.println("\"registered\": \"" + ((CoursePrivateState)res.get(course)).getRegistered().toString() +"\",");
 				
-				String studentList = "\"regStudents\" : [";
+				String studentList = "\"regStudents\" : [ ";
 				for(String student : ((CoursePrivateState)res.get(course)).getRegStudents())
 					studentList += "\"" + student + "\",";
 				studentList = studentList.substring(0, Math.max(0, studentList.length() - 1));
@@ -90,7 +86,7 @@ public class checkResultSer {
 				
 				String preqsList = "\"prequisites\" : [ ";
 				for(String preq : ((CoursePrivateState)res.get(course)).getPrequisites())
-					preqsList += "\"" + preq + "\", ";
+					preqsList += "\"" + preq + "\",";
 				preqsList = preqsList.substring(0, Math.max(0, preqsList.length() - 1));
 				preqsList += "]";
 				System.out.println(preqsList);
@@ -99,7 +95,7 @@ public class checkResultSer {
 		}
 		System.out.println("],");
 		//printing students
-		System.out.println("\"Students\": [");
+		System.out.println("\"Students\": [ ");
 		for (String student : res.keySet()){
 			String s = res.get(student).getClass().getName();
 			if (res.get(student).getClass().getName() == "bgu.spl.a2.sim.privateStates.StudentPrivateState") {
