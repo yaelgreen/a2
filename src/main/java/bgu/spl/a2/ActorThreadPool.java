@@ -194,10 +194,10 @@ public class ActorThreadPool {
 		private PrivateState state;
 		private Queue<Action<?>> actorActions;
 		
-		private Actor(String id, PrivateState s){
+		private Actor(String id, PrivateState privateState){
 			actorActions =new ConcurrentLinkedQueue<Action<?>>();
 			myId = id;
-			state = s;
+			state = privateState;
 		}
 		
 		public String getId() {			

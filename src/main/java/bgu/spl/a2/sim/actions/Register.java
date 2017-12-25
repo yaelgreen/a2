@@ -10,8 +10,10 @@ public class Register extends Action<Boolean> {
 
 	public Register(String course, String[] grades) {
 		this.course = course;
-		if(!grades[0].equals("-"))
-			this.grade = Integer.parseInt(grades[0]);
+		if(grades[0].equals("-"))
+			grade = -1;
+		else
+			grade = Integer.parseInt(grades[0]);
 		setActionName("Register");
 	}
 

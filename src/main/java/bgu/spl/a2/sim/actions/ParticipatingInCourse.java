@@ -27,6 +27,11 @@ public class ParticipatingInCourse extends Action<Boolean> {
 	@Override
 	protected void start() {
 		CoursePrivateState courseState = (CoursePrivateState) state;
+		if(courseState.getRegStudents().contains(student))
+		{
+			complete(true);
+			return;
+		}
 		if(courseState.getAvailableSpots() <= 0)
 		{
 			complete(false);
