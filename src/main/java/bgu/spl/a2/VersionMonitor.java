@@ -18,9 +18,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * private, protected or package protected - in other words, no new public
  * methods
  */
-public class VersionMonitor {
-	
+public class VersionMonitor {	
 	private static AtomicInteger _version = new AtomicInteger(0);
+	/**
+	 * @return the current version
+	 */
     public int getVersion() {
         return _version.get();
     }
@@ -44,7 +46,9 @@ public class VersionMonitor {
 		if (version == _version.get()){    	
 			synchronized (this) {
 				try {
-					this.wait();
+					//until we sync on this the version may change. (significant with only one thread in the pool)
+					if (version == _version.get())
+						this.wait();
 				} catch (InterruptedException e) {		}
 			} 
 		}

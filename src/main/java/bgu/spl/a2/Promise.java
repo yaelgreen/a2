@@ -1,7 +1,8 @@
 package bgu.spl.a2;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * this class represents a deferred result i.e., an object that eventually will
@@ -20,9 +21,8 @@ import java.util.ArrayList;
  */
 public class Promise<T>{
 	
-	private Object lock = new Object();
 	private T _value = null;
-	private List<callback> callbacks = new ArrayList<callback>();
+	private Queue<callback> callbacks = new ConcurrentLinkedQueue<callback>();
 
 	/**
 	 *
@@ -67,12 +67,10 @@ public class Promise<T>{
 	public void resolve(T value){
 		if (_value != null)
 			throw new IllegalStateException();
-		synchronized (lock) {
-			_value = value;
-		}
-		for(callback c : callbacks)
-			c.call();
-		callbacks.clear();
+		_value = value;	
+		callback currentCallBack;
+		while((currentCallBack = callbacks.poll()) != null)
+			currentCallBack.call();
 	}
  
 	/**
@@ -83,23 +81,20 @@ public class Promise<T>{
 	 * Note that in any case, the given callback should never get called more
 	 * than once, in addition, in order to avoid memory leaks - once the
 	 * callback got called, this object should not hold its reference any
-	 * longer.
-	 * we will use synchronized to prevent uncalled call-backs, 
-	 * when we call {@link #isResolved()} another thread can call {@link #resolve(Object)} 
-	 * and then run on the callbacks collection and when we add our callback to collection it will
-	 * be called because the {@link #resolve(Object)} already run on the collection and no one will call our callback now. 
-	 * synchronize here ({@link #subscribe(callback)} ) and in {@link #resolve(Object)} will prevent this situation
+	 * longer.	
 	 * @param callback
 	 *            the callback to be called when the promise object is resolved
 	 */
 	public void subscribe(callback callback) {
 		//we will use synchronized to prevent uncalled call-backs, when we call isResolved another thread can call resolve
 		//and we will not call it see above
-		synchronized (lock) {			
-			if (isResolved())
-				callback.call();
-			else
-				callbacks.add(callback);
-		}		
+		if (isResolved())
+			callback.call();
+		else{
+			callbacks.add(callback);
+			//if it was resolved during we added the callback do as followed
+			if (isResolved() && callbacks.remove(callback))
+				callback.call();			
+		}
 	}
 }

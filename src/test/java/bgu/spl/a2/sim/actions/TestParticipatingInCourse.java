@@ -21,7 +21,7 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class TestParticipatingInCourse {
-	ActorThreadPool testActorThreadPool = new ActorThreadPool(1);
+	ActorThreadPool testActorThreadPool = new ActorThreadPool(4);
 	@Before
 	public void prepareDepartmentAndCourses(){
 		testActorThreadPool.start();		
@@ -42,7 +42,7 @@ public class TestParticipatingInCourse {
 	@After
 	public void prepareActorPool(){
 		testActorThreadPool.shutdown();
-		testActorThreadPool = new ActorThreadPool(1);
+		testActorThreadPool = new ActorThreadPool(4);
 	}
 	
 	@Test
@@ -185,8 +185,8 @@ public class TestParticipatingInCourse {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) { assertFalse(true);	}
-			CountDownLatch latch = new CountDownLatch(2);
-			for(int i = 0; i<2; i++)
+			CountDownLatch latch = new CountDownLatch(3);
+			for(int i = 0; i<3; i++)
 			{
 				Action<Boolean> register = new ParticipatingInCourse("111", new String[]{"10"});
 				testActorThreadPool.submit(register, "lab1", null);
