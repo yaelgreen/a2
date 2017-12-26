@@ -22,7 +22,11 @@ public class AddStudent extends Action<Boolean>{
 
 	@Override
 	protected void start() {
-		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;			
+		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;
+		if (myState.getStudentList().contains(student)) {
+			complete(true);
+			return;
+		}
 		List<Action<Boolean>> anAction = new ArrayList<>();
 		Action<Boolean> createStudentActor = new EmptyAction();
 		

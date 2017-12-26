@@ -16,8 +16,8 @@
     {
       "Action": "Open Course",
       "Department": "CS",
-      "Course": "CourseC",
-      "Space": "4",
+      "Course": "CourseB",
+      "Space": "2",
       "Prerequisites": [
         "CourseA",
         "CourseB"
@@ -27,7 +27,7 @@
       "Action": "Open Course",
       "Department": "CS",
       "Course": "CourseA",
-      "Space": "3",
+      "Space": "4",
       "Prerequisites": [
         
       ]
@@ -35,8 +35,8 @@
     {
       "Action": "Open Course",
       "Department": "CS",
-      "Course": "CourseB",
-      "Space": "1",
+      "Course": "CourseA",
+      "Space": "3",
       "Prerequisites": [
         A
       ]
@@ -44,8 +44,8 @@
     {
       "Action": "Open Course",
       "Department": "CS",
-      "Course": "CourseD",
-      "Space": "3",
+      "Course": "CourseA",
+      "Space": "1",
       "Prerequisites": [
         "CourseC"
       ]
@@ -76,95 +76,6 @@
       "Action": "Add Student",
       "Department": "Math",
       "Student": "Student4"
-    },
-    {
-      "Action": "Participate In Course",
-      "Student": "Student3",
-      "Course": "CourseC",
-      "Grade": [
-        "98"
-      ]
-    },
-
-    {
-      "Action": "Participate In Course",
-      "Student": "Student1",
-      "Course": "CourseB",
-      "Grade": [
-        "99"
-      ]
-    },
-    {
-      "Action": "Add Student",
-      "Department": "CS",
-      "Student": "Student4"
-    },
-    {
-      "Action": "Add Spaces",
-      "Course": "CourseC",
-      "Number": "100"
-    },
-    {
-      "Action": "Participate In Course",
-      "Student": "Student3",
-      "Course": "CourseD",
-      "Grade": [
-        "-"
-      ]
-    },
-    {
-      "Action": "Register With Preferences",
-      "Student": "Student4",
-      "Preferences": [
-        "CourseD",
-        "CourseC",
-        "CourseB",
-        "CourseA"
-      ],
-      "Grade": [
-        "98",
-        "56",
-        "12",
-        "8"
-      ]
-    },
-    {
-      "Action": "Register With Preferences",
-      "Student": "Student1",
-      "Preferences": [
-        "CourseA",
-        "CourseD"
-      ],
-      "Grade": [
-        "98",
-        "56"
-      ]
-    },
-    {
-      "Action": "Participate In Course",
-      "Student": "Student1",
-      "Course": "CourseA",
-      "Grade": [
-        "100"
-      ]
-    },
-    {
-      "Action": "Participate In Course",
-      "Student": "Student1",
-      "Course": "CourseB",
-      "Grade": [
-        "99"
-      ]
-    },
-    {
-      "Action": "Unregister",
-      "Student": "Student3",
-      "Course": "CourseD"
-    },
-    {
-      "Action": "Unregister",
-      "Student": "Student1",
-      "Course": "CourseA"
     },
     {
       "Action": "Close Course",
