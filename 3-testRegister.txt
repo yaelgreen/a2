@@ -1,0 +1,188 @@
+{
+  "threads": 8,
+  "Computers": [
+    {
+      "Type": "A",
+      "Sig Success": "1234666",
+      "Sig Fail": "999283"
+    },
+    {
+      "Type": "B",
+      "Sig Success": "4424232",
+      "Sig Fail": "5555353"
+    }
+  ],
+  "Phase 1": [
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseC",
+      "Space": "4",
+      "Prerequisites": [
+        "CourseA",
+        "CourseB"
+      ]
+    },
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseA",
+      "Space": "3",
+      "Prerequisites": [
+        
+      ]
+    },
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseB",
+      "Space": "1",
+      "Prerequisites": [
+        CourseA
+      ]
+    },
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseD",
+      "Space": "3",
+      "Prerequisites": [
+        "CourseC"
+      ]
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student1"
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student2"
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student3"
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student4"
+    },
+    {
+      "Action": "Participate In Course",
+      "Student": "Student1",
+      "Course": "CourseA",
+      "Grade": [
+        "98"
+      ]
+    }
+  ],
+  "Phase 2": [
+    {
+      "Action": "Add Student",
+      "Department": "Math",
+      "Student": "Student4"
+    },
+    {
+      "Action": "Participate In Course",
+      "Student": "Student1",
+      "Course": "CourseB",
+      "Grade": [
+        "99"
+      ]
+    },
+    {
+      "Action": "Participate In Course",
+      "Student": "Student2",
+      "Course": "CourseB",
+      "Grade": [
+        "99"
+      ]
+    },
+    {
+      "Action": "Participate In Course",
+      "Student": "Student1",
+      "Course": "CourseA",
+      "Grade": [
+        "-"
+      ]
+    },
+    {
+      "Action": "Register With Preferences",
+      "Student": "Student3",
+      "Preferences": [
+        "CourseD",
+        "CourseB",
+        "CourseC",
+        "CourseA"
+      ],
+      "Grade": [
+        "98",
+        "56",
+        "12",
+        "8"
+      ]
+    },
+    {
+      "Action": "Register With Preferences",
+      "Student": "Student1",
+      "Preferences": [
+        "CourseA",
+        "CourseD"
+      ],
+      "Grade": [
+        "98",
+        "56"
+      ]
+    },
+    {
+      "Action": "Participate In Course",
+      "Student": "Student1",
+      "Course": "CourseB",
+      "Grade": [
+        "100"
+      ]
+    },
+    {
+      "Action": "Participate In Course",
+      "Student": "Student1",
+      "Course": "CourseB",
+      "Grade": [
+        "99"
+      ]
+    },
+    {
+      "Action": "End Registeration"
+    },
+    {
+      "Action": "Administrative Check",
+      "Department": "CS",
+      "Students": [
+        "Student3",
+        "Student4"
+      ],
+      "Computer": "A",
+      "Conditions": [
+        "CourseC",
+        "CourseD"
+      ]
+    }
+  ],
+  "Phase 3": [
+    {
+      "Action": "Administrative Check",
+      "Department": "CS",
+      "Students": [
+        "Student3",
+        "Student4"
+      ],
+      "Computer": "A",
+      "Conditions": [
+        "CourseC",
+        "CourseD"
+      ]
+    }
+  ]
+}

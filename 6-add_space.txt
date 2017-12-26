@@ -89,18 +89,10 @@
     }
   ],
   "Phase 3": [
-    {
-      "Action": "Administrative Check",
-      "Department": "CS",
-      "Students": [
-        "Student3",
-        "Student4"
-      ],
-      "Computer": "A",
-      "Conditions": [
-        "CourseC",
-        "CourseD"
-      ]
+  {
+      "Action": "Add Spaces",
+      "Course": "CourseC",
+      "Number": "1"
     }
   ]
 }
