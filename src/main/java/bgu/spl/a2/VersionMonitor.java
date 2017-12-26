@@ -38,14 +38,15 @@ public class VersionMonitor {
     /**     
      * This action will make the thread wait until
      * @param version - the version we wait for to changed
+     * we will use synchronized to use wait function  
      */
     public void await(int version) {
-    	if (version == _version.get()){
-    		synchronized (this) {
+		if (version == _version.get()){    	
+			synchronized (this) {
 				try {
 					this.wait();
 				} catch (InterruptedException e) {		}
 			} 
-    	}
+		}
     }
 }

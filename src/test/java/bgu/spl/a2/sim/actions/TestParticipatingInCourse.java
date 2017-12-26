@@ -13,12 +13,15 @@ import org.junit.Test;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.ActorThreadPool;
+import bgu.spl.a2.sim.actions.AddStudent;
+import bgu.spl.a2.sim.actions.OpenANewCourse;
+import bgu.spl.a2.sim.actions.ParticipatingInCourse;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class TestParticipatingInCourse {
-	ActorThreadPool testActorThreadPool = new ActorThreadPool(4);
+	ActorThreadPool testActorThreadPool = new ActorThreadPool(1);
 	@Before
 	public void prepareDepartmentAndCourses(){
 		testActorThreadPool.start();		
@@ -39,7 +42,7 @@ public class TestParticipatingInCourse {
 	@After
 	public void prepareActorPool(){
 		testActorThreadPool.shutdown();
-		testActorThreadPool = new ActorThreadPool(4);
+		testActorThreadPool = new ActorThreadPool(1);
 	}
 	
 	@Test
@@ -99,7 +102,7 @@ public class TestParticipatingInCourse {
 		
 		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"10"}), "research methods 1980-90", null);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) {	}		
 		testCourse("research methods 1970-80", 1, 1);
 		testCourse("research methods 1980-90", 1, 1);
@@ -112,7 +115,7 @@ public class TestParticipatingInCourse {
 		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"10"}), "lab2", null);
 		
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) { assertFalse(true);	}
 		
 		isLearning("222","research methods 1970-80",true);
@@ -128,12 +131,12 @@ public class TestParticipatingInCourse {
 	@Test
 	public void testParticipateForSize(){
 		try {
-			Thread.sleep(30);
+			Thread.sleep(100);
 		} catch (InterruptedException e) { assertFalse(true);	}
 		testActorThreadPool.submit(new ParticipatingInCourse("111", new String[]{"10"}), "lab1", null);
 		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"10"}), "lab1", null);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) { assertFalse(true);	}
 		testCourse("lab1", 2, 0);	
 		isLearning("111","lab1",true);
@@ -142,12 +145,57 @@ public class TestParticipatingInCourse {
 		
 		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"10"}), "lab1", null);
 		try {
-			Thread.sleep(30);
+			Thread.sleep(40);
 		} catch (InterruptedException e) { assertFalse(true);	}
 		testCourse("lab1", 2, 0);	
 		isLearning("111","lab1",true);
 		isLearning("222","lab1",true);
 		isLearning("333","lab1",false);
+	}
+	
+	@Test
+	public void testMultipleRegistration() {		
+		try {
+			Thread.sleep(110);
+		} catch (InterruptedException e) { assertFalse(true);	}	
+		testCourse("lab1", 0, 2);	
+		isLearning("111","lab1",false);
+		isLearning("222","lab1",false);
+		isLearning("333","lab1",false);
+		CountDownLatch latch = new CountDownLatch(30);	
+		for(int i = 0; i<30; i++)
+		{
+			Action<Boolean> register = new ParticipatingInCourse("111", new String[]{"10"});
+			testActorThreadPool.submit(register, "lab1", null);
+			register.getResult().subscribe(()->latch.countDown());
+		}
+		try {
+			latch.await();
+		} catch (InterruptedException e) { assertFalse(true);	}
+		testCourse("lab1", 1, 1);	
+		isLearning("111","lab1",true);
+		isLearning("222","lab1",false);
+		isLearning("333","lab1",false);
+	}
+	
+	@Test
+	public void testDeadLock() throws Exception{
+		for(int j =  0; j <200; j++){
+			//System.out.println(j);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) { assertFalse(true);	}
+			CountDownLatch latch = new CountDownLatch(2);
+			for(int i = 0; i<2; i++)
+			{
+				Action<Boolean> register = new ParticipatingInCourse("111", new String[]{"10"});
+				testActorThreadPool.submit(register, "lab1", null);
+				register.getResult().subscribe(()->latch.countDown());
+			}
+			try {
+				latch.await();
+			} catch (InterruptedException e) { assertFalse(true);	}
+		}
 	}
 	
 	private void testCourse(String string, int expected, int expectedSpots) {

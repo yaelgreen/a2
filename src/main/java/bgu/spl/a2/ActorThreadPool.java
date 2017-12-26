@@ -176,6 +176,8 @@ public class ActorThreadPool {
 				//if version await didn't interrupt us we can wait
 				if(runPermission)
 					verMonitor.await(lastVersion);
+
+				//System.out.println("very alive");
 			}
 		}	
 	}

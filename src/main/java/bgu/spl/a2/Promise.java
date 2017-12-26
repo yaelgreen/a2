@@ -20,6 +20,7 @@ import java.util.ArrayList;
  */
 public class Promise<T>{
 	
+	private Object lock = new Object();
 	private T _value = null;
 	private List<callback> callbacks = new ArrayList<callback>();
 
@@ -46,7 +47,7 @@ public class Promise<T>{
 	public boolean isResolved() {
 		if (_value != null)
 			return true;
-		return false;
+		return false;		
 	}
 
 
@@ -66,7 +67,9 @@ public class Promise<T>{
 	public void resolve(T value){
 		if (_value != null)
 			throw new IllegalStateException();
-		_value = value;
+		synchronized (lock) {
+			_value = value;
+		}
 		for(callback c : callbacks)
 			c.call();
 		callbacks.clear();
@@ -81,14 +84,22 @@ public class Promise<T>{
 	 * than once, in addition, in order to avoid memory leaks - once the
 	 * callback got called, this object should not hold its reference any
 	 * longer.
-	 *
+	 * we will use synchronized to prevent uncalled call-backs, 
+	 * when we call {@link #isResolved()} another thread can call {@link #resolve(Object)} 
+	 * and then run on the callbacks collection and when we add our callback to collection it will
+	 * be called because the {@link #resolve(Object)} already run on the collection and no one will call our callback now. 
+	 * synchronize here ({@link #subscribe(callback)} ) and in {@link #resolve(Object)} will prevent this situation
 	 * @param callback
 	 *            the callback to be called when the promise object is resolved
 	 */
 	public void subscribe(callback callback) {
-		if (isResolved())
-			callback.call();
-		else
-			callbacks.add(callback);
+		//we will use synchronized to prevent uncalled call-backs, when we call isResolved another thread can call resolve
+		//and we will not call it see above
+		synchronized (lock) {			
+			if (isResolved())
+				callback.call();
+			else
+				callbacks.add(callback);
+		}		
 	}
 }

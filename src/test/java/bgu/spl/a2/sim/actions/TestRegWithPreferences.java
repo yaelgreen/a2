@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import bgu.spl.a2.ActorThreadPool;
+import bgu.spl.a2.sim.actions.AddStudent;
+import bgu.spl.a2.sim.actions.OpenANewCourse;
+import bgu.spl.a2.sim.actions.RegisterWithPreferences;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
@@ -46,7 +49,7 @@ public class TestRegWithPreferences {
 		//111 - > courseA
 		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "111", null);
 		try {
-			Thread.sleep(40);
+			Thread.sleep(50);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 0, 1);
@@ -60,7 +63,7 @@ public class TestRegWithPreferences {
 		//222 - > courseB
 		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "222", null);
 		try {
-			Thread.sleep(40);
+			Thread.sleep(50);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 1, 0);
@@ -74,7 +77,7 @@ public class TestRegWithPreferences {
 		//222 - > courseC
 		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "222", null);
 		try {
-			Thread.sleep(40);
+			Thread.sleep(50);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 1, 0);
@@ -88,7 +91,7 @@ public class TestRegWithPreferences {
 		//333 - > nothing
 		testActorThreadPool.submit(new RegisterWithPreferences(toReg, grades), "333", null);
 		try {
-			Thread.sleep(40);
+			Thread.sleep(50);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}
 		testCourse("courseA", 1, 0);
 		testCourse("courseB", 1, 0);
@@ -106,7 +109,6 @@ public class TestRegWithPreferences {
 	
 	private void testCourse(String actorid, int expected, int expectedSpots) {
 		CoursePrivateState course = (CoursePrivateState) testActorThreadPool.getPrivateState(actorid);
-		System.out.println(actorid);
 		Assert.assertTrue(course.getAvailableSpots() == expectedSpots);
 		Assert.assertTrue(course.getRegistered() == expected);
 		Assert.assertTrue(course.getRegStudents().size() == expected);	
