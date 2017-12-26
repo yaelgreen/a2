@@ -1,4 +1,4 @@
-package bgu.spl.a2.sim.actions.departmentActions;
+package bgu.spl.a2.sim.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import bgu.spl.a2.Action;
 import bgu.spl.a2.Promise;
 import bgu.spl.a2.sim.Computer;
 import bgu.spl.a2.sim.Warehouse;
-import bgu.spl.a2.sim.actions.studentActions.gatherGradesAndCheck;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class CheckAdministrativeObligations extends Action<Boolean>{

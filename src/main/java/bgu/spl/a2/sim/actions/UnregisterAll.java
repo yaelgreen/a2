@@ -1,4 +1,4 @@
-package bgu.spl.a2.sim.actions.courseActions;
+package bgu.spl.a2.sim.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,7 @@ public class UnregisterAll extends Action<Boolean>{
 	/**
 	 * Constructor
 	 * this action will unregister all the students from the course
-	 * we use this action in {@link bgu.spl.a2.sim.actions.departmentActions.CloseACourse}
-	 * Actor: Must be initially submitted to the course's actor.
+	 * we use this action in {@link bgu.spl.a2.sim.actions.CloseACourse}
 	 */
 	public UnregisterAll() {
 		setActionName("UnregisterAll");

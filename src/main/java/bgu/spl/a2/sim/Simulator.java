@@ -20,15 +20,15 @@ import com.google.gson.Gson;
 import bgu.spl.a2.Action;
 import bgu.spl.a2.ActorThreadPool;
 import bgu.spl.a2.PrivateState;
-import bgu.spl.a2.sim.actions.courseActions.OpeningNewPlacesInACourse;
-import bgu.spl.a2.sim.actions.courseActions.ParticipatingInCourse;
-import bgu.spl.a2.sim.actions.courseActions.Unregister;
-import bgu.spl.a2.sim.actions.departmentActions.AddStudent;
-import bgu.spl.a2.sim.actions.departmentActions.AnnounceEndOfRegistration;
-import bgu.spl.a2.sim.actions.departmentActions.CheckAdministrativeObligations;
-import bgu.spl.a2.sim.actions.departmentActions.CloseACourse;
-import bgu.spl.a2.sim.actions.departmentActions.OpenANewCourse;
-import bgu.spl.a2.sim.actions.studentActions.RegisterWithPreferences;
+import bgu.spl.a2.sim.actions.AddStudent;
+import bgu.spl.a2.sim.actions.AnnounceEndOfRegistration;
+import bgu.spl.a2.sim.actions.CheckAdministrativeObligations;
+import bgu.spl.a2.sim.actions.CloseACourse;
+import bgu.spl.a2.sim.actions.OpenANewCourse;
+import bgu.spl.a2.sim.actions.OpeningNewPlacesInACourse;
+import bgu.spl.a2.sim.actions.ParticipatingInCourse;
+import bgu.spl.a2.sim.actions.RegisterWithPreferences;
+import bgu.spl.a2.sim.actions.Unregister;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
@@ -39,9 +39,8 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 public class Simulator {
 
 	
-	public static ActorThreadPool actorThreadPool;	
+	public static ActorThreadPool actorThreadPool;
 	public static InputData input; 
-	private static List<String> departmentList = new ArrayList<String>();
 	
 	/**
 	 * 
@@ -66,7 +65,7 @@ public class Simulator {
 	 * @param phase - parse the actions and 
 	 */
 	private AtomicInteger submitPhaseActions(ArrayList<InputDataPhaseObject> phase) {
-		List<Action<?>> phaseList = new ArrayList<Action<?>>();		
+		List<Action<?>> phaseList = new ArrayList<Action<?>>();
 		for (InputDataPhaseObject data : phase) {
 			if (data.action.isEmpty())
 				continue;
@@ -80,15 +79,11 @@ public class Simulator {
 	        	 actorId = data.department;
 	        	 action = new OpenANewCourse(space, pre, data.course);
 	        	 actorState = new DepartmentPrivateState(); 
-	        	 if(!departmentList.contains(actorId))
-	        	 	departmentList.add(actorId);
 	             break;
 	         case "Add Student":
 	        	 actorId = data.department;
 	        	 action = new AddStudent(data.student);
-	        	 actorState = new DepartmentPrivateState();
-	        	 if(!departmentList.contains(actorId))
-	        	 	departmentList.add(actorId);
+	        	 actorState = new DepartmentPrivateState(); 
 	             break;  
 	         case "Register With Preferences":
 	        	 actorId = data.student;
@@ -108,16 +103,12 @@ public class Simulator {
 	         case "Administrative Check":
 	        	 actorId = data.department;
 	        	 action = new CheckAdministrativeObligations(data.computer, data.students, data.conditions);
-	        	 actorState = new DepartmentPrivateState();
-	        	 if(!departmentList.contains(actorId))
-	        	 	departmentList.add(actorId);
+	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;	        
 	         case "Close Course":
 	        	 actorId = data.department;
 	        	 action = new CloseACourse(actorId);
-	        	 actorState = new DepartmentPrivateState();
-	        	 if(!departmentList.contains(actorId))
-	        	 	departmentList.add(actorId);
+	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
 	         case "Add Spaces":
 	        	 actorId = data.course;
@@ -125,20 +116,13 @@ public class Simulator {
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "End Registeration":
-	        	 //canceled
-	        	 for(String depId : departmentList){
-	        	 	action = new AnnounceEndOfRegistration();
-	        	 	actorState = new DepartmentPrivateState();
-	        	 	phaseList.add(action);
-					actorThreadPool.submit(action, depId, actorState);
-	        	 }
-	        	 action = null;
+	        	 actorId = "";//will not work without actor
+	        	 action = new AnnounceEndOfRegistration();
+	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
 			}
-			if(action != null){
-				phaseList.add(action);
-				actorThreadPool.submit(action, actorId, actorState);
-			}
+			phaseList.add(action);
+			actorThreadPool.submit(action, actorId, actorState);
 		}
 		AtomicInteger remainedActionCounter = new AtomicInteger(phaseList.size());
     	for(Action<?> action : phaseList)
@@ -155,7 +139,7 @@ public class Simulator {
 	
 	/**
 	 * submit the phases to {@link #submitPhaseActions(ArrayList)}
-	 * @param input the Gson data
+	 * @param input the gson data
 	 */
 	private void SubmitActions(InputData input) {
 		AtomicInteger remainedActionCounter = submitPhaseActions(input.phase1);
@@ -225,6 +209,8 @@ public class Simulator {
 	
 	
 	public static void main(String[] args) {
+		//args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"}; //TODO delete it
+		args = new String[]{"G:/Workspace/SPL/a2/input2.txt"};		//INPUT2 WONT RUN :( the problem is undeclered private state
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {

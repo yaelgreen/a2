@@ -1,9 +1,9 @@
-package bgu.spl.a2.sim.actions.studentActions;
+package bgu.spl.a2.sim.actions;
 
 import bgu.spl.a2.Action;
-import bgu.spl.a2.sim.actions.courseActions.ParticipatingInCourse;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
+//start at student actor
 public class RegisterWithPreferences extends Action<Boolean> {
 	
 	private String[] preferences;
@@ -17,7 +17,6 @@ public class RegisterWithPreferences extends Action<Boolean> {
 
 	/**
 	 * Register a student to one from his preferred courses by with priority to the first courses
-	 * start at student actor
 	 */
 	@Override
 	protected void start() {

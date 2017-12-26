@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import bgu.spl.a2.ActorThreadPool;
-import bgu.spl.a2.sim.actions.departmentActions.AddStudent;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class TestAddStudent {

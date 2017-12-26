@@ -1,4 +1,4 @@
-package bgu.spl.a2.sim.actions.studentActions;
+package bgu.spl.a2.sim.actions;
 
 import java.util.HashMap;
 import java.util.List;

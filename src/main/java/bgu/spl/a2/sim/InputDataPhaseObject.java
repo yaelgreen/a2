@@ -9,7 +9,7 @@ public class InputDataPhaseObject {
 	
 	@SerializedName("Action") String action;
 	@SerializedName("Department") String department;
-	@SerializedName("Course") String course;
+	@SerializedName("Course") String course; //TODO need to change to String[] course. to deal with list of course
 	@SerializedName("Student") String student;
 	@SerializedName("Grade") String[] grade;
 	@SerializedName("Space") String space;
