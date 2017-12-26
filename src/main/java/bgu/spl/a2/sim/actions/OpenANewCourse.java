@@ -8,9 +8,11 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class OpenANewCourse extends Action<Boolean>{
 
-	//Behavior: This action opens a new course in a specied department. 
-	//The course has an initially available spaces and a list of prerequisites.
-	//Actor: Must be initially submitted to the Department's actor.
+	/**
+	 * Behavior: This action opens a new course in a specied department.
+	 * The course has an initially available spaces and a list of prerequisites.
+	 * Actor: Must be initially submitted to the Department's actor.
+	 */
 	
 	private final int availableSpaces;
 	private final List<String> prerequisites;

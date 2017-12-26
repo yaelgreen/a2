@@ -9,7 +9,12 @@ public class CreateNewCourse extends Action<Boolean> {
 	
 	private int availableSpaces;
 	private List<String> prerequisites;
-
+	
+	/**
+	 * The action sets the course data for the action in the department actor in {@link bgu.spl.a2.sim.actions.OpenANewCourse}
+	 * @param availableSpaces the available places in the course
+	 * @param prerequisites the needed courses to learn this course
+	 */
 	public CreateNewCourse(int availableSpaces, List<String> prerequisites) {
 		this.availableSpaces = availableSpaces;
 		this.prerequisites = prerequisites;

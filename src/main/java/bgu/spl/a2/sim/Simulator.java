@@ -61,6 +61,7 @@ public class Simulator {
 	}
 	
 	/**
+	 * submit the action to actor thread pool
 	 * @param phase - parse the actions and 
 	 */
 	private AtomicInteger submitPhaseActions(ArrayList<InputDataPhaseObject> phase) {
@@ -136,6 +137,10 @@ public class Simulator {
     	return remainedActionCounter;
 	}
 	
+	/**
+	 * submit the phases to {@link #submitPhaseActions(ArrayList)}
+	 * @param input the gson data
+	 */
 	private void SubmitActions(InputData input) {
 		AtomicInteger remainedActionCounter = submitPhaseActions(input.phase1);
 		try {
@@ -182,10 +187,11 @@ public class Simulator {
 	}
 	
 	/**
-	* shut down the simulation
-	* returns a HashMap containing all the private states of the actors -
-	* as serialized object to the "result.ser".
-	*/
+	 * shut down the simulation
+	 * returns a HashMap containing all the private states of the actors -
+     * as serialized object to the "result.ser".
+	 * @return a map of all the private states
+	 */
 	public static HashMap<String,PrivateState> end(){		
 		actorThreadPool.shutdown();
 		FileOutputStream fout;
@@ -204,7 +210,7 @@ public class Simulator {
 	
 	public static void main(String[] args) {
 		//args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"}; //TODO delete it
-		args = new String[]{"G:/Workspace/SPL/a2/input.txt"};		//INPUT2 WONT RUN :( the problem is undeclered private state
+		args = new String[]{"G:/Workspace/SPL/a2/input2.txt"};		//INPUT2 WONT RUN :( the problem is undeclered private state
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {

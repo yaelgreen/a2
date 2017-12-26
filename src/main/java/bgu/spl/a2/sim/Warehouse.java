@@ -32,4 +32,9 @@ public class Warehouse {
 			computerPromise = computerAcquire.get(departmentComputer).down();
 		return computerPromise;
 	}
+	
+	public void releaseComputer(String departmentComputer){
+		if(computerAcquire.containsKey(departmentComputer))
+			computerAcquire.get(departmentComputer).up();
+	}
 }

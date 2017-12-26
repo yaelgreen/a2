@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * The Gson form
+ */
 public class InputData {	
 	int threads;
 	ArrayList<Computer> Computers;

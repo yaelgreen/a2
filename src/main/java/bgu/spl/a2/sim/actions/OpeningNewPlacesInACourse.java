@@ -5,8 +5,10 @@ import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 public class OpeningNewPlacesInACourse extends Action<Boolean>{
 	
-	//Behavior: This action should increase the number of available spaces for the course.
-	//Actor: Must be initially submitted to the course's actor.	
+	/**
+	 * Behavior: This action should increase the number of available spaces for the course.
+	 * Actor: Must be initially submitted to the course's actor.	
+	 */
 	private int increase;
 	
 	public OpeningNewPlacesInACourse(int inc) {

@@ -9,9 +9,11 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class ParticipatingInCourse extends Action<Boolean> {
 	
-	//Behavior: This action should try to register the student in the course, if it succeeds, should add the
-	//course to the grades sheet of the student, and give him a grade if supplied. See the input example.
-	//Actor: Must be initially submitted to the course's actor.
+	/**
+	 * Behavior: This action should try to register the student in the course, if it succeeds, should add the
+	 * course to the grades sheet of the student, and give him a grade if supplied. See the input example.
+	 * Actor: Must be initially submitted to the course's actor.
+	 */
 	
 	private String student;
 	private String[] grades;

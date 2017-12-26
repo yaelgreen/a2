@@ -20,7 +20,7 @@ public class VersionMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link bgu.spl.a2.VersionMonitor#getVersion(java.lang.Object)}.
+	 * Test method for {@link bgu.spl.a2.VersionMonitor#getVersion()}.
 	 */
 	public void testGetVersion() {
 		VersionMonitor version = new VersionMonitor();
@@ -30,7 +30,7 @@ public class VersionMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link bgu.spl.a2.VersionMonitor#inc(java.lang.Object)}.
+	 * Test method for {@link bgu.spl.a2.VersionMonitor#inc()}.
 	 * tests if the version is protected from multiple increment requests
 	 */
 	public void testInc() {
@@ -68,8 +68,9 @@ public class VersionMonitorTest extends TestCase {
 
 	//we need a global bool to check from the thread if the await cause the main to wait
 	boolean isWaited = false;
+	
 	/**
-	 * Test method for {@link bgu.spl.a2.VersionMonitor#await(java.lang.Object)}.
+	 * Test method for {@link bgu.spl.a2.VersionMonitor#await(int)}.
 	 */
 	public void testAwait() {
 		VersionMonitor version = new VersionMonitor();		

@@ -8,6 +8,12 @@ public class EndOfRegistration extends Action<Boolean> {
 
 	String departmentID;
 	
+	/**
+	 * Called from course actor
+	 * will close the course for forward registration
+	 * we will use it in {@link bgu.spl.a2.sim.actions.AnnounceEndOfRegistration}
+	 * @param departmentActorId the id of the department actor
+	 */
 	public EndOfRegistration(String departmentActorId) {
 		departmentID = departmentActorId;
 		setActionName("End Of Registration");

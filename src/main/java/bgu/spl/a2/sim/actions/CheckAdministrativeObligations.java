@@ -11,15 +11,15 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class CheckAdministrativeObligations extends Action<Boolean>{
 	
-	//Behavior: The department's secretary have to allocate one of the computers available in the ware-
-	//house, and check for each student if he meets some administrative obligations. 
-	//The computer generates a signature and save it in the private state of the students.
-	//Actor: Must be initially submitted to the department's actor.
-	
+	/**
+	 * Behavior: The department's secretary have to allocate one of the computers available in the warehouse, 
+	 * and check for each student if he meets some administrative obligations. 
+	 * The computer generates a signature and save it in the private state of the students.
+	 * Actor: Must be initially submitted to the department's actor.
+	 */
 	String neededComputer;
 	String[] studentsToSign;
 	String[] conditionsOnStudents;
-	Promise<Computer> myComputerPromise;
 	
 	public CheckAdministrativeObligations(String computer, String[] students, String[] conditions) {
 		neededComputer = computer;
@@ -32,7 +32,7 @@ public class CheckAdministrativeObligations extends Action<Boolean>{
 	protected void start() {
 		Warehouse myWarehouse = currentpool.getWarehouse();	
 		List<Action<Boolean>> actions = new ArrayList<>();
-		myComputerPromise = myWarehouse.tryAllocate(neededComputer);
+		Promise<Computer> myComputerPromise = myWarehouse.tryAllocate(neededComputer);
 		//when we get the computer each student will do as followed
 		myComputerPromise.subscribe(()->{
 			for (String student : studentsToSign) {
@@ -40,7 +40,10 @@ public class CheckAdministrativeObligations extends Action<Boolean>{
 				sendMessage(getCoursesAction, student, new StudentPrivateState());
 				actions.add(getCoursesAction);
 			}
-			then(actions, ()->complete(true));
+			then(actions, () -> {
+				complete(true); 
+				myWarehouse.releaseComputer(neededComputer);
+			});
 		});
 	}
 

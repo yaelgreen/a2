@@ -59,11 +59,7 @@ public abstract class Action<R> {
 		   myCall.call();
 	   }
    }
-   
-//   protected ActorThreadPool getActorThreadPool() {
-//	   return _currpool;
-//   }
-    
+       
     
     /**
      * add a callback to be executed once *all* the given actions results are
@@ -76,6 +72,10 @@ public abstract class Action<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void then(Collection<? extends Action<?>> actions, callback task) {
+		if (actions.size() == 0) {
+			task.call();
+			return;
+		}
        	AtomicInteger remainedActionCounter = new AtomicInteger(actions.size());
     	for(Action<?> action : actions)
        		action.getResult().subscribe(()->
@@ -124,7 +124,7 @@ public abstract class Action<R> {
 	
 	/**
 	 * set action's name
-	 * @param actionName
+	 * @param actionName the new action's name
 	 */
 	public void setActionName(String actionName){
 		this.actionName = actionName;

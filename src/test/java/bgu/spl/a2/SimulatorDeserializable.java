@@ -1,6 +1,7 @@
-package bgu.spl.a2.sim;
+package bgu.spl.a2;
 
 import bgu.spl.a2.PrivateState;
+import bgu.spl.a2.sim.Simulator;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
@@ -12,7 +13,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
-//TODO DELETE
 /**
  * @author nadav.
  */

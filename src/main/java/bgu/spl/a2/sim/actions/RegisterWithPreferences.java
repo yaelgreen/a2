@@ -15,7 +15,9 @@ public class RegisterWithPreferences extends Action<Boolean> {
 		setActionName("Register With Preferences");
 	}
 
-	//register a student to one from his preferred courses by with priority to the first courses
+	/**
+	 * Register a student to one from his preferred courses by with priority to the first courses
+	 */
 	@Override
 	protected void start() {
 		Action<Boolean> first = new ParticipatingInCourse(currentActorId, new String[]{grade[0]});

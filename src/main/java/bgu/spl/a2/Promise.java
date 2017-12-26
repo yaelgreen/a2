@@ -15,8 +15,8 @@ import java.util.ArrayList;
  * private, protected or package protected - in other words, no new public
  * methods
  *
- * @param <T>
- *            the result type, <boolean> resolved - initialized ;
+ * @param <T> the result type, when we will use {@link #resolve(java.lang.Object)} the promise,
+ * we will can use {@link #get()}
  */
 public class Promise<T>{
 	

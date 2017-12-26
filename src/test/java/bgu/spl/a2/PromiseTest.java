@@ -1,6 +1,3 @@
-/**
- * 
- */
 package bgu.spl.a2;
 
 import org.junit.Assert;
@@ -8,13 +5,9 @@ import junit.framework.TestCase;
 
 /**
  * @author yaelgree
- *
  */
 public class PromiseTest extends TestCase {
 
-	/**
-	 * @param name
-	 */
 	public PromiseTest(String name) {
 		super(name);
 	}

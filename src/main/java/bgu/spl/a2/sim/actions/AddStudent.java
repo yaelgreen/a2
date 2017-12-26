@@ -9,9 +9,10 @@ import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class AddStudent extends Action<Boolean>{
 	
-	//Behavior: This action adds a new student to a specified department.
-	//Actor: Must be initially submitted to the Department's actor.
-	
+	/**
+	 * Behavior: This action adds a new student to a specified department.
+	 * Actor: Must be initially submitted to the Department's actor.
+	 */	
 	private String student;
 	
 	public AddStudent(String student) {

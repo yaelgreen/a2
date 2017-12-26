@@ -9,10 +9,11 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
 public class AnnounceEndOfRegistration extends Action<Boolean>{
 	
-	//Behavior: From this moment, reject any further changes in registration. And, close courses with
-	//number of students less than 5.
-	//Actor: Must be initially submitted to the department's actor.	
-
+	/**
+	 * Behavior: From this moment, reject any further changes in registration.
+	 * And, close courses with number of students less than 5.
+	 * Actor: Must be initially submitted to the department's actor.	
+	 */
 	public AnnounceEndOfRegistration(){
 		setActionName("AnnounceEndOfRegistration");
 	}
@@ -22,10 +23,6 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 		// Canceled
 		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;
 		List<Action<Boolean>> actions = new ArrayList<>();
-		if (myState.getCourseList().isEmpty()) {
-			complete(true);
-			return;
-		}
 		for(String course : myState.getCourseList())
 		{
 			Action<Boolean> end = new EndOfRegistration(currentActorId);//department's name

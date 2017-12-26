@@ -21,7 +21,7 @@ public abstract class PrivateState implements Serializable{
 	/**
 	 * add an action to the records
 	 *  
-	 * @param actionName
+	 * @param actionName the current record's name
 	 */
 	public void addRecord(String actionName){
 		if (actionName != null && actionName != "")

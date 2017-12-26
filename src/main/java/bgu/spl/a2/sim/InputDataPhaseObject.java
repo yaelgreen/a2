@@ -2,6 +2,9 @@ package bgu.spl.a2.sim;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * The Gson form inside a phase
+ */
 public class InputDataPhaseObject {	
 	
 	@SerializedName("Action") String action;

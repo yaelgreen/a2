@@ -10,8 +10,13 @@ import bgu.spl.a2.Promise;
  * this class is related to {@link Computer}
  * it indicates if a computer is free or not
  * 
- * Note: this class can be implemented without any synchronization. 
- * However, using synchronization will be accepted as long as the implementation is blocking free.
+ * Holds a flag which indicates if the computer is free or not, and has a queue of promises to be resolved once
+ * the Mutex is available. In the Suspending Mutex there are two methods:
+ * {@link #up()}: Release the mutex.
+ * {@link #down()}: Acquire the mutex, If the mutex is not free, the thread should no be blocked. It should get a
+ * promise which will be resolved later when the computer becomes available.
+ * Note: The Suspending Mutex can be implemented without any synchronization. However, using synchronization 
+ * will be accepted as long as the implementation is blocking free.
  *
  */
 public class SuspendingMutex {
@@ -29,7 +34,7 @@ public class SuspendingMutex {
 	private Queue<Promise<Computer>> promiseQueue = new ConcurrentLinkedQueue<Promise<Computer>>();
 	/**
 	 * Constructor
-	 * @param computer
+	 * @param computer the {@link bgu.spl.a2.sim.Computer} that this class will save
 	 */
 	public SuspendingMutex(Computer computer){
 		this.semaphore = new Semaphore(1);
@@ -39,7 +44,6 @@ public class SuspendingMutex {
 	/**
 	 * Computer acquisition procedure
 	 * Note that this procedure is non-blocking and should return immediately
-	 * 
 	 * @return a promise for the requested computer
 	 */
 	public Promise<Computer> down(){

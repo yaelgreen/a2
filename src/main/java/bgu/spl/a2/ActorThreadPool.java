@@ -99,9 +99,6 @@ public class ActorThreadPool {
 	 * the queue.
 	 *
 	 * after calling this method - one should not use the queue anymore.
-	 *
-	 * @throws InterruptedException
-	 *             if the thread that shut down the threads is interrupted
 	 */
 	public void shutdown() {
 		runPermission = false;

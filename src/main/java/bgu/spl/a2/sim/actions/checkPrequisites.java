@@ -6,9 +6,12 @@ import java.util.List;
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
-//this action called from student actor to check if he stand in the Prequisites
 public class checkPrequisites extends Action<Boolean> {
 
+	/**
+	 * Check if student has all the requested courses in his grade (he does not have to get a grade above 56)
+	 * complete true if the student have it.
+	 */
 	List<String> prequisites;
 	public checkPrequisites(List<String> prequisites) {
 		this.prequisites = prequisites;

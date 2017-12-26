@@ -7,11 +7,11 @@ import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 public class UnregisterAll extends Action<Boolean>{
-		
+	
 	/**
 	 * Constructor
 	 * this action will unregister all the students from the course
-	 * @param course - the course to unregister students from
+	 * we use this action in {@link bgu.spl.a2.sim.actions.CloseACourse}
 	 */
 	public UnregisterAll() {
 		setActionName("UnregisterAll");
