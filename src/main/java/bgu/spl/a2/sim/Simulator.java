@@ -107,7 +107,7 @@ public class Simulator {
 	        	 break;	        
 	         case "Close Course":
 	        	 actorId = data.department;
-	        	 action = new CloseACourse(actorId);
+	        	 action = new CloseACourse(data.course);
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;
 	         case "Add Spaces":
@@ -116,7 +116,7 @@ public class Simulator {
 	        	 actorState = new CoursePrivateState();
 	        	 break;
 	         case "End Registeration":
-	        	 actorId = "";//will not work without actor
+	        	 actorId = "End Registeration";//will not work without actor
 	        	 action = new AnnounceEndOfRegistration();
 	        	 actorState = new DepartmentPrivateState(); 
 	        	 break;

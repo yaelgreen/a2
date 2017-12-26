@@ -43,7 +43,7 @@ public class ParticipatingInCourse extends Action<Boolean> {
 		sendMessage(checkStudentPrequisites, student, new StudentPrivateState());
 
 		Action<Boolean> registerStudent = new Register(currentActorId, grades);
-		//if student have the prequisites we check if there is available seat for him,
+		//if student have the prerequisites we check if there is available seat for him,
 		//and if there is we will save a seat for him and ask him actor to register him
 		checkStudentPrequisites.getResult().subscribe(() -> {
 			//unregister has been called

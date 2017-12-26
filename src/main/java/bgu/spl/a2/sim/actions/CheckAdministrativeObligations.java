@@ -36,7 +36,7 @@ public class CheckAdministrativeObligations extends Action<Boolean>{
 		//when we get the computer each student will do as followed
 		myComputerPromise.subscribe(()->{
 			for (String student : studentsToSign) {
-				Action<Boolean> getCoursesAction = new gatherGradesAndCheck(myComputerPromise.get(), conditionsOnStudents);
+				Action<Boolean> getCoursesAction = new GatherGradesAndCheck(myComputerPromise.get(), conditionsOnStudents);
 				sendMessage(getCoursesAction, student, new StudentPrivateState());
 				actions.add(getCoursesAction);
 			}

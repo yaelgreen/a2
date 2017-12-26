@@ -1,0 +1,117 @@
+{
+  "threads": 8,
+  "Computers": [
+    {
+      "Type": "A",
+      "Sig Success": "1234666",
+      "Sig Fail": "999283"
+    },
+    {
+      "Type": "B",
+      "Sig Success": "4424232",
+      "Sig Fail": "5555353"
+    }
+  ],
+  "Phase 1": [
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseB",
+      "Space": "2",
+      "Prerequisites": [
+        "CourseA",
+        "CourseB"
+      ]
+    },
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseA",
+      "Space": "4",
+      "Prerequisites": [
+        
+      ]
+    },
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseA",
+      "Space": "3",
+      "Prerequisites": [
+        A
+      ]
+    },
+    {
+      "Action": "Open Course",
+      "Department": "CS",
+      "Course": "CourseA",
+      "Space": "1",
+      "Prerequisites": [
+        "CourseC"
+      ]
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student1"
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student2"
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student3"
+    },
+    {
+      "Action": "Add Student",
+      "Department": "CS",
+      "Student": "Student4"
+    }
+  ],
+  "Phase 2": [
+    {
+      "Action": "Add Student",
+      "Department": "Math",
+      "Student": "Student4"
+    },
+    {
+      "Action": "Close Course",
+      "Department": "CS",
+      "Course": "CourseD"
+    },
+    {
+      "Action": "End Registeration"
+    },
+    {
+      "Action": "Administrative Check",
+      "Department": "CS",
+      "Students": [
+        "Student3",
+        "Student4"
+      ],
+      "Computer": "A",
+      "Conditions": [
+        "CourseC",
+        "CourseD"
+      ]
+    }
+  ],
+  "Phase 3": [
+    {
+      "Action": "Administrative Check",
+      "Department": "CS",
+      "Students": [
+        "Student3",
+        "Student4"
+      ],
+      "Computer": "A",
+      "Conditions": [
+        "CourseC",
+        "CourseD"
+      ]
+    }
+  ]
+}
