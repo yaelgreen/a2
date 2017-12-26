@@ -15,7 +15,7 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 	 * Actor: Must be initially submitted to the department's actor.	
 	 */
 	public AnnounceEndOfRegistration(){
-		setActionName("AnnounceEndOfRegistration");
+		setActionName("End Registeration");
 	}
 
 	@Override

@@ -6,11 +6,11 @@ import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.Computer;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
-public class gatherGradesAndCheck extends Action<Boolean> {
+public class GatherGradesAndCheck extends Action<Boolean> {
 	
 	Computer computer;
 	String[] coursesOfStudents;
-	public gatherGradesAndCheck(Computer computer, String[] conditionsOnStudents) {
+	public GatherGradesAndCheck(Computer computer, String[] conditionsOnStudents) {
 		this.computer = computer;
 		this.coursesOfStudents = conditionsOnStudents;
 		setActionName("gather grades and check");
