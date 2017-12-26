@@ -23,7 +23,6 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 	@Override
 	protected void start() {
 		// Canceled
-		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;
 		List<Action<Boolean>> actions = new ArrayList<>();
 		for (Map.Entry<String, PrivateState> actor : this.currentpool.getActors().entrySet())
 		{

@@ -1,5 +1,7 @@
 package bgu.spl.a2.sim.actions;
 
+import java.util.ArrayList;
+
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
@@ -38,14 +40,15 @@ public class ParticipatingInCourse extends Action<Boolean> {
 		//also to prevent double registration
 		Action<Boolean> checkStudentPrequisites = new CheckPrequisites(courseState.getPrequisites());		
 		sendMessage(checkStudentPrequisites, student, new StudentPrivateState());
-
+		ArrayList<Action<Boolean>> thenAction = new ArrayList<>();
+		thenAction.add(checkStudentPrequisites);
 		Action<Boolean> registerStudent = new Register(currentActorId, grades);
 		//if student have the prerequisites we check if there is available seat for him,
 		//and if there is we will save a seat for him and ask him actor to register him
-		checkStudentPrequisites.getResult().subscribe(() -> {
+		then(thenAction, () -> {
 			//unregister has been called
 			if(!courseState.getRegStudents().contains(student))
-			{
+			{//we return the state as before
 				courseState.setRegistered(courseState.getRegistered()+1);
 				courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
 				complete(false);

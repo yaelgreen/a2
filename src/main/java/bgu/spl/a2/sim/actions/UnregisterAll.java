@@ -10,7 +10,7 @@ public class UnregisterAll extends Action<Boolean>{
 	
 	/**
 	 * Constructor
-	 * this action will unregister all the students from the course
+	 * this action will unregister all the students from the course in purpose to close it
 	 * we use this action in {@link bgu.spl.a2.sim.actions.CloseACourse}
 	 */
 	public UnregisterAll() {
@@ -26,8 +26,10 @@ public class UnregisterAll extends Action<Boolean>{
 			sendMessage(unregisterAction, currentActorId, new CoursePrivateState());
 			actions.add(unregisterAction);
 		}		
+		myState.setAvailableSpots(-1-myState.getRegistered());//we want to block forward register
 		then(actions, ()->{
-			myState.setAvailableSpots(-1);
+			//myState.setAvailableSpots(-1);
+			//myState.setRegistered(0);
 			myState.getRegStudents().clear();
 			complete(true);
 		});

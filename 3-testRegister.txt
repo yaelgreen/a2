@@ -154,9 +154,6 @@
       ]
     },
     {
-      "Action": "End Registeration"
-    },
-    {
       "Action": "Administrative Check",
       "Department": "CS",
       "Students": [

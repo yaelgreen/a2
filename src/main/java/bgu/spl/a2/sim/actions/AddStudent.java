@@ -27,22 +27,9 @@ public class AddStudent extends Action<Boolean>{
 			complete(true);
 			return;
 		}
-		List<Action<Boolean>> anAction = new ArrayList<>();
-		Action<Boolean> createStudentActor = new EmptyAction();
-		
-		anAction.add(createStudentActor);
-		//we add the student to the department just after his actor been created, 
-		//we use then because we change the private-state DS and we want concurrency 
-		//Use synchronized to protect List
-		then(anAction, ()-> 
-		{
-			synchronized (myState.getStudentList()){
-				if (!myState.getStudentList().contains(student))
-					myState.getStudentList().add(student);
-			}
-			complete(true);}
-		);
-		
+		myState.getStudentList().add(student);
+		Action<Boolean> createStudentActor = new EmptyAction();		
+		createStudentActor.getResult().subscribe(()-> complete(true));		
 		sendMessage(createStudentActor, student, new StudentPrivateState());
 	}	
 }
