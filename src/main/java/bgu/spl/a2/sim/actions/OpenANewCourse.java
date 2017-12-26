@@ -28,6 +28,10 @@ public class OpenANewCourse extends Action<Boolean>{
 	@Override
 	protected void start() {
 		DepartmentPrivateState myState = (DepartmentPrivateState) currentState;
+		if (myState.getCourseList().contains(courseName)){
+			complete(true);
+			return;
+		}
 		myState.getCourseList().add(courseName);
 		Action<Boolean> newCourse = new CreateNewCourse(availableSpaces, prerequisites);
 		sendMessage(newCourse , courseName, new CoursePrivateState());
