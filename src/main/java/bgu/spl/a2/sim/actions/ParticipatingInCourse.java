@@ -49,8 +49,8 @@ public class ParticipatingInCourse extends Action<Boolean> {
 			//unregister has been called
 			if(!courseState.getRegStudents().contains(student))
 			{//we return the state as before
-				courseState.setRegistered(courseState.getRegistered()+1);
-				courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
+//				courseState.setRegistered(courseState.getRegistered()+1);
+//				courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
 				complete(false);
 				return;
 			}
