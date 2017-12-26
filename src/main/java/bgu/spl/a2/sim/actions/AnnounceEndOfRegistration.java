@@ -2,8 +2,10 @@ package bgu.spl.a2.sim.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.PrivateState;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 
@@ -23,11 +25,17 @@ public class AnnounceEndOfRegistration extends Action<Boolean>{
 		// Canceled
 		DepartmentPrivateState myState = (DepartmentPrivateState) this.currentState;
 		List<Action<Boolean>> actions = new ArrayList<>();
-		for(String course : myState.getCourseList())
+		for (Map.Entry<String, PrivateState> actor : this.currentpool.getActors().entrySet())
 		{
-			Action<Boolean> end = new EndOfRegistration(currentActorId);//department's name
-			sendMessage(end, course, new CoursePrivateState());
-			actions.add(end);
+			if (actor.getValue() instanceof DepartmentPrivateState) {
+				DepartmentPrivateState state = (DepartmentPrivateState) actor.getValue();
+				for(String course : state.getCourseList())
+				{
+					Action<Boolean> end = new EndOfRegistration(actor.getKey());//department's name
+					sendMessage(end, course, new CoursePrivateState());
+					actions.add(end);
+				}
+			}
 		}
 		
 		then(actions, () -> complete(true));

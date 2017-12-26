@@ -39,7 +39,7 @@ public class ParticipatingInCourse extends Action<Boolean> {
 		}
 		courseState.getRegStudents().add(student);//we will do it to see later if unregister had been called,
 		//also to prevent double registration
-		Action<Boolean> checkStudentPrequisites = new checkPrequisites(courseState.getPrequisites());		
+		Action<Boolean> checkStudentPrequisites = new CheckPrequisites(courseState.getPrequisites());		
 		sendMessage(checkStudentPrequisites, student, new StudentPrivateState());
 
 		Action<Boolean> registerStudent = new Register(currentActorId, grades);
