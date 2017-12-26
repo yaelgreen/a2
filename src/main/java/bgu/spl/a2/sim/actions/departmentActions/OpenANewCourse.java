@@ -1,8 +1,9 @@
-package bgu.spl.a2.sim.actions;
+package bgu.spl.a2.sim.actions.departmentActions;
 
 import java.util.List;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.actions.courseActions.CreateNewCourse;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 

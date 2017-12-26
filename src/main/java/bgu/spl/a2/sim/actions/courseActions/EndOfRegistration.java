@@ -1,6 +1,7 @@
-package bgu.spl.a2.sim.actions;
+package bgu.spl.a2.sim.actions.courseActions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.actions.departmentActions.CloseACourse;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 
 //initiate from department
@@ -11,7 +12,7 @@ public class EndOfRegistration extends Action<Boolean> {
 	/**
 	 * Called from course actor
 	 * will close the course for forward registration
-	 * we will use it in {@link bgu.spl.a2.sim.actions.AnnounceEndOfRegistration}
+	 * we will use it in {@link bgu.spl.a2.sim.actions.departmentActions.AnnounceEndOfRegistration}
 	 * @param departmentActorId the id of the department actor
 	 */
 	public EndOfRegistration(String departmentActorId) {

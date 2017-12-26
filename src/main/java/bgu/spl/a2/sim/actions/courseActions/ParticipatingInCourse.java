@@ -1,9 +1,11 @@
-package bgu.spl.a2.sim.actions;
+package bgu.spl.a2.sim.actions.courseActions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.actions.studentActions.Register;
+import bgu.spl.a2.sim.actions.studentActions.checkPrequisites;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 

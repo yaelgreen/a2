@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import bgu.spl.a2.ActorThreadPool;
+import bgu.spl.a2.sim.actions.departmentActions.OpenANewCourse;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 

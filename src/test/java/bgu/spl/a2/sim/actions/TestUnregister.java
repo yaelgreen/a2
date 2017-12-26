@@ -6,6 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import bgu.spl.a2.ActorThreadPool;
+import bgu.spl.a2.sim.actions.courseActions.ParticipatingInCourse;
+import bgu.spl.a2.sim.actions.courseActions.Unregister;
+import bgu.spl.a2.sim.actions.departmentActions.AddStudent;
+import bgu.spl.a2.sim.actions.departmentActions.OpenANewCourse;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;

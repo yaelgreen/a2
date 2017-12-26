@@ -1,4 +1,4 @@
-package bgu.spl.a2.sim.actions;
+package bgu.spl.a2.sim.actions.courseActions;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class CreateNewCourse extends Action<Boolean> {
 	private List<String> prerequisites;
 	
 	/**
-	 * The action sets the course data for the action in the department actor in {@link bgu.spl.a2.sim.actions.OpenANewCourse}
+	 * The action sets the course data for the action in the department actor in {@link bgu.spl.a2.sim.actions.departmentActions.OpenANewCourse}
 	 * @param availableSpaces the available places in the course
 	 * @param prerequisites the needed courses to learn this course
 	 */

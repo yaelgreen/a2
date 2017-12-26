@@ -1,6 +1,7 @@
-package bgu.spl.a2.sim.actions;
+package bgu.spl.a2.sim.actions.departmentActions;
 
 import bgu.spl.a2.Action;
+import bgu.spl.a2.sim.actions.courseActions.UnregisterAll;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
 import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 

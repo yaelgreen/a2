@@ -1,4 +1,4 @@
-package bgu.spl.a2.sim.actions;
+package bgu.spl.a2.sim.actions.courseActions;
 
 import bgu.spl.a2.Action;
 import bgu.spl.a2.sim.privateStates.CoursePrivateState;
