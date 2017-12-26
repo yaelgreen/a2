@@ -209,8 +209,6 @@ public class Simulator {
 	
 	
 	public static void main(String[] args) {
-		//args = new String[]{"F:/documents/Workspace/SPL/a2/Input.txt"}; //TODO delete it
-		args = new String[]{"G:/Workspace/SPL/a2/input2.txt"};		//INPUT2 WONT RUN :( the problem is undeclered private state
 		if (args.length == 0 || args[0].isEmpty())
 			System.out.println("No arguments supllied, or bad arguments");
 		else {

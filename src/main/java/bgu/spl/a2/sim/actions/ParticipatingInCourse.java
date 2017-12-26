@@ -37,23 +37,31 @@ public class ParticipatingInCourse extends Action<Boolean> {
 			complete(false);
 			return;
 		}
+		courseState.getRegStudents().add(student);//we will do it to see later if unregister had been called,
+		//also to prevent double registration
 		Action<Boolean> checkStudentPrequisites = new checkPrequisites(courseState.getPrequisites());		
 		sendMessage(checkStudentPrequisites, student, new StudentPrivateState());
-		
-		List<Action<Boolean>> actionList = new ArrayList<Action<Boolean>>();
-		actionList.add(checkStudentPrequisites);		
 
 		Action<Boolean> registerStudent = new Register(currentActorId, grades);
 		//if student have the prequisites we check if there is available seat for him,
 		//and if there is we will save a seat for him and ask him actor to register him
-		then(actionList, () -> {
+		checkStudentPrequisites.getResult().subscribe(() -> {
+			//unregister has been called
+			if(!courseState.getRegStudents().contains(student))
+			{
+				courseState.setRegistered(courseState.getRegistered()+1);
+				courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
+				complete(false);
+				return;
+			}
+			//we can not want to register this student
 			if (!checkStudentPrequisites.getResult().get() | courseState.getAvailableSpots() <= 0 ) {
+				courseState.getRegStudents().remove(student);
 				complete(false);
 				return;
 			}
 			courseState.setRegistered(courseState.getRegistered()+1);
 			courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
-			courseState.getRegStudents().add(student);
 			sendMessage(registerStudent, student, new StudentPrivateState());
 			registerStudent.getResult().subscribe(()->complete(true));;
 		});
