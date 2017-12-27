@@ -30,7 +30,7 @@ public class TestRegWithPreferences {
 	}	
 	
 	@Test
-	public void testCloseCourse(){		
+	public void testRegWithPreferences(){		
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) { Assert.assertTrue(false);	}

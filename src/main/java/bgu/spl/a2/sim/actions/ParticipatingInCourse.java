@@ -46,11 +46,11 @@ public class ParticipatingInCourse extends Action<Boolean> {
 		//if student have the prerequisites we check if there is available seat for him,
 		//and if there is we will save a seat for him and ask him actor to register him
 		then(thenAction, () -> {
-			//unregister has been called
+			//actor called register and then -> unregister has been called too the same student
 			if(!courseState.getRegStudents().contains(student))
-			{//we return the state as before
-//				courseState.setRegistered(courseState.getRegistered()+1);
-//				courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
+			{//we return the state as before, unregister change the values but register did not
+				courseState.setRegistered(courseState.getRegistered()+1);
+				courseState.setAvailableSpots(courseState.getAvailableSpots()-1);
 				complete(false);
 				return;
 			}

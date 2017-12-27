@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class SimulatorDeserializable  {    
     @Test
     public void main() {
-        Simulator.main(new String[]{"C:\\Users\\yaelgree\\eclipse-workspace\\a2\\multiple_open_course_close_course.txt"});
+        Simulator.main(new String[]{"G:/Workspace/SPL/a2/3-testRegister.txt"});
         try ( InputStream fin = new FileInputStream("result.ser");
               ObjectInputStream ois = new ObjectInputStream(fin)){
             HashMap<?, ?> data = (HashMap<?, ?>) ois.readObject();

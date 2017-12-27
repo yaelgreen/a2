@@ -69,8 +69,10 @@
       "Action": "Add Student",
       "Department": "CS",
       "Student": "Student4"
-    },
-     {
+    }    
+  ],
+  "Phase 2": [
+   {
       "Action": "Participate In Course",
       "Student": "Student1",
       "Course": "CourseA",
@@ -118,13 +120,6 @@
       "Grade": [
         "6"
       ]
-    }
-  ],
-  "Phase 2": [
-    {
-      "Action": "Unregister",
-      "Student": "Student1",
-      "Course": "CourseA"
     },
     {
       "Action": "Unregister",
@@ -135,9 +130,6 @@
       "Action": "Close Course",
       "Department": "CS",
       "Course": "CourseC"
-    },
-    {
-      "Action": "End Registeration"
     },
     {
       "Action": "Administrative Check",
@@ -151,9 +143,14 @@
         "CourseC",
         "CourseD"
       ]
-    }
+    }	
   ],
   "Phase 3": [
+	{
+      "Action": "Unregister",
+      "Student": "Student1",
+      "Course": "CourseA"
+    },
     {
       "Action": "Administrative Check",
       "Department": "CS",

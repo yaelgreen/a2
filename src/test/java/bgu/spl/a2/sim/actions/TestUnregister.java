@@ -27,22 +27,33 @@ public class TestUnregister {
 	}	
 	
 	@Test
-	public void testOpenNewPlacesInCourse(){
+	public void testUnregister(){
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {	}		
+		testActorThreadPool.submit(new Unregister("111"), "courseA", null);
 		testActorThreadPool.submit(new ParticipatingInCourse("111", new String[]{"10"}), "courseA", null);
 		testActorThreadPool.submit(new ParticipatingInCourse("111", new String[]{"20"}), "courseB", null);
 		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"30"}), "courseA", null);
 		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"40"}), "courseB", null);
 		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"50"}), "courseA", null);
-		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"60"}), "courseB", null);		
+		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"60"}), "courseB", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("111", new String[]{"70"}), "courseA", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("111", new String[]{"80"}), "courseB", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"90"}), "courseA", null);
+		testActorThreadPool.submit(new Unregister("222"), "courseA", null);
+		testActorThreadPool.submit(new Unregister("222"), "courseA", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"90"}), "courseA", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("222", new String[]{"91"}), "courseB", null);
+		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"92"}), "courseA", null);
+		testActorThreadPool.submit(new Unregister("333"), "courseB", null);
+		
 		try {
-			Thread.sleep(50);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {	}
 		
 		testCourse("courseA", 3, 1);
-		testCourse("courseB", 3, 0);
+		testCourse("courseB", 2, 1);
 		
 		testActorThreadPool.submit(new Unregister("111"), "courseB", null);
 		
@@ -51,14 +62,17 @@ public class TestUnregister {
 		} catch (InterruptedException e) {	}
 		
 		testCourse("courseA", 3, 1);
-		testCourse("courseB", 2, 1);
+		testCourse("courseB", 1, 2);
 		isLearning("111","courseA",true);
 		isLearning("111","courseB",false);		
 		isLearning("222","courseA",true);
 		isLearning("222","courseB",true);
 		isLearning("333","courseA",true);
-		isLearning("333","courseB",true);
+		isLearning("333","courseB",false);
 		
+
+		testActorThreadPool.submit(new ParticipatingInCourse("333", new String[]{"93"}), "courseB", null);
+		testActorThreadPool.submit(new Unregister("222"), "courseA", null);
 		testActorThreadPool.submit(new Unregister("222"), "courseA", null);
 		
 		try {

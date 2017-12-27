@@ -69,7 +69,9 @@
       "Action": "Add Student",
       "Department": "CS",
       "Student": "Student4"
-    },
+    }
+  ],
+  "Phase 2": [
     {
       "Action": "Participate In Course",
       "Student": "Student1",
@@ -77,21 +79,11 @@
       "Grade": [
         "98"
       ]
-    }
-  ],
-  "Phase 2": [
+    },
     {
       "Action": "Add Student",
       "Department": "Math",
       "Student": "Student4"
-    },
-    {
-      "Action": "Participate In Course",
-      "Student": "Student1",
-      "Course": "CourseB",
-      "Grade": [
-        "99"
-      ]
     },
     {
       "Action": "Participate In Course",
@@ -168,6 +160,15 @@
     }
   ],
   "Phase 3": [
+  
+    {
+      "Action": "Participate In Course",
+      "Student": "Student1",
+      "Course": "CourseB",
+      "Grade": [
+        "99"
+      ]
+    },
     {
       "Action": "Administrative Check",
       "Department": "CS",
