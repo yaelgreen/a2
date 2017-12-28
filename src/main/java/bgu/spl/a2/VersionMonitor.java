@@ -1,7 +1,5 @@
 package bgu.spl.a2;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,7 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class VersionMonitor {	
 	private static AtomicInteger _version = new AtomicInteger(0);
-	private static Queue<Thread> _toNotifyList = new ConcurrentLinkedQueue<Thread>();
 	/**
 	 * @return the current version
 	 */
@@ -31,13 +28,13 @@ public class VersionMonitor {
     }
     
     /**
-     * Interrupt waiting threads. best to deal with thread safty
+     * we need to sync on object in order to use notify all
      */
     public void inc() {    	    	
     	_version.getAndIncrement();
-    	Thread currThread;
-    	while((currThread = _toNotifyList.poll()) != null)
-    		currThread.interrupt(); 
+    	synchronized (this) {
+	    	this.notifyAll();
+    	}
     }
 
     /**     
@@ -46,20 +43,14 @@ public class VersionMonitor {
      * we will use synchronized to use wait function  
      */
     public void await(int version) {
-    	//the first thing we will do is add it, later we will decide what to do with it
-    	//System.out.println(Thread.currentThread() + ", " + version+"_"+_version.get());
-    	_toNotifyList.add(Thread.currentThread());
-    	if (version == _version.get())  {    		
-    		synchronized (this) {
+		if (version == _version.get()){    	
+			synchronized (this) {
 				try {
-					//wait if it is fine or if we have to delete the interrupt mark
-					if(version == _version.get() || !_toNotifyList.remove(Thread.currentThread()))
-						this.wait();				
+					//until we sync on this the version may change. (significant with only one thread in the pool)
+					if (version == _version.get())
+						this.wait();
 				} catch (InterruptedException e) {		}
-			}
-    	}
-    	else//restore the situation as before
-    		if(!_toNotifyList.remove(Thread.currentThread()))
-    			Thread.interrupted();
+			} 
+		}
     }
 }

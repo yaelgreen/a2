@@ -45,9 +45,7 @@ public class Promise<T>{
 	 *         before.
 	 */
 	public boolean isResolved() {
-		if (_value != null)
-			return true;
-		return false;		
+		return _value != null;		
 	}
 
 
@@ -63,14 +61,20 @@ public class Promise<T>{
      * 			in the case where this object is already resolved
 	 * @param value
 	 *            - the value to resolve this promise object with
+	 * we will use synchronize on callbacks queue to avoid add/remove from the subscribe when we poll
+	 * because if makes some callback to be ignored
 	 */
 	public void resolve(T value){
 		if (_value != null)
 			throw new IllegalStateException();
-		_value = value;	
+		_value = value;
 		callback currentCallBack;
-		while((currentCallBack = callbacks.poll()) != null)
-			currentCallBack.call();
+		// we will use synchronize on callbacks queue to avoid add/remove from the subscribe when we poll
+		//because if makes some callback to be ignored
+		synchronized (callbacks) {
+			while((currentCallBack = callbacks.poll()) != null)
+				currentCallBack.call();
+		}
 	}
  
 	/**
@@ -94,7 +98,7 @@ public class Promise<T>{
 			callbacks.add(callback);
 			//if it was resolved during we added the callback do as followed
 			if (isResolved() && callbacks.remove(callback))
-				callback.call();			
+				callback.call();
 		}
 	}
 }

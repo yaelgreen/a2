@@ -161,14 +161,17 @@ public class ActorThreadPool {
 						break;
 					if(actor.tryToOccupy())
 					{
-						Action<?> toExecute;
+						Action<?> toExecute = actor.getAction();
 						//if the actor is empty tries to release the actor
-						while(((toExecute = actor.getAction()) != null || !actor.releaseActor()) & runPermission)
+						while(( toExecute != null || !actor.releaseActor()) & runPermission)
 						{
 							//when actor can not be released
-							if(toExecute == null)
+							//wait until it complete the submitting
+							while(toExecute == null)
 								toExecute = actor.getAction();
-							toExecute.handle(_mypool, actor.getId(), _mypool.getPrivateState(actor.getId()));						
+							
+							toExecute.handle(_mypool, actor.getId(), _mypool.getPrivateState(actor.getId()));
+							toExecute = actor.getAction();
 						}
 					}
 				}
@@ -189,10 +192,12 @@ public class ActorThreadPool {
 		private AtomicInteger occupied = new AtomicInteger(0);
 		private String myId;
 		private PrivateState state;
+		// we cannot release the actor if we did not get the last action after the version monitor inc()		
+		private boolean canRelease = false;
 		private Queue<Action<?>> actorActions;
 		
 		private Actor(String id, PrivateState privateState){
-			actorActions =new ConcurrentLinkedQueue<Action<?>>();
+			actorActions = new ConcurrentLinkedQueue<Action<?>>();
 			myId = id;
 			state = privateState;
 		}
@@ -224,7 +229,7 @@ public class ActorThreadPool {
 		 */
 		public boolean releaseActor()
 		{			
-			if(actorActions.isEmpty())
+			if(canRelease && actorActions.isEmpty())
 			{
 				occupied.set(0);
 				return true;
@@ -238,6 +243,7 @@ public class ActorThreadPool {
 		 */
 		public void submit(Action<?> newAction)
 		{
+			canRelease = false;
 			actorActions.add(newAction);
 		}
 		
@@ -246,6 +252,7 @@ public class ActorThreadPool {
 		 */
 		public Action<?> getAction()
 		{
+			canRelease = true;
 			return actorActions.poll();
 		}
 		

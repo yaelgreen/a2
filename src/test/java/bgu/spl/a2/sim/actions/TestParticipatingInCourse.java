@@ -21,7 +21,8 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class TestParticipatingInCourse {
-	ActorThreadPool testActorThreadPool = new ActorThreadPool(8);
+	private int threads = 20;
+	ActorThreadPool testActorThreadPool = new ActorThreadPool(threads);
 	@Before
 	public void prepareDepartmentAndCourses(){
 		testActorThreadPool.start();		
@@ -42,7 +43,7 @@ public class TestParticipatingInCourse {
 	@After
 	public void prepareActorPool(){
 		testActorThreadPool.shutdown();
-		testActorThreadPool = new ActorThreadPool(8);
+		testActorThreadPool = new ActorThreadPool(threads);
 	}
 	
 	@Test
@@ -183,17 +184,19 @@ public class TestParticipatingInCourse {
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) { assertFalse(true);	}
-		for(int j =  0; j <2000; j++){
-			System.out.println(j);			
+		for(int j =  0; j <20000; j++){
+			//System.out.println(j);			
 			CountDownLatch latch = new CountDownLatch(3);
 			for(int i = 0; i<3; i++)
-			{
+			{				
 				Action<Boolean> register = new ParticipatingInCourse("111", new String[]{"10"});
 				testActorThreadPool.submit(register, "lab1", null);
 				register.getResult().subscribe(()->latch.countDown());
 			}
+			//System.out.println(Thread.currentThread() + " waiting, " + latch.getCount());
 			try {
-				latch.await();
+				if(latch.getCount() != 0)
+					latch.await();
 			} catch (InterruptedException e) { assertFalse(true);	}
 		}
 	}
