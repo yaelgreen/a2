@@ -21,7 +21,7 @@ import bgu.spl.a2.sim.privateStates.DepartmentPrivateState;
 import bgu.spl.a2.sim.privateStates.StudentPrivateState;
 
 public class TestParticipatingInCourse {
-	private int threads = 20;
+	private int threads = 8;
 	ActorThreadPool testActorThreadPool = new ActorThreadPool(threads);
 	@Before
 	public void prepareDepartmentAndCourses(){

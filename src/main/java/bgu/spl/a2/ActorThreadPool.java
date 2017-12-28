@@ -162,23 +162,22 @@ public class ActorThreadPool {
 					if(actor.tryToOccupy())
 					{
 						Action<?> toExecute = actor.getAction();
-						//if the actor is empty tries to release the actor
-						while(( toExecute != null || !actor.releaseActor()) & runPermission)
-						{
-							//when actor can not be released
-							//wait until it complete the submitting
-							while(toExecute == null)
-								toExecute = actor.getAction();
-							
+						//we should check if the worker can run this one?
+						while(toExecute != null & runPermission)
+						{							
 							toExecute.handle(_mypool, actor.getId(), _mypool.getPrivateState(actor.getId()));
 							toExecute = actor.getAction();
 						}
+						
+						actor.releaseActor();
 					}
 				}
 				
 				//if version await didn't interrupt us we can wait
 				if(runPermission)
 					verMonitor.await(lastVersion);
+
+				//System.out.println("very alive");
 			}
 		}	
 	}
@@ -186,18 +185,16 @@ public class ActorThreadPool {
 	/**
 	 * Actor class
 	 * @author Roy
-	 * we will use it to close an actor to one thread
+	 *
 	 */
 	private class Actor {
 		private AtomicInteger occupied = new AtomicInteger(0);
 		private String myId;
 		private PrivateState state;
-		// we cannot release the actor if we did not get the last action after the version monitor inc()		
-		private boolean canRelease = false;
 		private Queue<Action<?>> actorActions;
 		
 		private Actor(String id, PrivateState privateState){
-			actorActions = new ConcurrentLinkedQueue<Action<?>>();
+			actorActions =new ConcurrentLinkedQueue<Action<?>>();
 			myId = id;
 			state = privateState;
 		}
@@ -217,24 +214,23 @@ public class ActorThreadPool {
 		 */
 		public boolean tryToOccupy()
 		{
-			boolean output = false;
-			if(occupied.getAndIncrement() == 0)//because of the atomicInteger method only one thread will get true in this line
+			boolean output;
+			if(occupied.get()>0)
+				output = false;
+			else if(occupied.getAndIncrement() == 0)//because of the atomicInteger method only one thread will get true in this line
 				output = true;
+			else
+				output = false;
 			return output;
 		}
 		
 		/**
 		 * release the actor by retrieving the value to 0.
-		 * return true if succeed to release else return false
+		 * will not influence on try to occupy because it be a matter just when we reach the first 'if', but there
 		 */
-		public boolean releaseActor()
-		{			
-			if(canRelease && actorActions.isEmpty())
-			{
-				occupied.set(0);
-				return true;
-			}
-			return false;		
+		public void releaseActor()
+		{
+			occupied.set(0);
 		}
 		
 		/**
@@ -243,7 +239,6 @@ public class ActorThreadPool {
 		 */
 		public void submit(Action<?> newAction)
 		{
-			canRelease = false;
 			actorActions.add(newAction);
 		}
 		
@@ -252,7 +247,6 @@ public class ActorThreadPool {
 		 */
 		public Action<?> getAction()
 		{
-			canRelease = true;
 			return actorActions.poll();
 		}
 		
